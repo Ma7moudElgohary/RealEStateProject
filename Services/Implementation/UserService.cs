@@ -1,6 +1,232 @@
-﻿namespace RealEStateProject.Services.Implementation
+﻿using RealEstate.Models;
+using RealEstate.Repositories;
+using RealEStateProject.Models;
+using RealEStateProject.Repositories;
+using RealEStateProject.ViewModels.Admin;
+using RealEStateProject.ViewModels.Agent;
+using RealEStateProject.ViewModels.Property;
+using RealEStateProject.ViewModels.User;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace RealEstate.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
+        private readonly IUserRepository _userRepository;
+
+        public UserService(IUserRepository userRepository)
+        {
+            _userRepository = userRepository;
+        }
+
+        public async Task<ApplicationUser> GetUserByIdAsync(string id)
+        {
+            return await _userRepository.GetByIdAsync(id);
+        }
+
+        public async Task<UserDashboardViewModel> GetUserDashboardAsync(string userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            var dashboard = new UserDashboardViewModel
+            {
+                Favorites = user.Favorites?.Select(f => new PropertyViewModel
+                {
+                    Id = f.Property.Id,
+                    Title = f.Property.Title,
+                    Description = f.Property.Description,
+                    Price = f.Property.Price,
+                    Address = f.Property.Address,
+                    City = f.Property.City,
+                    State = f.Property.State,
+                    ZipCode = f.Property.ZipCode,
+                    Type = f.Property.Type,
+                    Status = f.Property.Status,
+                    CreatedAt = f.Property.CreatedAt,
+                    AgentName = $"{f.Property.Agent.FirstName} {f.Property.Agent.LastName}",
+                    IsFavorite = true,
+                    ImageUrls = f.Property.Images.Select(i => i.ImageUrl).ToList(),
+                    FeaturedImageUrl = f.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                }).ToList() ?? new List<PropertyViewModel>(),
+
+                Requests = user.Requests?.Select(r => new PropertyRequestViewModel
+                {
+                    Id = r.Id,
+                    Property = new PropertyViewModel
+                    {
+                        Id = r.Property.Id,
+                        Title = r.Property.Title,
+                        Description = r.Property.Description,
+                        Price = r.Property.Price,
+                        Address = r.Property.Address,
+                        City = r.Property.City,
+                        State = r.Property.State,
+                        ZipCode = r.Property.ZipCode,
+                        Type = r.Property.Type,
+                        Status = r.Property.Status,
+                        CreatedAt = r.Property.CreatedAt,
+                        AgentName = $"{r.Property.Agent.FirstName} {r.Property.Agent.LastName}",
+                        IsFavorite = false,
+                        ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
+                        FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                    },
+                    UserName = $"{user.FirstName} {user.LastName}",
+                    UserEmail = user.Email,
+                    Message = r.Message,
+                    Status = r.Status,
+                    CreatedAt = r.CreatedAt
+                }).ToList() ?? new List<PropertyRequestViewModel>()
+            };
+
+            return dashboard;
+        }
+
+        public async Task<AgentDashboardViewModel> GetAgentDashboardAsync(string agentId)
+        {
+            var agent = await _userRepository.GetByIdAsync(agentId);
+
+            if (agent == null)
+            {
+                throw new KeyNotFoundException("Agent not found.");
+            }
+
+            var dashboard = new AgentDashboardViewModel
+            {
+                Properties = agent.Properties?.Select(p => new PropertyViewModel
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Description = p.Description,
+                    Price = p.Price,
+                    Address = p.Address,
+                    City = p.City,
+                    State = p.State,
+                    ZipCode = p.ZipCode,
+                    Type = p.Type,
+                    Status = p.Status,
+                    CreatedAt = p.CreatedAt,
+                    AgentName = $"{agent.FirstName} {agent.LastName}",
+                    IsFavorite = false,
+                    ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
+                    FeaturedImageUrl = p.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                }).ToList() ?? new List<PropertyViewModel>(),
+
+                Requests = agent.Properties?.SelectMany(p => p.Requests)
+                    .Select(r => new PropertyRequestViewModel
+                    {
+                        Id = r.Id,
+                        Property = new PropertyViewModel
+                        {
+                            Id = r.Property.Id,
+                            Title = r.Property.Title,
+                            Description = r.Property.Description,
+                            Price = r.Property.Price,
+                            Address = r.Property.Address,
+                            City = r.Property.City,
+                            State = r.Property.State,
+                            ZipCode = r.Property.ZipCode,
+                            Type = r.Property.Type,
+                            Status = r.Property.Status,
+                            CreatedAt = r.Property.CreatedAt,
+                            AgentName = $"{agent.FirstName} {agent.LastName}",
+                            IsFavorite = false,
+                            ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
+                            FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                        },
+                        UserName = $"{r.User.FirstName} {r.User.LastName}",
+                        UserEmail = r.User.Email,
+                        Message = r.Message,
+                        Status = r.Status,
+                        CreatedAt = r.CreatedAt
+                    }).ToList() ?? new List<PropertyRequestViewModel>(),
+
+                Requests = agent.Properties?.SelectMany(p => p.Agent.Requests)
+                    .Select(r => new PropertyRequestViewModel
+                    {
+                        Id = r.Id,
+                        Property = new PropertyViewModel
+                        {
+                            Id = r.Property.Id,
+                            Title = r.Property.Title,
+                            Description = r.Property.Description,
+                            Price = r.Property.Price,
+                            Address = r.Property.Address,
+                            City = r.Property.City,
+                            State = r.Property.State,
+                            ZipCode = r.Property.ZipCode,
+                            Type = r.Property.Type,
+                            Status = r.Property.Status,
+                            CreatedAt = r.Property.CreatedAt,
+                            AgentName = $"{agent.FirstName} {agent.LastName}",
+                            IsFavorite = false,
+                            ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
+                            FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                        },
+                        UserName = $"{r.User.FirstName} {r.User.LastName}",
+                        UserEmail = r.User.Email,
+                        Message = r.Message,
+                        Status = r.Status,
+                        CreatedAt = r.CreatedAt
+                    }).ToList() ?? new List<PropertyRequestViewModel>(),
+
+                RequestStats = agent.Properties?.SelectMany(p => p.Agent.Requests)
+                    .GroupBy(r => r.Status)
+                    .ToDictionary(g => g.Key, g => g.Count()) ?? new Dictionary<RequestStatus, int>()
+                Requests = a = agent.Properties?.SelectMany(p => p.Requests)
+                    .GroupBy(r => r.Status)
+                    .ToDictionary(g => g.Key, g => g.Count()) ?? new Dictionary<RequestStatus, int>()
+            };
+
+            return dashboard;
+        }
+
+        public async Task<AdminDashboardViewModel> GetAdminDashboardAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+
+            var dashboard = new AdminDashboardViewModel
+            {
+                TotalUsers = users.Count(),
+                TotalAgents = users.Count(u => u.Roles.Any(r => r.Name == "Agent")),
+                TotalProperties = users.SelectMany(u => u.Properties).Count(),
+                TotalRequests = users.SelectMany(u => u.Requests).Count(),
+                PropertyTypeStats = users.SelectMany(u => u.Properties)
+                    .GroupBy(p => p.Type)
+                    .ToDictionary(g => g.Key, g => g.Count()),
+                PropertyStatusStats = users.SelectMany(u => u.Properties)
+                    .GroupBy(p => p.Status)
+                    .ToDictionary(g => g.Key, g => g.Count())
+            };
+
+            return dashboard;
+        }
+
+        public async Task UpdateUserAsync(ApplicationUser user)
+        {
+            await _userRepository.UpdateAsync(user);
+        }
+
+        public async Task AssignRoleAsync(string userId, string role)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
+            user.Roles.Add(new ApplicationRole { Name = role });
+            await _userRepository.UpdateAsync(user);
+        }
+
+      
     }
+
 }

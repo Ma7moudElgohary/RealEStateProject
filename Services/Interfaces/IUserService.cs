@@ -7,7 +7,7 @@ namespace RealEstate.Services
 {
     public interface IUserService : IBaseService<ApplicationUser, UserProfileViewModel>
     {
-        Task<ApplicationUser> GetUserByIdAsync(string id);
+         Task<ApplicationUser> GetUserByIdAsync(string id);
         Task<UserDashboardViewModel> GetUserDashboardAsync(string userId);
         Task<AgentDashboardViewModel> GetAgentDashboardAsync(string agentId);
         Task<AdminDashboardViewModel> GetAdminDashboardAsync();
