@@ -1,4 +1,5 @@
-﻿namespace RealEStateProject.ViewModels.Agent
+﻿
+namespace RealEStateProject.ViewModels.Agent
 {
     public class AgentViewModel
     {
@@ -11,5 +12,16 @@
         public string PhoneNumber { get; set; }
 
         public int PropertyCount { get; set; }
+
+        public string LicenseNumber { get; set; }
+
+        public string Agency { get; set; }
+
+        public string Biography { get; set; }
+
+        public int YearsOfExperience { get; set; }
+
+        public string ProfileImageUrl { get; set; }
+
     }
 }

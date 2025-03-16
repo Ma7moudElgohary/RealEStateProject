@@ -47,7 +47,9 @@ namespace RealEstate.Models
         [ForeignKey("AgentId")]
         public ApplicationUser Agent { get; set; }
 
-        public ICollection<PropertyImage>? Images { get; set; } = new List<PropertyImage>();
+        public ICollection<PropertyImage>? Images { get; set; }
+
+        public ICollection<PropertyRequest>? Requests { get; set; }
     }
 
     public enum PropertyType

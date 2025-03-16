@@ -1,24 +1,29 @@
-﻿using RealEstate.Models;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using RealEstate.Models;
 using RealEstate.Repositories;
-using RealEStateProject.Models;
-using RealEStateProject.Repositories;
 using RealEStateProject.ViewModels.Admin;
 using RealEStateProject.ViewModels.Agent;
 using RealEStateProject.ViewModels.Property;
 using RealEStateProject.ViewModels.User;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RealEstate.Services
 {
-    public class UserService : IUserService
+    public class UserService : BaseService<ApplicationUser, UserProfileViewModel>, IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
+        public UserService(IUserRepository userRepository,
+                            IMapper mapper,
+                            UserManager<ApplicationUser> userManager,
+                            RoleManager<IdentityRole> roleManager) : base(userRepository, mapper)
         {
-            _userRepository = userRepository;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
@@ -97,6 +102,18 @@ namespace RealEstate.Services
                 throw new KeyNotFoundException("Agent not found.");
             }
 
+            var propertyRequests = agent.Properties?
+                .SelectMany(p => p.Requests)
+                .ToList() ?? new List<PropertyRequest>();
+
+            // Get all direct requests to the agent
+            var agentRequests = agent.Properties?
+                .SelectMany(p => p.Agent.Requests)
+                .ToList() ?? new List<PropertyRequest>();
+
+            // Combine both request collections for complete view
+            var allRequests = propertyRequests.Union(agentRequests);
+
             var dashboard = new AgentDashboardViewModel
             {
                 Properties = agent.Properties?.Select(p => new PropertyViewModel
@@ -118,70 +135,37 @@ namespace RealEstate.Services
                     FeaturedImageUrl = p.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
                 }).ToList() ?? new List<PropertyViewModel>(),
 
-                Requests = agent.Properties?.SelectMany(p => p.Requests)
-                    .Select(r => new PropertyRequestViewModel
+                Requests = allRequests.Select(r => new PropertyRequestViewModel
+                {
+                    Id = r.Id,
+                    Property = new PropertyViewModel
                     {
-                        Id = r.Id,
-                        Property = new PropertyViewModel
-                        {
-                            Id = r.Property.Id,
-                            Title = r.Property.Title,
-                            Description = r.Property.Description,
-                            Price = r.Property.Price,
-                            Address = r.Property.Address,
-                            City = r.Property.City,
-                            State = r.Property.State,
-                            ZipCode = r.Property.ZipCode,
-                            Type = r.Property.Type,
-                            Status = r.Property.Status,
-                            CreatedAt = r.Property.CreatedAt,
-                            AgentName = $"{agent.FirstName} {agent.LastName}",
-                            IsFavorite = false,
-                            ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
-                            FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
-                        },
-                        UserName = $"{r.User.FirstName} {r.User.LastName}",
-                        UserEmail = r.User.Email,
-                        Message = r.Message,
-                        Status = r.Status,
-                        CreatedAt = r.CreatedAt
-                    }).ToList() ?? new List<PropertyRequestViewModel>(),
+                        Id = r.Property.Id,
+                        Title = r.Property.Title,
+                        Description = r.Property.Description,
+                        Price = r.Property.Price,
+                        Address = r.Property.Address,
+                        City = r.Property.City,
+                        State = r.Property.State,
+                        ZipCode = r.Property.ZipCode,
+                        Type = r.Property.Type,
+                        Status = r.Property.Status,
+                        CreatedAt = r.Property.CreatedAt,
+                        AgentName = $"{agent.FirstName} {agent.LastName}",
+                        IsFavorite = false,
+                        ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
+                        FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                    },
+                    UserName = $"{r.User.FirstName} {r.User.LastName}",
+                    UserEmail = r.User.Email,
+                    Message = r.Message,
+                    Status = r.Status,
+                    CreatedAt = r.CreatedAt
+                }).ToList(),
 
-                Requests = agent.Properties?.SelectMany(p => p.Agent.Requests)
-                    .Select(r => new PropertyRequestViewModel
-                    {
-                        Id = r.Id,
-                        Property = new PropertyViewModel
-                        {
-                            Id = r.Property.Id,
-                            Title = r.Property.Title,
-                            Description = r.Property.Description,
-                            Price = r.Property.Price,
-                            Address = r.Property.Address,
-                            City = r.Property.City,
-                            State = r.Property.State,
-                            ZipCode = r.Property.ZipCode,
-                            Type = r.Property.Type,
-                            Status = r.Property.Status,
-                            CreatedAt = r.Property.CreatedAt,
-                            AgentName = $"{agent.FirstName} {agent.LastName}",
-                            IsFavorite = false,
-                            ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
-                            FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
-                        },
-                        UserName = $"{r.User.FirstName} {r.User.LastName}",
-                        UserEmail = r.User.Email,
-                        Message = r.Message,
-                        Status = r.Status,
-                        CreatedAt = r.CreatedAt
-                    }).ToList() ?? new List<PropertyRequestViewModel>(),
-
-                RequestStats = agent.Properties?.SelectMany(p => p.Agent.Requests)
+                RequestStats = allRequests
                     .GroupBy(r => r.Status)
-                    .ToDictionary(g => g.Key, g => g.Count()) ?? new Dictionary<RequestStatus, int>()
-                Requests = a = agent.Properties?.SelectMany(p => p.Requests)
-                    .GroupBy(r => r.Status)
-                    .ToDictionary(g => g.Key, g => g.Count()) ?? new Dictionary<RequestStatus, int>()
+                    .ToDictionary(g => g.Key, g => g.Count())
             };
 
             return dashboard;
@@ -190,16 +174,27 @@ namespace RealEstate.Services
         public async Task<AdminDashboardViewModel> GetAdminDashboardAsync()
         {
             var users = await _userRepository.GetAllAsync();
+            var agentCount = 0;
+
+            // Count users with the "Agent" role
+            foreach (var user in users)
+            {
+                if (await _userManager.IsInRoleAsync(user, "Agent"))
+                {
+                    agentCount++;
+                }
+            }
+
 
             var dashboard = new AdminDashboardViewModel
             {
                 TotalUsers = users.Count(),
-                TotalAgents = users.Count(u => u.Roles.Any(r => r.Name == "Agent")),
+                TotalAgents = agentCount,
                 TotalProperties = users.SelectMany(u => u.Properties).Count(),
                 TotalRequests = users.SelectMany(u => u.Requests).Count(),
                 PropertyTypeStats = users.SelectMany(u => u.Properties)
-                    .GroupBy(p => p.Type)
-                    .ToDictionary(g => g.Key, g => g.Count()),
+                        .GroupBy(p => p.Type)
+                        .ToDictionary(g => g.Key, g => g.Count()),
                 PropertyStatusStats = users.SelectMany(u => u.Properties)
                     .GroupBy(p => p.Status)
                     .ToDictionary(g => g.Key, g => g.Count())
@@ -222,11 +217,17 @@ namespace RealEstate.Services
                 throw new KeyNotFoundException("User not found.");
             }
 
-            user.Roles.Add(new ApplicationRole { Name = role });
+            // Check if the role exists, create it if not
+            if (!await _roleManager.RoleExistsAsync(role))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(role));
+            }
+
+            // Add the user to the role
+            await _userManager.AddToRoleAsync(user, role);
+
+            // If you still need to update the user in your repository
             await _userRepository.UpdateAsync(user);
         }
-
-      
     }
-
 }
