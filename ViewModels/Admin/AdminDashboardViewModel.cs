@@ -4,9 +4,9 @@ namespace RealEStateProject.ViewModels.Admin
 {
     public class AdminDashboardViewModel
     {
-        public int TotalUsers { get; set; }
+        //public int TotalUsers { get; set; }
 
-        public int TotalAgents { get; set; }
+        //public int TotalAgents { get; set; }
 
         public int TotalProperties { get; set; }
 
