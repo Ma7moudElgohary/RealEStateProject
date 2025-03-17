@@ -9,6 +9,9 @@ namespace RealEStateProject.Services.Implementation
 
     public class FavoriteService : BaseService<Favorite, PropertyViewModel>, IFavoriteService
     {
+        /// <summary>
+        /// /mapper
+        /// </summary>
         readonly IFavoriteRepository _repository;
         readonly IMapper _mapper;
         public FavoriteService(IBaseRepository<Favorite> repository, IMapper mapper) : base(repository, mapper)
