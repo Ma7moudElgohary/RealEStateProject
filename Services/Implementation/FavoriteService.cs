@@ -3,6 +3,9 @@ using RealEstate.Models;
 using RealEstate.Repositories;
 using RealEstate.Services;
 using RealEStateProject.ViewModels.Property;
+using RealEStateProject.Repositories.Implementation;
+using RealEStateProject.Models;
+using RealEStateProject.ViewModels.Agent;
 
 namespace RealEStateProject.Services.Implementation
 {
@@ -21,22 +24,26 @@ namespace RealEStateProject.Services.Implementation
         public Task AddFavoriteAsync(int propertyId, string userId)
         {
             _repository.AddAsync(new Favorite { PropertyId = propertyId, UserId = userId });
-            throw new NotImplementedException();
+            return _repository.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<PropertyViewModel>> GetFavoritesByUserIdAsync(string userId)
+        public async Task<IEnumerable<PropertyViewModel>> GetFavoritesByUserIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            var favorite = await _repository.GetByUserIdAsync(userId);
+            return (IEnumerable<PropertyViewModel>)_mapper.Map<AgentViewModel>(favorite);
         }
 
-        public Task<bool> IsFavoriteAsync(int propertyId, string userId)
+        public async Task<bool> IsFavoriteAsync(int propertyId, string userId)
         {
-            throw new NotImplementedException();
+            var favorite = await _repository.GetByUserIdAsync(userId);
+            return favorite != null;
+
         }
 
-        public Task RemoveFavoriteAsync(int propertyId, string userId)
+        public async Task RemoveFavoriteAsync(int propertyId, string userId)
         {
-            throw new NotImplementedException();
+            await _repository.DeleteAsync(propertyId, userId);
         }
+
     }
 }

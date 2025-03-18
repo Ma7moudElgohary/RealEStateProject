@@ -1,0 +1,366 @@
+<<<<<<< HEAD
+﻿@model IEnumerable<RealEStateProject.ViewModels.Property.PropertyViewModel>
+@{
+    ViewData["Title"] = "My Properties";
+}
+<div class="container">
+    <h1 class="text-center mb-4">Manage Your Properties</h1>
+    <div class="add-bt mb-4">
+        <a class="btn btn-primary btn-lg" asp-action="Create">
+            <i class="bi bi-plus-circle-dotted"></i>
+            Add New Property
+        </a>
+    </div>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning mt-5">
+            <h4 class="alert-heading">No Properties Found</h4>
+            <p class="mb-0">You haven't added any properties yet.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-hover border-primary" id="propertiesTable">
+                <thead>
+                    <tr>
+                        <th>Property Name</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Price</th>
+                        <th>Cover Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var property in Model)
+                    {
+                        <tr class="border-1">
+                            <td>@property.Title</td>
+                            <td>@property.Type</td>
+                            <td>@property.Status</td>
+                            <td>$@property.Price.ToString("N0")</td>
+                            <td>
+                                <div class="pe-4">
+                                    @if (property.ImageUrls != null && property.ImageUrls.Any())
+                                    {
+                                        <img src="@property.ImageUrls.First()" alt="Cover" style="width: 60px; height: 60px; object-fit: cover;" class="rounded" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/images/placeholder.png" alt="No Image" style="width: 60px; height: 60px; object-fit: cover;" class="rounded" />
+                                    }
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="d-flex justify-content-end">
+                                    <a class="btn btn-info btn-sm rounded-3 me-2" asp-action="Details" asp-route-id="@property.Id">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a class="btn btn-warning btn-sm rounded-3 me-2" asp-action="UpdateImages" asp-route-id="@property.Id">
+                                        <i class="bi bi-images"></i>
+                                    </a>
+                                    <a class="btn btn-primary btn-sm rounded-3 me-2" asp-action="Edit" asp-route-id="@property.Id">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm rounded-3 js-delete" data-id="@property.Id" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Delete Confirmation-->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete this property? This action cannot be undone.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <form id="deleteForm" asp-action="Delete" method="post">
+                            <input type="hidden" id="propertyIdToDelete" name="id" value="" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#propertiesTable').DataTable({
+                responsive: true,
+                language: {
+                    search: "Search properties:",
+                    lengthMenu: "Show _MENU_ properties per page",
+                    info: "Showing _START_ to _END_ of _TOTAL_ properties"
+                }
+            });
+
+            $('.js-delete').on('click', function () {
+                const propertyId = $(this).data('id');
+                $('#propertyIdToDelete').val(propertyId);
+            });
+        });
+    </script>
+=======
+﻿@using Microsoft.IdentityModel.Tokens
+
+@model RealEStateProject.ViewModels.Property.PropertySearchViewModel
+@{
+    ViewData["Title"] = "Properties";
+}
+
+<div class="container mt-4">
+    <h1>Properties</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Search Properties</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Search" method="get">
+                        <div class="row">
+                            @* <div class="col-md-3"> *@
+                            @*     <div class="form-group"> *@
+                            @*         <label asp-for="Filters.Keyword">Keyword</label> *@
+                            @*         <input asp-for="Filters.Keyword" class="form-control" placeholder="Search by keyword..." /> *@
+                            @*     </div> *@
+                            @* </div> *@
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Filters.MinPrice">Min Price</label>
+                                    <input asp-for="Filters.MinPrice" class="form-control" placeholder="Min Price" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Filters.MaxPrice">Max Price</label>
+                                    <input asp-for="Filters.MaxPrice" class="form-control" placeholder="Max Price" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Filters.Location">City</label>
+                                    <input asp-for="Filters.Location" class="form-control" placeholder="City" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                          
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Filters.MaxBedrooms">Bedrooms</label>
+                                    <select asp-for="Filters.MaxBedrooms" class="form-control">
+                                        <option value="">Any</option>
+                                        <option value="1">1+</option>
+                                        <option value="2">2+</option>
+                                        <option value="3">3+</option>
+                                        <option value="4">4+</option>
+                                        <option value="5">5+</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Filters.MinBathrooms">Bathrooms</label>
+                                    <select asp-for="Filters.MinBathrooms" class="form-control">
+                                        <option value="">Any</option>
+                                        <option value="1">1+</option>
+                                        <option value="2">2+</option>
+                                        <option value="3">3+</option>
+                                        <option value="4">4+</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label asp-for="Filters.Type">Property Type</label>
+                                    <select asp-for="Filters.Type" class="form-control">
+                                        <option value="">Any</option>
+                                        <option value="House">House</option>
+                                        <option value="Apartment">Apartment</option>
+                                        <option value="Condo">Condo</option>
+                                        <option value="Townhouse">Townhouse</option>
+                                        <option value="Land">Land</option>
+                                        <option value="Commercial">Commercial</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-search"></i> Search
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">Reset</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        @if (Model.Properties != null && Model.Properties.Any())
+        {
+            @foreach (var property in Model.Properties)
+            {
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                        @* @if (!string.IsNullOrEmpty(property.ImageUrls).ToString()) *@
+                        @* { *@
+                            <img src="@property.ImageUrls" class="card-img-top" alt="@property.Title" style="height: 200px; object-fit: cover;">
+                        @* } *@
+                        @* else *@
+                        @* { *@
+                        @*                 <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;"> *@
+                        @*                     <span class="text-muted">No Image Available</span> *@
+                        @*                 </div> *@
+                        @* } *@
+                                <div class="card-body">
+                                    <h5 class="card-title">@property.Title</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">@property.Price.ToString("C0")</h6>
+                                    <p class="card-text">
+                                        <i class="fa fa-map-marker"></i> @property.City, @property.State<br />
+                                        <i class="fa fa-bed"></i> @property.Bedrooms BD | 
+                                        <i class="fa fa-bath"></i> @property.Bathrooms BA | 
+                                        <i class="fa fa-ruler-combined"></i> @property.SquareFeet sq ft
+                                    </p>
+                                    <p class="card-text">
+                                @(property.Description.Length > 100 ? property.Description.Substring(0, 100) + "..." : property.Description)
+                                    </p>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <a asp-action="Details" asp-route-id="@property.Id" class="btn btn-primary">View Details</a>
+                            @if (property.IsFavorite)
+                            {
+                                            <button class="btn btn-outline-danger float-right toggle-favorite" data-property-id="@property.Id">
+                                                <i class="fa fa-heart"></i>
+                                            </button>
+                            }
+                            else
+                            {
+                                            <button class="btn btn-outline-secondary float-right toggle-favorite" data-property-id="@property.Id">
+                                                <i class="fa fa-heart-o"></i>
+                                            </button>
+                            }
+                                </div>
+                            </div>
+                        </div>
+            }
+        }
+        else
+        {
+                <div class="col-md-12">
+                    <div class="alert alert-info">
+                        No properties found matching your criteria. Try adjusting your search parameters.
+                    </div>
+                </div>
+        }
+    </div>
+
+@*     @if (Model.Pagination.TotalPages > 1) *@
+@*     { *@
+@*             <div class="row"> *@
+@*                 <div class="col-md-12"> *@
+@*                     <nav> *@
+@*                         <ul class="pagination justify-content-center"> *@
+@*                         @if (Model.Pagination.CurrentPage > 1) *@
+@*                         { *@
+@*                                     <li class="page-item"> *@
+@*                                         <a class="page-link"  *@
+@*                                            asp-action="@(ViewContext.RouteData.Values["action"].ToString())"  *@
+@*                                            asp-all-route-data="@(ViewContext.RouteData.Values)"  *@
+@*                                            asp-route-page="1" *@
+@*                                            asp-route-pageSize="@Model.Pagination.PageSize">First</a> *@
+@*                                     </li> *@
+@*                                     <li class="page-item"> *@
+@*                                         <a class="page-link"  *@
+@*                                            asp-action="@(ViewContext.RouteData.Values["action"].ToString())"  *@
+@*                                            asp-all-route-data="@(ViewContext.RouteData.Values)"  *@
+@*                                            asp-route-page="@(Model.Pagination.CurrentPage - 1)" *@
+@*                                            asp-route-pageSize="@Model.Pagination.PageSize">Previous</a> *@
+@*                                     </li> *@
+@*                         } *@
+
+@*                         @for (int i = Math.Max(1, Model.Pagination.CurrentPage - 2); i <= Math.Min(Model.Pagination.TotalPages, Model.Pagination.CurrentPage + 2); i++) *@
+@*                         { *@
+@*                                     <li class="page-item @(i == Model.Pagination.CurrentPage ? "active" : "")"> *@
+@*                                         <a class="page-link"  *@
+@*                                            asp-action="@(ViewContext.RouteData.Values["action"].ToString())"  *@
+@*                                            asp-all-route-data="@(ViewContext.RouteData.Values)"  *@
+@*                                            asp-route-page="@i" *@
+@*                                            asp-route-pageSize="@Model.Pagination.PageSize">@i</a> *@
+@*                                     </li> *@
+@*                         } *@
+
+@*                         @if (Model.Pagination.CurrentPage < Model.Pagination.TotalPages) *@
+@*                         { *@
+@*                                     <li class="page-item"> *@
+@*                                         <a class="page-link"  *@
+@*                                            asp-action="@(ViewContext.RouteData.Values["action"].ToString())"  *@
+@*                                            asp-all-route-data="@(ViewContext.RouteData.Values)"  *@
+@*                                            asp-route-page="@(Model.Pagination.CurrentPage + 1)" *@
+@*                                            asp-route-pageSize="@Model.Pagination.PageSize">Next</a> *@
+@*                                     </li> *@
+@*                                     <li class="page-item"> *@
+@*                                         <a class="page-link"  *@
+@*                                            asp-action="@(ViewContext.RouteData.Values["action"].ToString())"  *@
+@*                                            asp-all-route-data="@(ViewContext.RouteData.Values)"  *@
+@*                                            asp-route-page="@Model.Pagination.TotalPages" *@
+@*                                            asp-route-pageSize="@Model.Pagination.PageSize">Last</a> *@
+@*                                     </li> *@
+@*                         } *@
+@*                         </ul> *@
+@*                     </nav> *@
+@*                 </div> *@
+@*             </div> *@
+@*     } *@
+@* </div> *@
+
+@section Scripts {
+        <script>
+            $(function() {
+                // Handle favorite toggling
+                $('.toggle-favorite').click(function() {
+                    var button = $(this);
+                    var propertyId = button.data('property-id');
+
+                    $.ajax({
+                        url: '@Url.Action("ToggleFavorite", "Favorite")/' + propertyId,
+                        type: 'POST',
+                        success: function(result) {
+                            if (result.success) {
+                                if (result.isFavorite) {
+                                    button.removeClass('btn-outline-secondary').addClass('btn-outline-danger');
+                                    button.find('i').removeClass('fa-heart-o').addClass('fa-heart');
+                                } else {
+                                    button.removeClass('btn-outline-danger').addClass('btn-outline-secondary');
+                                    button.find('i').removeClass('fa-heart').addClass('fa-heart-o');
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+>>>>>>> 63037017522bc22c387cddd18a6a5aa07d66f4af
+}

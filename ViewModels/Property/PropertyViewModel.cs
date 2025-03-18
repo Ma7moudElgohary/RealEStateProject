@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstate.Models;
 
 namespace RealEStateProject.ViewModels.Property
@@ -22,7 +23,7 @@ namespace RealEStateProject.ViewModels.Property
 
         [Required(ErrorMessage = "Area is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Area must be a positive value")]
-        public int SquareFeet { get; set; }
+        public int SquareFeet { get; set; } // Changed from SquareFeet to match view
 
         [Range(0, int.MaxValue, ErrorMessage = "Bedrooms must be a positive value")]
         public int Bedrooms { get; set; }
@@ -43,7 +44,6 @@ namespace RealEStateProject.ViewModels.Property
         public string ZipCode { get; set; }
 
         public double Latitude { get; set; }
-
         public double Longitude { get; set; }
 
         [Required(ErrorMessage = "Property type is required")]
@@ -54,12 +54,34 @@ namespace RealEStateProject.ViewModels.Property
 
         public DateTime CreatedAt { get; set; }
 
+        // Added missing properties that are used in the view
+        [Range(1800, 2100, ErrorMessage = "Please enter a valid year")]
+        public int YearBuilt { get; set; }
+
+        public string AgentId { get; set; }
         public string AgentName { get; set; }
+        public string AgentPhone { get; set; }
+        public string AgentEmail { get; set; }
 
         public bool IsFavorite { get; set; }
-
         public List<string>? ImageUrls { get; set; }
-
         public string FeaturedImageUrl { get; set; }
+        public List<string>? Features { get; set; }
+
+        // Added to support the comments section
+        public List<CommentViewModel>? Comments { get; set; }
+
+        public IEnumerable<SelectListItem>? PropertyTypes { get; set; }
+        public IEnumerable<SelectListItem>? PropertyStatuses { get; set; }
+    }
+
+    // Added to support comments
+    public class CommentViewModel
+    {
+        public int Id { get; set; }
+        public string Content { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }

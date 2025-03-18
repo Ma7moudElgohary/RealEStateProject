@@ -1,0 +1,300 @@
+﻿@model RealEStateProject.ViewModels.Property.PropertyViewModel
+
+@{
+    ViewData["Title"] = "Create Property";
+}
+
+<div class="container">
+    <h1 style="text-align: center;"> Add Your Property To Our Market </h1>
+    <form asp-action="Create" asp-controller="Property" method="post" enctype="multipart/form-data">
+
+        <!-- Location -->
+        <div class="form-row row">
+            <div class="col-md-12" style="font-size: larger; margin-bottom:1rem;margin-top:1rem">
+                <h2>Location</h2>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="City"></label>
+                <input asp-for="City" type="text" class="form-control" placeholder="Enter city name" />
+                <span asp-validation-for="City" class="text text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="State"></label>
+                <input asp-for="State" type="text" class="form-control" placeholder="Enter state/province" />
+                <span asp-validation-for="State" class="text text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="Address"></label>
+                <input asp-for="Address" type="text" class="form-control" placeholder="Enter street address" />
+                <span asp-validation-for="Address" class="text text-danger"></span>
+            </div>
+            <div class="form-group col-md-4 mt-2">
+                <label asp-for="ZipCode"></label>
+                <input asp-for="ZipCode" type="text" class="form-control" placeholder="Enter zip/postal code" />
+                <span asp-validation-for="ZipCode" class="text text-danger"></span>
+            </div>
+        </div>
+        <!--End Location -->
+
+        <!--General Information -->
+        <div class="form-row row">
+            <div class="col-md-12" style="font-size: larger; margin-bottom:1rem;margin-top:1rem">
+                <h2>General Information</h2>
+            </div>
+            <div class="form-group col-md-6 mb-2">
+                <label asp-for="Title">Property Title</label>
+                <input asp-for="Title" class="form-control" placeholder="Enter a compelling title" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-2">
+                <label asp-for="Type">Property Type</label>
+                <select asp-for="Type" class="form-select" asp-items="@Model.PropertyTypes">
+                    <option value="">-- Select Property Type --</option>
+                </select>
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-2">
+                <label asp-for="Status">Property Status</label>
+                <select asp-for="Status" class="form-select" asp-items="@Model.PropertyStatuses">
+                    <option value="">-- Select Property Status --</option>
+                </select>
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-2">
+                <label asp-for="Price">Price</label>
+                <div class="input-group">
+                    <span class="input-group-text">$</span>
+                    <input asp-for="Price" type="number" class="form-control" placeholder="Enter price" />
+                </div>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-2">
+                <label asp-for="SquareFeet">Area</label>
+                <div class="input-group">
+                    <input asp-for="SquareFeet" type="number" class="form-control" placeholder="Enter area" />
+                    <span class="input-group-text">sq ft</span>
+                </div>
+                <span asp-validation-for="SquareFeet" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6 mb-2">
+                <label asp-for="YearBuilt">Year Built</label>
+                <input asp-for="YearBuilt" class="form-control" placeholder="Year built" />
+                <span asp-validation-for="YearBuilt" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-2">
+                <label asp-for="Description">Property Description</label>
+                <textarea asp-for="Description" class="form-control" rows="5" placeholder="Provide a detailed description of your property"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+                <div class="form-text">Include key selling points and any unique features of your property.</div>
+            </div>
+        </div>
+        <!--End General Information -->
+
+        <!--Specific Information -->
+        <div class="form-row row">
+            <div class="col-md-12" style="font-size: larger; margin-bottom:1rem;margin-top:1rem">
+                <h2>Specific Information</h2>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6 col-lg-3 mb-2">
+                    <label asp-for="Bedrooms">Number of Bedrooms</label>
+                    <input asp-for="Bedrooms" type="number" class="form-control" />
+                    <span asp-validation-for="Bedrooms" class="text text-danger"></span>
+                </div>
+                <div class="form-group col-md-6 col-lg-3 mb-2">
+                    <label asp-for="Bathrooms">Number of Bathrooms</label>
+                    <input asp-for="Bathrooms" type="number" class="form-control" />
+                    <span asp-validation-for="Bathrooms" class="text text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h4>Additional Features</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="checkbox" name="Features" value="Garage" class="form-check-input" id="feature-garage" />
+                            <label class="form-check-label" for="feature-garage">Garage</label>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input type="checkbox" name="Features" value="Garden" class="form-check-input" id="feature-garden" />
+                            <label class="form-check-label" for="feature-garden">Garden</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="checkbox" name="Features" value="AirConditioning" class="form-check-input" id="feature-ac" />
+                            <label class="form-check-label" for="feature-ac">Air Conditioning</label>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input type="checkbox" name="Features" value="Heating" class="form-check-input" id="feature-heating" />
+                            <label class="form-check-label" for="feature-heating">Heating</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-check">
+                            <input type="checkbox" name="Features" value="SecuritySystem" class="form-check-input" id="feature-security" />
+                            <label class="form-check-label" for="feature-security">Security System</label>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input type="checkbox" name="Features" value="Parking" class="form-check-input" id="feature-parking" />
+                            <label class="form-check-label" for="feature-parking">Parking</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Specific Information -->
+
+        <!--Agent Information -->
+        <div class="form-row row mt-4">
+            <div class="col-md-12" style="margin-bottom:1rem;margin-top:1rem">
+                <h2>Agent Information</h2>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4 mb-2">
+                    <label asp-for="AgentName">Agent Name</label>
+                    <input asp-for="AgentName" class="form-control" placeholder="Enter agent name" />
+                    <span asp-validation-for="AgentName" class="text text-danger"></span>
+                </div>
+                <div class="form-group col-md-4 mb-2">
+                    <label asp-for="AgentPhone">Agent Phone</label>
+                    <input asp-for="AgentPhone" class="form-control" placeholder="Enter agent phone number" />
+                    <span asp-validation-for="AgentPhone" class="text text-danger"></span>
+                </div>
+                <div class="form-group col-md-4 mb-2">
+                    <label asp-for="AgentEmail">Agent Email</label>
+                    <input asp-for="AgentEmail" class="form-control" placeholder="Enter agent email" />
+                    <span asp-validation-for="AgentEmail" class="text text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <!--End Agent Information -->
+
+        <!--Images -->
+        <div class="form-row row mt-4">
+            <div class="col-md-12" style="margin-bottom:1rem;margin-top:1rem">
+                <h2>Property Images</h2>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Featured Image</label>
+                    <input type="file" name="ImageUpload" class="form-control" id="featuredImage" />
+                    <div class="form-text">This will be the main image for your property listing.</div>
+                </div>
+                <div class="form-group mt-4">
+                    <label>Additional Images</label>
+                    <input type="file" name="AdditionalImages" multiple class="form-control" />
+                    <div class="form-text">Upload multiple images to showcase different areas of your property.</div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 d-flex justify-content-center pt-4 overflow-hidden">
+                <img id="coverPreview" class="cover-preview m-auto" src="/images/no-image.png" alt="Cover" style="width: inherit" />
+            </div>
+        </div>
+        <!--End Images -->
+
+        <!--Map -->
+        <div class="mt-4">
+            <div class="col-md-12" style="margin-bottom:1rem;margin-top:1rem">
+                <h2>Property Location</h2>
+            </div>
+            <p>Click on the map to set your property's exact location.</p>
+            <div class="form-row row">
+                <!-- Map Container -->
+                <div class="col-md-12" id="propertyMap" style="position:relative;height:400px;"></div>
+                <div class="row mt-3">
+                    <div class="form-group col-md-6 col-lg-3 mb-2">
+                        <label asp-for="Latitude">Latitude</label>
+                        <input id="latitude" asp-for="Latitude" class="form-control" readonly />
+                        <span asp-validation-for="Latitude" class="text text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6 col-lg-3 mb-2">
+                        <label asp-for="Longitude">Longitude</label>
+                        <input id="longitude" asp-for="Longitude" class="form-control" readonly />
+                        <span asp-validation-for="Longitude" class="text text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--End Map -->
+
+        <div class="text-center mt-4 mb-5">
+            <button type="submit" class="btn btn-primary mt-3">Save And Finish</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBt_ml8mQwff3IOj4wl21f03VX7AMb9heo&callback=initMap"></script>
+    <script>
+        // Preview cover image when selected
+        document.getElementById('featuredImage').addEventListener('change', function () {
+            var preview = document.getElementById('coverPreview');
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+
+        // Map functions
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('propertyMap'), {
+                center: { lat: 31.0409, lng: 31.3785 }, // Default to Mansoura
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                scrollwheel: true // Enable scroll wheel zoom
+            });
+
+            // Variable to store the current marker
+            var currentMarker = null;
+
+            // Add click event to the map
+            google.maps.event.addListener(map, 'click', function (event) {
+                // Clear existing marker
+                if (currentMarker) {
+                    currentMarker.setMap(null);
+                }
+
+                // Get the location where the map was clicked
+                var location = event.latLng;
+
+                // Create a marker at the clicked location
+                currentMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: 'Property Location',
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#FF0000',
+                        fillOpacity: 0.8,
+                        strokeWeight: 1,
+                        scale: 8
+                    }
+                });
+
+                // Update the latitude and longitude form fields
+                document.getElementById('latitude').value = location.lat();
+                document.getElementById('longitude').value = location.lng();
+            });
+
+            // Try to get user's location to center map
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    var userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(userLocation);
+                    map.setZoom(13);
+                }, function () {
+                    // Handle geolocation error silently
+                });
+            }
+        }
+    </script>
+}

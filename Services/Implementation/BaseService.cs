@@ -5,9 +5,9 @@ using RealEstate.Repositories;
 
 namespace RealEstate.Services
 {
-    public abstract class BaseService<TEntity, TViewModel> : IBaseService<TEntity, TViewModel>
-        where TEntity : class
-        where TViewModel : class
+    public class BaseService<TEntity, TViewModel> : IBaseService<TEntity, TViewModel>
+      where TEntity : class
+      where TViewModel : class
     {
         protected readonly IBaseRepository<TEntity> _repository;
         protected readonly IMapper _mapper;

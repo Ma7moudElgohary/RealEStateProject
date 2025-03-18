@@ -1,0 +1,488 @@
+﻿@using RealEstate.Models
+@model RealEStateProject.ViewModels.Property.PropertySearchViewModel
+
+@{
+    ViewData["Title"] = "Property Search";
+}
+
+<!-- Modern Search Bar -->
+<div class="container-fluid border-bottom py-3 bg-white shadow-sm sticky-top">
+    <div class="container">
+        <form asp-action="Search" asp-controller="Property" method="get" class="d-flex flex-wrap align-items-center">
+            <div class="position-relative flex-grow-1 me-2 mb-2 mb-md-0">
+                <input name="Location" value="@Model.Filters.Location" type="text" class="form-control border rounded py-2 ps-3" placeholder="City, Address, ZIP">
+                <button type="button" class="btn position-absolute end-0 top-0 bottom-0 border-0" onclick="clearLocation()">
+                    <i class="fa fa-times-circle"></i>
+                </button>
+            </div>
+            <div class="me-2 mb-2 mb-md-0">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
+                    For @(string.IsNullOrEmpty(Model.Filters.Type.ToString()) ? "Sale" : Model.Filters.Type)
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" onclick="selectType('SALE')">For Sale</a>
+                    <a class="dropdown-item" href="#" onclick="selectType('RENT')">For Rent</a>
+                    <input type="hidden" name="Type" id="typeInput" value="@Model.Filters.Type">
+                </div>
+            </div>
+            <div class="me-2 mb-2 mb-md-0">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
+                    Price
+                </button>
+                <div class="dropdown-menu p-3" style="width: 300px;">
+                    <div class="mb-2">
+                        <label class="form-label mb-1">Min Price</label>
+                        <select name="MinPrice" class="form-select">
+                            <option value="">No Min</option>
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                if (Model.Filters.MinPrice == i * 100000)
+                                {
+                                    <option value="@(i*100000)" selected>$@(i * 100000)</option>
+                                }
+                                else
+                                {
+                                    <option value="@(i*100000)">$@(i * 100000)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label mb-1">Max Price</label>
+                        <select name="MaxPrice" class="form-select">
+                            <option value="">No Max</option>
+                            @for (int i = 1; i <= 10; i++)
+                            {
+                                if (Model.Filters.MaxPrice == i * 100000)
+                                {
+                                    <option value="@(i*100000)" selected>$@(i * 100000)</option>
+                                }
+                                else
+                                {
+                                    <option value="@(i*100000)">$@(i * 100000)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="me-2 mb-2 mb-md-0">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
+                    Beds & Baths
+                </button>
+                <div class="dropdown-menu p-3" style="width: 300px;">
+                    <div class="mb-2">
+                        <label class="form-label mb-1">Bedrooms</label>
+                        <select name="MinBedrooms" class="form-select">
+                            <option value="">Any</option>
+                            @for (int i = 1; i <= 6; i++)
+                            {
+                                if (Model.Filters.MinBedrooms == i)
+                                {
+                                    <option value="@i" selected>@i+</option>
+                                }
+                                else
+                                {
+                                    <option value="@i">@i+</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label mb-1">Bathrooms</label>
+                        <select name="MinBathrooms" class="form-select">
+                            <option value="">Any</option>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (Model.Filters.MinBathrooms == i)
+                                {
+                                    <option value="@i" selected>@i+</option>
+                                }
+                                else
+                                {
+                                    <option value="@i">@i+</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="me-2 mb-2 mb-md-0">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
+                    Home Type
+                </button>
+                <div class="dropdown-menu">
+                    <div class="px-3 py-2">
+                        <select name="PropertyCategory" class="form-select" asp-items="ViewBag.PropertyTypes">
+                            <option value="">Any</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="btn btn-primary py-2 px-4">Save search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Main Content - Map and Listings -->
+<div class="container-fluid p-0">
+    <div class="row g-0">
+        <!-- Map Section (Left) -->
+        <div class="col-12 col-lg-6 position-relative" style="height: calc(100vh - 70px);">
+            <div id="propertyMap" class="h-100 w-100"></div>
+            <div class="position-absolute top-0 left-0 m-3">
+                <div class="bg-white shadow rounded p-2">
+                    <span class="fw-bold">@(Model.Properties?.Count() ?? 0) of @Model.Pagination?.TotalItems homes</span>
+                </div>
+            </div>
+            <div class="position-absolute bottom-0 end-0 m-3">
+                <div class="btn-group">
+                    <button class="btn btn-light" id="zoomIn"><i class="fa fa-plus"></i></button>
+                    <button class="btn btn-light" id="zoomOut"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <div class="position-absolute bottom-0 start-0 m-3">
+                <button class="btn btn-light shadow" id="toggleMapOptions">
+                    Map <i class="fa fa-caret-down"></i>
+                </button>
+            </div>
+            <div class="position-absolute top-0 end-0 m-3">
+                <button class="btn btn-outline-dark bg-white" id="removeDrawing">
+                    Remove Boundary <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Property Listings Section (Right) -->
+        <div class="col-12 col-lg-6">
+            <div class="p-3">
+                <!-- Results Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h1 class="h4 mb-0">@Model.Filters.Location Real Estate & Homes For Sale</h1>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Sort: Homes for You <i class="fa fa-caret-down"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Homes for You</a></li>
+                            <li><a class="dropdown-item" href="#">Price (High to Low)</a></li>
+                            <li><a class="dropdown-item" href="#">Price (Low to High)</a></li>
+                            <li><a class="dropdown-item" href="#">Newest</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Property Results -->
+                @if (Model.Properties == null || !Model.Properties.Any())
+                {
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">No Properties Found!</h4>
+                        <p class="mb-0">No properties match your search criteria. Try adjusting your filters.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3">
+                        @foreach (var property in Model.Properties)
+                        {
+                            <div class="col-12">
+                                <div class="card property-card h-100 border-0 shadow-sm">
+                                    <div class="position-relative">
+                                        <a asp-action="Details" asp-route-id="@property.Id">
+                                            @if (property.ImageUrls != null && property.ImageUrls.Any())
+                                            {
+                                                <img class="card-img-top rounded-top" src="@property.ImageUrls.First()" style="height: 220px; object-fit: cover;">
+                                            }
+                                            else
+                                            {
+                                                <img class="card-img-top rounded-top" src="/img/default-property.jpg" style="height: 220px; object-fit: cover;">
+                                            }
+                                        </a>
+                                        <button class="btn btn-light rounded-circle position-absolute end-0 top-0 m-2 favorite-btn" data-property-id="@property.Id">
+                                            <i class="fa fa-heart-o"></i>
+                                        </button>
+
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <h5 class="text-primary fw-bold mb-0">$@property.Price.ToString("N0")</h5>
+                                            <span class="text-dark">
+                                                <i class="fa fa-bed me-1"></i>@property.Bedrooms
+                                                <i class="fa fa-bath ms-2 me-1"></i>@property.Bathrooms
+                                                <i class="fa fa-ruler-combined ms-2 me-1"></i>@property.SquareFeet sqft
+                                            </span>
+                                        </div>
+                                        <h6 class="card-title mb-2">@property.Title</h6>
+                                        <p class="card-text text-muted mb-0">
+                                            <i class="fa fa-map-marker-alt me-1"></i>@property.Address
+                                        </p>
+                                        <p class="card-text mt-2 small">
+                                            <span class="me-2">
+                                                @(property.Type == PropertyType.SALE ? "For Sale" : "For Rent")
+                                            </span>
+                                            @* <span>LISTING BY: @property.ListingAgent</span> *@
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (Model.Pagination != null && Model.Pagination.TotalPages > 1)
+                    {
+                        <nav class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                @if (Model.Pagination.CurrentPage > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
+                                           asp-route-Type="@Model.Filters.Type"
+                                           asp-route-MinPrice="@Model.Filters.MinPrice"
+                                           asp-route-MaxPrice="@Model.Filters.MaxPrice"
+                                           asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
+                                           asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
+                                           asp-route-page="@(Model.Pagination.CurrentPage - 1)">Previous</a>
+                                    </li>
+                                }
+
+                                @for (int i = Math.Max(1, Model.Pagination.CurrentPage - 2); i <= Math.Min(Model.Pagination.TotalPages, Model.Pagination.CurrentPage + 2); i++)
+                                {
+                                    <li class="page-item @(i == Model.Pagination.CurrentPage ? "active" : "")">
+                                        <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
+                                           asp-route-Type="@Model.Filters.Type"
+                                           asp-route-MinPrice="@Model.Filters.MinPrice"
+                                           asp-route-MaxPrice="@Model.Filters.MaxPrice"
+                                           asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
+                                           asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
+                                           asp-route-page="@i">@i</a>
+                                    </li>
+                                }
+
+                                @if (Model.Pagination.CurrentPage < Model.Pagination.TotalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
+                                           asp-route-Type="@Model.Filters.Type"
+                                           asp-route-MinPrice="@Model.Filters.MinPrice"
+                                           asp-route-MaxPrice="@Model.Filters.MaxPrice"
+                                           asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
+                                           asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
+                                           asp-route-page="@(Model.Pagination.CurrentPage + 1)">Next</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBt_ml8mQwff3IOj4wl21f03VX7AMb9heo&libraries=drawing&callback=initMap"></script>
+    <script>
+        // Dropdowns and filter functionality
+        function clearLocation() {
+            document.querySelector('input[name="Location"]').value = '';
+        }
+
+        function selectType(type) {
+            document.getElementById('typeInput').value = type;
+        }
+
+        // Map initialization and functionality
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('propertyMap'), {
+                center: { lat: 31.0409, lng: 31.3785 }, // Default to Mansoura
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                scrollwheel: true  // Explicitly enable scroll wheel zoom
+            });
+
+            // Add properties to the map (if properties exist)
+            if (typeof propertyData !== 'undefined' && propertyData.length > 0) {
+                displayPropertiesOnMap(map, propertyData);
+            }
+
+            // Set up UI controls
+            setupMapControls(map);
+        }
+
+        function displayPropertiesOnMap(map, properties) {
+            // Array to store all markers
+            var markers = [];
+            // Single info window that will be reused
+            var infowindow = new google.maps.InfoWindow();
+            
+            // Loop through properties and add markers for each
+            for (let i = 0; i < properties.length; i++) {
+                const property = properties[i];
+
+                // Create location object for the property
+                const position = {lat: property.latitude, lng: property.longitude};
+
+                // Create a marker for the property
+                const marker = new google.maps.Marker({
+                    position: position,
+                    map: map,
+                    title: property.title,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: property.type === 'SALE' ? '#0000FF' : '#00FF00',
+                        fillOpacity: 0.8,
+                        strokeWeight: 1,
+                        scale: 8
+                    },
+                    propertyId: property.id
+                });
+
+                // Add click event to show info window when marker is clicked
+                google.maps.event.addListener(marker, 'click', (function(marker, property) {
+                    return function() {
+                        showPropertyInfobox(marker, property, map, infowindow);
+                    }
+                })(marker, property));
+
+                // Add marker to the array
+                markers.push(marker);
+            }
+
+            // Adjust map view to show all properties
+            if (properties.length > 0) {
+                var bounds = new google.maps.LatLngBounds();
+                for (var i = 0; i < markers.length; i++) {
+                    bounds.extend(markers[i].getPosition());
+                }
+                map.fitBounds(bounds);
+                // Add some padding
+                var listener = google.maps.event.addListenerOnce(map, "idle", function() { 
+                    if (map.getZoom() > 16) map.setZoom(16);
+                    google.maps.event.removeListener(listener); 
+                });
+            }
+        }
+
+        function showPropertyInfobox(marker, property, map, infowindow) {
+            // Create infobox content
+            var infoboxContent = `
+                <div class="infobox">
+                    <h5>$${property.price.toLocaleString()}</h5>
+                    <p>${property.bedrooms} bd | ${property.bathrooms} ba | ${property.squareFeet} sqft</p>
+                    <p>${property.address}</p>
+                    <a href="/Property/Details/${property.id}" class="btn btn-sm btn-primary">View Details</a>
+                </div>
+            `;
+
+            // Set content and open the info window
+            infowindow.setContent(infoboxContent);
+            infowindow.open(map, marker);
+        }
+
+        function setupMapControls(map) {
+            // Add zoom in button functionality
+            document.getElementById('zoomIn').addEventListener('click', function() {
+                var zoom = map.getZoom();
+                map.setZoom(zoom + 1);
+            });
+
+            // Add zoom out button functionality
+            document.getElementById('zoomOut').addEventListener('click', function() {
+                var zoom = map.getZoom();
+                map.setZoom(zoom - 1);
+            });
+
+            // Drawing functionality variables
+            var drawingManager = null;
+            var currentPolygon = null;
+
+            // Toggle map options functionality
+            document.getElementById('toggleMapOptions').addEventListener('click', function() {
+                // Initialize drawing manager if it doesn't exist
+                if (!drawingManager) {
+                    drawingManager = new google.maps.drawing.DrawingManager({
+                        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                        drawingControl: true,
+                        drawingControlOptions: {
+                            position: google.maps.ControlPosition.TOP_CENTER,
+                            drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+                        }
+                    });
+                    
+                    // Add drawing complete listener
+                    google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+                        // Remove previous polygon if exists
+                        if (currentPolygon) {
+                            currentPolygon.setMap(null);
+                        }
+                        currentPolygon = polygon;
+                        
+                        // Exit drawing mode
+                        drawingManager.setDrawingMode(null);
+                    });
+                }
+                
+                // Toggle drawing manager
+                if (drawingManager.getMap()) {
+                    drawingManager.setMap(null);
+                } else {
+                    drawingManager.setMap(map);
+                }
+            });
+
+            // Remove drawing functionality
+            document.getElementById('removeDrawing').addEventListener('click', function() {
+                // Clear any drawings or custom boundaries
+                if (currentPolygon) {
+                    currentPolygon.setMap(null);
+                    currentPolygon = null;
+                }
+                
+                // Turn off drawing mode
+                if (drawingManager) {
+                    drawingManager.setMap(null);
+                }
+            });
+        }
+
+        // Document ready handler
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle favorite buttons
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const icon = this.querySelector('i');
+                    if (icon.classList.contains('fa-heart-o')) {
+                        icon.classList.remove('fa-heart-o');
+                        icon.classList.add('fa-heart');
+                    } else {
+                        icon.classList.remove('fa-heart');
+                        icon.classList.add('fa-heart-o');
+                    }
+                });
+            });
+
+            // Property data provided by backend
+            // This should be added to as a JavaScript variable
+            /*
+            var propertyData = @Html.Raw(Json.Serialize(Model.Properties.Select(p => new
+            {
+                id = p.Id,
+                title = p.Title,
+                price = p.Price,
+                address = p.Address,
+                bedrooms = p.Bedrooms,
+                bathrooms = p.Bathrooms,
+                squareFeet = p.SquareFeet,
+                type = p.Type.ToString(),
+                latitude = p.Latitude,
+                longitude = p.Longitude
+            })));
+            */
+        });
+    </script>
+}

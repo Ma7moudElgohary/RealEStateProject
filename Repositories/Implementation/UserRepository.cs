@@ -32,14 +32,7 @@ namespace RealEStateProject.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetAllAsync()
-        {
-            return await _context.Users
-                .Include(u => u.Properties)
-                .Include(u => u.Favorites)
-                .Include(u => u.Requests)
-                .ToListAsync();
-        }
+       
 
         public async Task<IEnumerable<ApplicationUser>> GetByRoleAsync(string role)
         {
@@ -63,10 +56,6 @@ namespace RealEStateProject.Repositories
                 .ToListAsync();
         }
 
-        public async Task UpdateAsync(ApplicationUser user)
-        {
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-        }
+       
     }
 }

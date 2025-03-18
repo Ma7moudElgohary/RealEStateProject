@@ -8,17 +8,16 @@ using RealEStateProject.ViewModels.Property;
 
 namespace RealEStateProject.Services.Implementation
 {
-    public class PropertyRequestService : IPropertyRequestService
+    public class PropertyRequestService : BaseService<PropertyRequest,PropertyRequestViewModel>,IPropertyRequestService
     {
         #region Inject
 
         private readonly IPropertyRequestRepository _propertyRequestRepository;
         private readonly IMapper _mapper;
 
-        public PropertyRequestService(IPropertyRequestRepository propertyRequestRepository, IMapper mapper)
+        public PropertyRequestService(IPropertyRequestRepository propertyRequestRepository, IMapper mapper):base(propertyRequestRepository, mapper) 
         {
-            _propertyRequestRepository = propertyRequestRepository;
-            _mapper = mapper;
+            
         }
         #endregion
 
@@ -41,39 +40,14 @@ namespace RealEStateProject.Services.Implementation
             return request.Id;
         }
 
-        public async Task<int> CountAsync()
-        {
-            return await _propertyRequestRepository.CountAsync();
-        }
+       
 
-        public async Task<PropertyRequestViewModel> CreateAsync(PropertyRequestViewModel viewModel)
-        {
-            var request = _mapper.Map<PropertyRequest>(viewModel);
-            await _propertyRequestRepository.AddAsync(request);
-            return _mapper.Map<PropertyRequestViewModel>(request);
-        }
+       
 
-        public async Task DeleteAsync(object id)
-        {
-            await _propertyRequestRepository.DeleteAsync(id);
-        }
+       
 
-        public async Task<bool> ExistsAsync(object id)
-        {
-            return await _propertyRequestRepository.ExistsAsync(r => r.Id == (int)id);
-        }
-
-        public async Task<IEnumerable<PropertyRequestViewModel>> GetAllAsync()
-        {
-            var requests = await _propertyRequestRepository.GetAllAsync();
-            return _mapper.Map<IEnumerable<PropertyRequestViewModel>>(requests);
-        }
-
-        public async Task<PropertyRequestViewModel> GetByIdAsync(object id)
-        {
-            var request = await _propertyRequestRepository.GetByIdAsync((int)id);
-            return _mapper.Map<PropertyRequestViewModel>(request);
-        }
+       
+       
 
         public async Task<IEnumerable<PropertyRequestViewModel>> GetRequestsByAgentIdAsync(string agentId)
         {
@@ -87,15 +61,7 @@ namespace RealEStateProject.Services.Implementation
             return _mapper.Map<IEnumerable<PropertyRequestViewModel>>(requests);
         }
 
-        public async Task UpdateAsync(PropertyRequestViewModel viewModel)
-        {
-            var request = await _propertyRequestRepository.GetByIdAsync(viewModel.Id);
-            if (request == null)
-                throw new KeyNotFoundException("Property request not found.");
-
-            _mapper.Map(viewModel, request);
-            await _propertyRequestRepository.UpdateAsync(request);
-        }
+       
 
         public async Task UpdateRequestStatusAsync(int requestId, RequestStatus status, string agentId)
         {
