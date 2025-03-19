@@ -5,7 +5,7 @@ using RealEstate.Data;
 using RealEstate.Infrastructure.Repositories;
 using RealEstate.Models;
 using RealEstate.Repositories;
-<<<<<<< HEAD
+
 using RealEstate.Services;
 using RealEStateProject.Repositories;
 using RealEStateProject.Repositories.Implementation;
@@ -13,11 +13,11 @@ using RealEStateProject.Repositories.Interfaces;
 using RealEStateProject.Services;
 using RealEStateProject.Services.Implementation;
 using RealEStateProject.Services.Interfaces;
-=======
+
 using RealEStateProject.Repositories;
 using RealEStateProject.Repositories.Implementation;
 using RealEStateProject.Repositories.Interfaces;
->>>>>>> 63037017522bc22c387cddd18a6a5aa07d66f4af
+
 
 namespace RealEStateProject
 {
@@ -37,13 +37,12 @@ namespace RealEStateProject
             // Register repositories
             builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             //builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
-<<<<<<< HEAD
+
             builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
-            //builder.Services.AddScoped<IAgentRepository, AgentRepository>();
-=======
+            //builder.Services.AddScoped<IAgentRepository, AgentRepository>()
             //builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
             builder.Services.AddScoped<IAgentRepository, AgentRepository>();
->>>>>>> 63037017522bc22c387cddd18a6a5aa07d66f4af
+
             //builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
             //builder.Services.AddScoped<IPropertyRequestRepository, PropertyRequestRepository>();

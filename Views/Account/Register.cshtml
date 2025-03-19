@@ -1,0 +1,539 @@
+﻿@model RealEStateProject.ViewModels.User.RegisterUserViewModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    /* Enhanced Registration Page Styles */
+    .registration-container {
+        background-color: #ffffff;
+        min-height: 100vh;
+        padding: 3rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .registration-container::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            opacity: 0.08;
+            z-index: 0;
+        }
+
+        .registration-container::after {
+            content: '';
+            position: absolute;
+            bottom: -15%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+            opacity: 0.05;
+            z-index: 0;
+        }
+
+    .registration-panel {
+        background-color: #ffffff;
+        border-radius: .75rem;
+        overflow: hidden;
+        box-shadow: 0 15px 50px rgba(44, 30, 75, 0.08);
+        position: relative;
+        z-index: 1;
+        display: flex;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .panel-left {
+        width: 40%;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(150deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    }
+
+    .panel-left-content {
+        padding: 3rem 2rem;
+        color: white;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .panel-left::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IGlkPSJwYXR0ZXJuLWJnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0PjxwYXRoIGQ9Ik0tMTAgMTBsMjAgLTIwTTAgMGwyMCAtMjBNMTAgLTEwbDIwIC0yMCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIgZmlsbD0ibm9uZSI+PC9wYXRoPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSI+PC9yZWN0Pjwvc3ZnPg==');
+        opacity: 0.2;
+    }
+
+    .panel-right {
+        width: 60%;
+        padding: 3rem;
+    }
+
+    .welcome-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        background: linear-gradient(to right, var(--white), rgba(255,255,255,0.8));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+
+    .welcome-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+
+    .benefits-list {
+        text-align: left;
+        margin-top: 2rem;
+    }
+
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+        color: rgba(255,255,255,0.9);
+    }
+
+    .benefit-icon {
+        margin-right: 10px;
+        width: 28px;
+        height: 28px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .registration-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.5rem;
+        position: relative;
+        display: inline-block;
+    }
+
+        .registration-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+    .registration-subtitle {
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    .form-floating {
+        margin-bottom: 1.25rem;
+        position: relative;
+    }
+
+        .form-floating > .form-control {
+            height: 60px;
+            padding: 1rem 1rem;
+            border: none;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .form-floating > label {
+            padding: 1rem 1rem;
+            color: #666;
+        }
+
+        .form-floating > .form-control:focus {
+            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
+            background-color: #f0f2f5;
+        }
+
+    .input-icon {
+        position: absolute;
+        top: 20px;
+        right: 15px;
+        color: var(--primary-color);
+        z-index: 10;
+        opacity: 0.7;
+    }
+
+    .registration-btn {
+        height: 55px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        z-index: 1;
+        margin-top: 1rem;
+        box-shadow: 0 6px 15px rgba(106, 17, 203, 0.2);
+    }
+
+        .registration-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+
+        .registration-btn:hover::before {
+            left: 0;
+        }
+
+        .registration-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.25);
+        }
+
+    .btn-pulse {
+        animation: pulse 2s infinite;
+    }
+
+   
+
+    .divider {
+        display: flex;
+        align-items: center;
+        margin: 1.5rem 0;
+        color: #666;
+    }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #eee;
+        }
+
+        .divider::before {
+            margin-right: 1rem;
+        }
+
+        .divider::after {
+            margin-left: 1rem;
+        }
+
+    .social-login {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        background-color: #f8f9fa;
+        color: #666;
+        transition: all 0.3s ease;
+    }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+    .social-google:hover {
+        color: #DB4437;
+    }
+
+    .social-facebook:hover {
+        color: #4267B2;
+    }
+
+    .social-apple:hover {
+        color: #000000;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+        .login-link a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+            .login-link a::after {
+                content: '';
+                position: absolute;
+                width: 100%;
+                height: 2px;
+                bottom: -2px;
+                left: 0;
+                background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+                transform: scaleX(0);
+                transition: transform 0.3s ease;
+            }
+
+            .login-link a:hover::after {
+                transform: scaleX(1);
+            }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        color: var(--dark-color);
+        text-decoration: none;
+        margin-top: 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+        .back-link i {
+            margin-right: 5px;
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+            .back-link:hover i {
+                transform: translateX(-3px);
+            }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    /* Responsive Adjustments */
+   
+
+   
+</style>
+
+<div class="registration-container">
+    <div class="registration-panel">
+        <!-- Left Panel with Welcome Message -->
+        <div class="panel-left">
+            <div class="panel-left-content">
+                <h1 class="welcome-title">Welcome to RealEstate</h1>
+                <p class="welcome-subtitle">Join our community of property buyers, sellers, and enthusiasts.</p>
+
+                <div class="benefits-list">
+                    <div class="benefit-item">
+                        <span class="benefit-icon"><i class="fas fa-search"></i></span>
+                        <span>Find your dream property</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon"><i class="fas fa-bell"></i></span>
+                        <span>Get alerts for new listings</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon"><i class="fas fa-heart"></i></span>
+                        <span>Save your favorite properties</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon"><i class="fas fa-comments"></i></span>
+                        <span>Connect with agents directly</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel with Registration Form -->
+        <div class="panel-right">
+            <h2 class="registration-title">Create Account</h2>
+            <p class="registration-subtitle">Start your journey with us today.</p>
+
+            <form asp-action="Register">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="FirstName" class="form-control" id="floatingFirstName" placeholder="First Name">
+                            <label for="floatingFirstName">First Name</label>
+                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input asp-for="LastName" class="form-control" id="floatingLastName" placeholder="Last Name">
+                            <label for="floatingLastName">Last Name</label>
+                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Username" class="form-control" id="floatingUsername" placeholder="Username">
+                    <label for="floatingUsername">Username</label>
+                    <span class="input-icon"><i class="fas fa-at"></i></span>
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Password" class="form-control" id="floatingPassword" placeholder="Password" type="password">
+                    <label for="floatingPassword">Password</label>
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="ConfirmPassword" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password" type="password">
+                    <label for="floatingConfirmPassword">Confirm Password</label>
+                    <span class="input-icon"><i class="fas fa-shield-alt"></i></span>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Address" class="form-control" id="floatingAddress" placeholder="Address">
+                    <label for="floatingAddress">Address</label>
+                    <span class="input-icon"><i class="fas fa-home"></i></span>
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn registration-btn btn-pulse w-100">
+                    <i class="fas fa-user-plus me-2"></i> Create Your Account
+                </button>
+            </form>
+
+            <div class="divider">or continue with</div>
+
+            <div class="social-login">
+                <button type="button" class="social-btn social-google">
+                    <i class="fab fa-google"></i>
+                </button>
+                <button type="button" class="social-btn social-facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button type="button" class="social-btn social-apple">
+                    <i class="fab fa-apple"></i>
+                </button>
+            </div>
+
+            <div class="login-link">
+                Already have an account? <a href="#">Sign in</a>
+            </div>
+
+            <div class="text-center">
+                <a asp-action="Index" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script>
+        // Password visibility toggle
+        function setupPasswordToggles() {
+            const setupToggle = (fieldId, iconId) => {
+                const field = document.getElementById(fieldId);
+                const icon = document.getElementById(iconId);
+
+                if (field && icon) {
+                    icon.addEventListener('click', () => {
+                        const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
+                        field.setAttribute('type', type);
+
+                        icon.classList.toggle('fa-eye');
+                        icon.classList.toggle('fa-eye-slash');
+                    });
+                }
+            };
+
+            // Add eye icons for password fields
+            const passwordField = document.getElementById('floatingPassword');
+            const confirmPasswordField = document.getElementById('floatingConfirmPassword');
+
+            if (passwordField) {
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-eye input-icon password-toggle';
+                icon.style.right = '45px';
+                icon.style.cursor = 'pointer';
+                icon.id = 'passwordToggle';
+                passwordField.parentNode.appendChild(icon);
+            }
+
+            if (confirmPasswordField) {
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-eye input-icon password-toggle';
+                icon.style.right = '45px';
+                icon.style.cursor = 'pointer';
+                icon.id = 'confirmPasswordToggle';
+                confirmPasswordField.parentNode.appendChild(icon);
+            }
+
+            setupToggle('floatingPassword', 'passwordToggle');
+            setupToggle('floatingConfirmPassword', 'confirmPasswordToggle');
+        }
+
+        // Form validation animation
+        function setupFormAnimation() {
+            const formFields = document.querySelectorAll('.form-control');
+
+            formFields.forEach(field => {
+                field.addEventListener('focus', () => {
+                    field.parentNode.style.transform = 'translateY(-5px)';
+                    field.parentNode.style.transition = 'transform 0.3s ease';
+                });
+
+                field.addEventListener('blur', () => {
+                    field.parentNode.style.transform = 'translateY(0)';
+                });
+            });
+        }
+
+        // Initialize functions
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPasswordToggles();
+            setupFormAnimation();
+        });
+    </script>
+}
