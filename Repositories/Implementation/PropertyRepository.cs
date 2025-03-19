@@ -71,21 +71,21 @@ namespace RealEStateProject.Repositories.Implementation
              .ToListAsync();
         }
 
-        //public new async Task<Property> GetByIdAsync(object id)
-        //{
-        //    return await _context.Properties
-        //        .Include(p => p.Agent)
-        //        .Include(p => p.Images)
-        //        .FirstOrDefaultAsync(p => p.Id == (int)id);
-        //}
+        public new async Task<Property> GetByIdAsync(object id)
+        {
+            return await _context.Properties
+                .Include(p => p.Agent)
+                .Include(p => p.Images)
+                .FirstOrDefaultAsync(p => p.Id == (int)id);
+        }
 
-        //public new async Task<IEnumerable<Property>> GetAllAsync()
-        //{
-        //    return await _context.Properties
-        //        .Include(p => p.Agent)
-        //        .Include(p => p.Images)
-        //        .OrderByDescending(p => p.CreatedAt)
-        //        .ToListAsync();
-        //}
+        public new async Task<IEnumerable<Property>> GetAllAsync()
+        {
+            return await _context.Properties
+                .Include(p => p.Agent)
+                .Include(p => p.Images)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+        }
     }
 }
