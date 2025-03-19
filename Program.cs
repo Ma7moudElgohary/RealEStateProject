@@ -22,6 +22,7 @@ using RealEStateProject.Repositories.Interfaces;
 namespace RealEStateProject
 {
     public class Program
+
     {
         public static void Main(string[] args)
         {
