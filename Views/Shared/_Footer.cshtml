@@ -1,0 +1,71 @@
+﻿<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">
+                    <img src="~/img/3.png" alt="Aesthetic Villanueva Logo" class="footer-logo">
+                    <h3>Aesthetic Villanueva</h3>
+                </div>
+                <div class="footer-contact">
+                    <span class="contact-item"><i class="bi bi-geo-alt"></i>New York</span>
+                    <span class="contact-item"><i class="bi bi-telephone"></i>(555) 123-4567</span>
+                </div>
+                <div class="footer-social">
+                    <a href="#" class="social-link" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="social-link" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="social-link" aria-label="Twitter"><i class="bi bi-twitter"></i></a>
+                    <a href="#" class="social-link" aria-label="LinkedIn"><i class="bi bi-linkedin"></i></a>
+                </div>
+            </div>
+            <div>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Home</a>
+                    <a href="#" class="footer-link">Properties</a>
+                    <a href="#" class="footer-link">Agents</a>
+                    <a href="#" class="footer-link">About</a>
+                    <a href="#" class="footer-link">Contact</a>
+                    <a href="#" class="footer-link">Privacy</a>
+                </div>
+            </div>
+            <div>
+                <div class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Subscribe to newsletter">
+                    <button class="newsletter-btn" aria-label="Subscribe">
+                        <i class="bi bi-send"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2025 Aesthetic Villanueva Real Estate</div>
+            <div class="footer-bottom-links">
+                <a href="#" class="footer-bottom-link">Terms</a>
+                <a href="#" class="footer-bottom-link">Privacy</a>
+                <a href="#" class="footer-bottom-link">Cookies</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script>
+    // Add hover effect to navbar buttons
+    document.querySelectorAll('.btn-nav').forEach(button => {
+        button.addEventListener('mouseenter', function(e) {
+            const x = e.clientX - e.target.getBoundingClientRect().left;
+            const y = e.clientY - e.target.getBoundingClientRect().top;
+
+            const ripple = document.createElement('span');
+            ripple.style.left = `${x}px`;
+            ripple.style.top = `${y}px`;
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+</script>
