@@ -10,12 +10,10 @@ namespace RealEstate.Models
 
         [ForeignKey("PropertyId")]
         public int PropertyId { get; set; }
-
         public Property Property { get; set; }
 
         [ForeignKey("UserId")]
         public string UserId { get; set; }
-
         public ApplicationUser User { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
