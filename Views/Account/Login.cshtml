@@ -1,6 +1,6 @@
-﻿@model RealEStateProject.ViewModels.User.RegisterUserViewModel
+﻿@model RealEStateProject.ViewModels.User.LoginUserViewModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Login";
 }
 
 
@@ -10,69 +10,43 @@
         <!-- Left Panel with Welcome Message -->
         <div class="panel-left">
             <div class="panel-left-content">
-                <h1 class="welcome-title">Welcome to RealEstate</h1>
-                <p class="welcome-subtitle">Join our community of property buyers, sellers, and enthusiasts.</p>
+                <h1 class="welcome-title">Welcome Back</h1>
+                <p class="welcome-subtitle">Sign in to access your RealEstate account.</p>
 
                 <div class="benefits-list">
                     <div class="benefit-item">
-                        <span class="benefit-icon"><i class="fas fa-search"></i></span>
-                        <span>Find your dream property</span>
+                        <span class="benefit-icon"><i class="fas fa-home"></i></span>
+                        <span>Access your saved properties</span>
                     </div>
                     <div class="benefit-item">
                         <span class="benefit-icon"><i class="fas fa-bell"></i></span>
-                        <span>Get alerts for new listings</span>
-                    </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon"><i class="fas fa-heart"></i></span>
-                        <span>Save your favorite properties</span>
+                        <span>Check your property alerts</span>
                     </div>
                     <div class="benefit-item">
                         <span class="benefit-icon"><i class="fas fa-comments"></i></span>
-                        <span>Connect with agents directly</span>
+                        <span>View your messages</span>
+                    </div>
+                    <div class="benefit-item">
+                        <span class="benefit-icon"><i class="fas fa-star"></i></span>
+                        <span>Manage your favorite listings</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Right Panel with Registration Form -->
+        <!-- Right Panel with Login Form -->
         <div class="panel-right">
-            <h2 class="registration-title">Create Account</h2>
-            <p class="registration-subtitle">Start your journey with us today.</p>
+            <h2 class="login-title">Sign In</h2>
+            <p class="login-subtitle">Enter your credentials to access your account.</p>
 
-            <form asp-action="Register" method="post">
+            <form asp-action="Login" method="post">
                 <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input asp-for="FirstName" class="form-control" id="floatingFirstName" placeholder="First Name">
-                            <label for="floatingFirstName">First Name</label>
-                            <span class="input-icon"><i class="fas fa-user"></i></span>
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input asp-for="LastName" class="form-control" id="floatingLastName" placeholder="Last Name">
-                            <label for="floatingLastName">Last Name</label>
-                            <span class="input-icon"><i class="fas fa-user"></i></span>
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
-                    </div>
-                </div>
 
                 <div class="form-floating">
                     <input asp-for="Username" class="form-control" id="floatingUsername" placeholder="Username">
                     <label for="floatingUsername">Username</label>
-                    <span class="input-icon"><i class="fas fa-at"></i></span>
+                    <span class="input-icon"><i class="fas fa-user"></i></span>
                     <span asp-validation-for="Username" class="text-danger"></span>
-                </div>
-
-                <div class="form-floating">
-                    <input asp-for="Email" class="form-control" id="floatingEmail" placeholder="Email">
-                    <label for="floatingEmail">Email</label>
-                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
-                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="form-floating">
@@ -82,69 +56,39 @@
                     <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
 
-                <div class="form-floating">
-                    <input asp-for="ConfirmPassword" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password" type="password">
-                    <label for="floatingConfirmPassword">Confirm Password</label>
-                    <span class="input-icon"><i class="fas fa-shield-alt"></i></span>
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="RemeberMe" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">
+                            Remember me
+                        </label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </div>
                 </div>
 
-                <div class="form-floating">
-                    <select asp-for="UserType" asp-items="ViewBag.UserTypes" class="form-control">
-                        <option value="">Select User Type</option>
-                    </select>
-                    <label for="UserType">User Type</label>
-                    <span class="input-icon"><i class="fas fa-user-tag"></i></span>
-                    <span asp-validation-for="UserType" class="text-danger"></span>
-                </div>
-
-
-
-                <button type="submit" class="btn registration-btn btn-pulse w-100">
-                    <i class="fas fa-user-plus me-2"></i> Create Your Account
+                <button type="submit" class="btn login-btn btn-pulse w-100">
+                    <i class="fas fa-sign-in-alt me-2"></i> Sign In
                 </button>
             </form>
 
             <div class="divider">or continue with</div>
 
-            <div class="social-login"> 
-                 <button type="button" class="social-btn social-google"> 
-                     <i class="fab fa-google"></i> 
-                 </button> 
-                 <button type="button" class="social-btn social-facebook"> 
-                     <i class="fab fa-facebook-f"></i> 
-                 </button> 
-                 <button type="button" class="social-btn social-apple"> 
-                     <i class="fab fa-apple"></i> 
-                 </button> 
-             </div> 
+            <div class="social-login">
+                <button type="button" class="social-btn social-google">
+                    <i class="fab fa-google"></i>
+                </button>
+                <button type="button" class="social-btn social-facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </button>
+                <button type="button" class="social-btn social-apple">
+                    <i class="fab fa-apple"></i>
+                </button>
+            </div>
 
-
-            @* <form asp-action="ExternalLogin" method="post"> *@
-            @*     <input type="hidden" name="provider" value="Google" /> *@
-            @*     <button type="submit" class="btn social-btn social-google"> *@
-            @*         <i class="fab fa-google"></i> Sign in with Google *@
-            @*     </button> *@
-            @* </form> *@
-
-            @* <form asp-action="ExternalLogin" method="post"> *@
-            @*     <input type="hidden" name="provider" value="Facebook" /> *@
-            @*     <button type="submit" class="btn social-btn social-facebook"> *@
-            @*         <i class="fab fa-facebook-f"></i> Sign in with Facebook *@
-            @*     </button> *@
-            @* </form> *@
-
-            @* <form asp-action="ExternalLogin" method="post"> *@
-            @*     <input type="hidden" name="provider" value="Apple" /> *@
-            @*     <button type="submit" class="btn social-btn social-apple"> *@
-            @*         <i class="fab fa-apple"></i> Sign in with Apple *@
-            @*     </button> *@
-            @* </form> *@
-
-
-
-            <div class="login-link">
-                Already have an account? <a asp-action="Login">Sign in</a>
+            <div class="register-link">
+                Don't have an account? <a asp-action="Register">Create account</a>
             </div>
 
             <div class="text-center">
@@ -156,34 +100,15 @@
     </div>
 </div>
 
- @section Scripts { 
-     @{ 
-         await Html.RenderPartialAsync("_ValidationScriptsPartial"); 
-     } 
-
-@* <partial name="_ValidationScriptsPartial"/> *@
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     <script>
         // Password visibility toggle
         function setupPasswordToggles() {
-            const setupToggle = (fieldId, iconId) => {
-                const field = document.getElementById(fieldId);
-                const icon = document.getElementById(iconId);
-
-                if (field && icon) {
-                    icon.addEventListener('click', () => {
-                        const type = field.getAttribute('type') === 'password' ? 'text' : 'password';
-                        field.setAttribute('type', type);
-
-                        icon.classList.toggle('fa-eye');
-                        icon.classList.toggle('fa-eye-slash');
-                    });
-                }
-            };
-
-            // Add eye icons for password fields
             const passwordField = document.getElementById('floatingPassword');
-            const confirmPasswordField = document.getElementById('floatingConfirmPassword');
 
             if (passwordField) {
                 const icon = document.createElement('i');
@@ -192,19 +117,15 @@
                 icon.style.cursor = 'pointer';
                 icon.id = 'passwordToggle';
                 passwordField.parentNode.appendChild(icon);
-            }
 
-            if (confirmPasswordField) {
-                const icon = document.createElement('i');
-                icon.className = 'fas fa-eye input-icon password-toggle';
-                icon.style.right = '45px';
-                icon.style.cursor = 'pointer';
-                icon.id = 'confirmPasswordToggle';
-                confirmPasswordField.parentNode.appendChild(icon);
-            }
+                icon.addEventListener('click', () => {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
 
-            setupToggle('floatingPassword', 'passwordToggle');
-            setupToggle('floatingConfirmPassword', 'confirmPasswordToggle');
+                    icon.classList.toggle('fa-eye');
+                    icon.classList.toggle('fa-eye-slash');
+                });
+            }
         }
 
         // Form validation animation
@@ -232,8 +153,10 @@
 }
 
 
+
+
 <style>
-    /* Enhanced Registration Page Styles */
+    /* Enhanced Login Page Styles */
     .registration-container {
         background-color: #ffffff;
         min-height: 100vh;
@@ -353,7 +276,7 @@
         justify-content: center;
     }
 
-    .registration-title {
+    .login-title {
         font-size: 1.8rem;
         font-weight: 700;
         color: var(--dark-color);
@@ -362,7 +285,7 @@
         display: inline-block;
     }
 
-        .registration-title::after {
+        .login-title::after {
             content: '';
             position: absolute;
             bottom: -8px;
@@ -373,7 +296,7 @@
             border-radius: 2px;
         }
 
-    .registration-subtitle {
+    .login-subtitle {
         color: #666;
         margin-bottom: 2rem;
     }
@@ -411,7 +334,7 @@
         opacity: 0.7;
     }
 
-    .registration-btn {
+    .login-btn {
         height: 55px;
         border-radius: 12px;
         background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
@@ -427,7 +350,7 @@
         box-shadow: 0 6px 15px rgba(106, 17, 203, 0.2);
     }
 
-        .registration-btn::before {
+        .login-btn::before {
             content: '';
             position: absolute;
             top: 0;
@@ -439,11 +362,11 @@
             z-index: -1;
         }
 
-        .registration-btn:hover::before {
+        .login-btn:hover::before {
             left: 0;
         }
 
-        .registration-btn:hover {
+        .login-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(106, 17, 203, 0.25);
         }
@@ -451,8 +374,6 @@
     .btn-pulse {
         animation: pulse 2s infinite;
     }
-
-
 
     .divider {
         display: flex;
@@ -513,12 +434,12 @@
         color: #000000;
     }
 
-    .login-link {
+    .register-link {
         text-align: center;
         margin-top: 1.5rem;
     }
 
-        .login-link a {
+        .register-link a {
             color: var(--primary-color);
             font-weight: 600;
             text-decoration: none;
@@ -526,7 +447,7 @@
             position: relative;
         }
 
-            .login-link a::after {
+            .register-link a::after {
                 content: '';
                 position: absolute;
                 width: 100%;
@@ -538,7 +459,7 @@
                 transition: transform 0.3s ease;
             }
 
-            .login-link a:hover::after {
+            .register-link a:hover::after {
                 transform: scaleX(1);
             }
 
@@ -572,8 +493,30 @@
         display: block;
     }
 
-    /* Responsive Adjustments */
+    .form-check-input {
+        width: 1rem;
+        height: 1rem;
+        margin-top: 0.25rem;
+    }
 
+    .form-check-label {
+        padding-left: 0.5rem;
+        color: #666;
+    }
 
+    .forgot-password {
+        text-align: right;
+        margin-top: 0.5rem;
+    }
 
+        .forgot-password a {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+            .forgot-password a:hover {
+                text-decoration: underline;
+            }
 </style>

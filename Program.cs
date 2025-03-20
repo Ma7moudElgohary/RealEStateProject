@@ -18,6 +18,11 @@ using RealEStateProject.Repositories;
 using RealEStateProject.Repositories.Implementation;
 using RealEStateProject.Repositories.Interfaces;
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using AspNet.Security.OAuth.Apple;
+
 
 namespace RealEStateProject
 {
@@ -48,7 +53,7 @@ namespace RealEStateProject
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
             //builder.Services.AddScoped<IPropertyRequestRepository, PropertyRequestRepository>();
 
-
+            
 
             // Register services
             builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>));
@@ -75,8 +80,33 @@ namespace RealEStateProject
                     options.Cookie.SameSite = SameSiteMode.Strict;
                 });
 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+            })
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "YOUR_GOOGLE_CLIENT_ID";
+                    options.ClientSecret = "YOUR_GOOGLE_CLIENT_SECRET";
+                })
+                .AddFacebook(options =>
+                {
+                    options.AppId = "YOUR_FACEBOOK_APP_ID";
+                    options.AppSecret = "YOUR_FACEBOOK_APP_SECRET";
+                })
+                //.AddApple(options =>
+                //{
+                //    options.ClientId = "YOUR_APPLE_CLIENT_ID";
+                //    options.KeyId = "YOUR_KEY_ID";
+                //    options.TeamId = "YOUR_TEAM_ID";
+                //    options.UsePrivateKey(keyId => builder.Configuration["ApplePrivateKey"]);
+                //})
+                ;
+
             // Add Identity
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                options.Password.RequiredLength = 8)                
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
