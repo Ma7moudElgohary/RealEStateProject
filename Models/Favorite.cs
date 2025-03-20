@@ -8,14 +8,14 @@ namespace RealEstate.Models
         [Key]
         public int Id { get; set; }
 
+        [ForeignKey("PropertyId")]
         public int PropertyId { get; set; }
 
-        [ForeignKey("PropertyId")]
         public Property Property { get; set; }
 
+        [ForeignKey("UserId")]
         public string UserId { get; set; }
 
-        [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

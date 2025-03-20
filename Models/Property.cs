@@ -42,9 +42,9 @@ namespace RealEstate.Models
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
+        [ForeignKey("AgentId")]
         public string AgentId { get; set; }
 
-        [ForeignKey("AgentId")]
         public ApplicationUser Agent { get; set; }
 
         public ICollection<PropertyImage>? Images { get; set; }
