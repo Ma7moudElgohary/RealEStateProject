@@ -8,7 +8,7 @@ namespace RealEstate.Repositories
         Task<IEnumerable<PropertyRequest>> GetByUserIdAsync(string userId);
         Task<IEnumerable<PropertyRequest>> GetByPropertyIdAsync(int propertyId);
         Task<IEnumerable<PropertyRequest>> GetByAgentIdAsync(string agentId);
-        Task<int> AddAsync(PropertyRequest request);
+        Task AddAsync(PropertyRequest request);
 
         //Task UpdateAsync(PropertyRequest request);
 

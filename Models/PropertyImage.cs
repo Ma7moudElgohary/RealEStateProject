@@ -15,6 +15,5 @@ namespace RealEstate.Models
 
         public string ImageUrl { get; set; }
 
-        public bool IsFeatured { get; set; }
     }
 }

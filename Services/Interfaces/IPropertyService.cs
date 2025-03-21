@@ -12,11 +12,14 @@ namespace RealEstate.Services
 
 
         Task<int> AddPropertyAsync(PropertyViewModel property, string agentId);
-        Task UpdatePropertyAsync(PropertyViewModel property, string agentId);
+        Task<int> UpdatePropertyAsync(PropertyViewModel model, string userId);
         Task DeletePropertyAsync(int id, string agentId);
 
 
         Task UpdatePropertyImagesAsync(PropertyImagesViewModel viewModel);
         Task DeletePropertyImageAsync(int propertyId, string imageUrl);
+
+        Task<PropertyViewModel> GetPropertyViewModelByIdAsync(int id);
+
     }
 }

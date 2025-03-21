@@ -249,6 +249,9 @@ namespace RealEStateProject.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
+                    b.Property<string>("UserImageURL")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -335,6 +338,9 @@ namespace RealEStateProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FeaturedImage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<double>("Latitude")
                         .HasColumnType("float");
 
@@ -386,9 +392,6 @@ namespace RealEStateProject.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsFeatured")
-                        .HasColumnType("bit");
-
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
@@ -434,6 +437,38 @@ namespace RealEStateProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("PropertyRequests");
+                });
+
+            modelBuilder.Entity("RealEstate.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -562,6 +597,17 @@ namespace RealEStateProject.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RealEstate.Models.Review", b =>
+                {
+                    b.HasOne("RealEstate.Models.Property", "Property")
+                        .WithMany("Reviews")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
             modelBuilder.Entity("RealEStateProject.Models.Agent", b =>
                 {
                     b.Navigation("Properties");
@@ -581,6 +627,8 @@ namespace RealEStateProject.Migrations
                     b.Navigation("Images");
 
                     b.Navigation("Requests");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

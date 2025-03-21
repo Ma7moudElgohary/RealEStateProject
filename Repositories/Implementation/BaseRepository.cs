@@ -10,7 +10,7 @@ namespace RealEstate.Infrastructure.Repositories
     {
         protected readonly ApplicationDbContext _context;
         protected readonly DbSet<T> _dbSet;
-        
+
         public BaseRepository(ApplicationDbContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -32,11 +32,12 @@ namespace RealEstate.Infrastructure.Repositories
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
-        public async Task<int> AddAsync(T entity)
+        public async Task AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            return await SaveChangesAsync();
+
         }
+
 
         public async Task<int> AddRangeAsync(IEnumerable<T> entities)
         {

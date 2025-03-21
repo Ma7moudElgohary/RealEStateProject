@@ -5,7 +5,7 @@ using RealEstate.Data;
 using RealEstate.Infrastructure.Repositories;
 using RealEstate.Models;
 using RealEstate.Repositories;
-
+using RealEstate.Repositories.Implementation;
 using RealEstate.Services;
 using RealEStateProject.Repositories;
 using RealEStateProject.Repositories.Implementation;
@@ -13,23 +13,14 @@ using RealEStateProject.Repositories.Interfaces;
 using RealEStateProject.Services;
 using RealEStateProject.Services.Implementation;
 using RealEStateProject.Services.Interfaces;
-
-using RealEStateProject.Repositories;
-using RealEStateProject.Repositories.Implementation;
-using RealEStateProject.Repositories.Interfaces;
-
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using AspNet.Security.OAuth.Apple;
-
+using RealEStateProject.Services.RoleSeeder;
 
 namespace RealEStateProject
 {
     public class Program
 
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -42,26 +33,27 @@ namespace RealEStateProject
 
             // Register repositories
             builder.Services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
-            //builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
-
             builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
-            //builder.Services.AddScoped<IAgentRepository, AgentRepository>()
-            //builder.Services.AddScoped<IPropertyRepository, PropertyRepository>();
             builder.Services.AddScoped<IAgentRepository, AgentRepository>();
-
-            //builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
+            builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
-            //builder.Services.AddScoped<IPropertyRequestRepository, PropertyRequestRepository>();
+            builder.Services.AddScoped<IPropertyRequestRepository, PropertyRequestRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-            
+
 
             // Register services
             builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>));
             builder.Services.AddScoped<IPropertyService, PropertyService>();
-            //builder.Services.AddScoped<IAgentService, AgentService>();
-            //builder.Services.AddScoped<IPropertyImageService, PropertyImageService>();
+            builder.Services.AddScoped<IAgentService, AgentService>();
+            builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
             builder.Services.AddScoped<IFavoriteService, FavoriteService>();
-            //builder.Services.AddScoped<IPropertyRequestService, PropertyRequestService>();
+            builder.Services.AddScoped<IPropertyRequestService, PropertyRequestService>();
+            builder.Services.AddScoped<IReviewService, ReviewService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<RoleSeederService>();
+
 
             // Add AutoMapper
             builder.Services.AddAutoMapper(typeof(Program));
@@ -106,11 +98,39 @@ namespace RealEStateProject
 
             // Add Identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-                options.Password.RequiredLength = 8)                
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            {
+
+                options.Password.RequiredLength = 8;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+
+
+            })
+               .AddEntityFrameworkStores<ApplicationDbContext>()
+           .AddDefaultTokenProviders()
+           .AddRoleManager<RoleManager<IdentityRole>>();
+
+
+            builder.Services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("RequireAgentRole", policy => policy.RequireRole("Agent"));
+                options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+                options.AddPolicy("RequireAdminOrAgentRole", policy =>
+                    policy.RequireRole("Admin", "Agent"));
+            });
+
+
+
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleSeeder = scope.ServiceProvider.GetRequiredService<RoleSeederService>();
+                await roleSeeder.SeedRolesAsync();
+                await roleSeeder.SeedAdminUserAsync();
+            }
 
             // Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())

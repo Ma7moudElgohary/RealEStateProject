@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstate.Models;
 
@@ -18,17 +17,19 @@ namespace RealEStateProject.ViewModels.Property
         public string Description { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
-        [Range(0, double.MaxValue, ErrorMessage = "Price must be a positive value")]
+        [Range(1, 1000000000, ErrorMessage = "Price must be greater than 0")]
         public decimal Price { get; set; }
 
-        [Required(ErrorMessage = "Area is required")]
-        [Range(1, int.MaxValue, ErrorMessage = "Area must be a positive value")]
-        public int SquareFeet { get; set; } // Changed from SquareFeet to match view
+        [Required(ErrorMessage = "Square feet is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Area must be greater than 0")]
+        public int SquareFeet { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "Bedrooms must be a positive value")]
+        [Required(ErrorMessage = "Number of bedrooms is required")]
+        [Range(0, 100, ErrorMessage = "Bedrooms must be between 0 and 100")]
         public int Bedrooms { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "Bathrooms must be a positive value")]
+        [Required(ErrorMessage = "Number of bathrooms is required")]
+        [Range(0, 100, ErrorMessage = "Bathrooms must be between 0 and 100")]
         public int Bathrooms { get; set; }
 
         [Required(ErrorMessage = "Address is required")]
@@ -40,10 +41,13 @@ namespace RealEStateProject.ViewModels.Property
         [Required(ErrorMessage = "State is required")]
         public string State { get; set; }
 
-        [Required(ErrorMessage = "Zip Code is required")]
+        [Required(ErrorMessage = "Zip code is required")]
         public string ZipCode { get; set; }
 
+        [Required(ErrorMessage = "Latitude is required")]
         public double Latitude { get; set; }
+
+        [Required(ErrorMessage = "Longitude is required")]
         public double Longitude { get; set; }
 
         [Required(ErrorMessage = "Property type is required")]
@@ -52,36 +56,56 @@ namespace RealEStateProject.ViewModels.Property
         [Required(ErrorMessage = "Property status is required")]
         public PropertyStatus Status { get; set; }
 
-        public DateTime CreatedAt { get; set; }
+        public int? YearBuilt { get; set; }
+        public List<string>? Features { get; set; }
 
-        // Added missing properties that are used in the view
-        [Range(1800, 2100, ErrorMessage = "Please enter a valid year")]
-        public int YearBuilt { get; set; }
-
-        public string AgentId { get; set; }
+        // Agent information
         public string AgentName { get; set; }
+        public string? AgentId { get; set; }
         public string AgentPhone { get; set; }
         public string AgentEmail { get; set; }
 
-        public bool IsFavorite { get; set; }
-        public List<string>? ImageUrls { get; set; }
-        public string FeaturedImageUrl { get; set; }
-        public List<string>? Features { get; set; }
+        // Images
+        public IFormFile ImageUpload { get; set; }
+        public IEnumerable<IFormFile>? AdditionalImages { get; set; }
+        public string? FeaturedImageUrl { get; set; }
+        public IEnumerable<string>? ImageUrls { get; set; }
 
-        // Added to support the comments section
-        public List<CommentViewModel>? Comments { get; set; }
+        // Additional property information
+        public DateTime? CreatedAt { get; set; }
+        public bool? IsFavorite { get; set; }
 
-        public IEnumerable<SelectListItem>? PropertyTypes { get; set; }
-        public IEnumerable<SelectListItem>? PropertyStatuses { get; set; }
+        // For dropdowns in UI
+        [IgnoreDataMember]
+        public List<SelectListItem>? PropertyTypes { get; set; }
+
+        [IgnoreDataMember]
+        public List<SelectListItem>? PropertyStatuses { get; set; }
+
+
+
+        public IEnumerable<ReviewViewModel> Reviews { get; set; }
+
+        public double AverageRating { get; set; }
+
+        public int ReviewCount { get; set; }
+
+        public Dictionary<int, int>? RatingDistribution { get; set; }
     }
 
-    // Added to support comments
-    public class CommentViewModel
+    public class ReviewViewModel
     {
         public int Id { get; set; }
-        public string Content { get; set; }
+
+        public int Rating { get; set; }
+
+        public string Comment { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
         public string UserId { get; set; }
+
         public string UserName { get; set; }
-        public DateTime CreatedDate { get; set; }
     }
+
 }

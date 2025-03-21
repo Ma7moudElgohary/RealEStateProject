@@ -7,7 +7,7 @@ namespace RealEstate.Repositories
         Task<T> GetByIdAsync(object id);
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
-        Task<int> AddAsync(T entity);
+        Task AddAsync(T entity);
         Task<int> AddRangeAsync(IEnumerable<T> entities);
         Task UpdateAsync(T entity);
         Task DeleteAsync(object id);

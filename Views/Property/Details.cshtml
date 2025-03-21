@@ -20,9 +20,9 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <button class="btn @(ViewBag.IsFavorite ? "btn-danger" : "btn-outline-danger")" id="favoriteButton"
-                            onclick="location.href='@Url.Action("ToggleFavorite", new { propertyId = Model.Id })'">
+                            data-property-id="@Model.Id">
                         <i class="bi @(ViewBag.IsFavorite ? "bi-heart-fill" : "bi-heart")"></i>
-                        @(ViewBag.IsFavorite ? "Remove from Favorites" : "Add to Favorites")
+                        <span id="favoriteText">@(ViewBag.IsFavorite ? "Remove from Favorites" : "Add to Favorites")</span>
                     </button>
                 }
                 @if (Model.AgentId == User.FindFirstValue(ClaimTypes.NameIdentifier))
@@ -41,10 +41,11 @@
             <div class="carousel-inner">
                 @if (Model.ImageUrls != null && Model.ImageUrls.Any())
                 {
-                    for (int i = 0; i < Model.ImageUrls.Count; i++)
+                    var imageUrlsList = Model.ImageUrls.ToList();
+                    for (int i = 0; i < imageUrlsList.Count; i++)
                     {
                         <div class="carousel-item @(i == 0 ? "active" : "")">
-                            <img src="@Model.ImageUrls[i]" class="d-block w-100" alt="Property Image" style="max-height: 600px; object-fit: cover;">
+                            <img src="@imageUrlsList[i]" class="d-block w-100" alt="Property Image" style="max-height: 600px; object-fit: cover;">
                         </div>
                     }
                 }
@@ -192,6 +193,51 @@
                     </div>
                 </div>
 
+                <!-- Property Ratings Overview -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Property Rating</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <h2 class="mb-0">@(Model.AverageRating > 0 ? Model.AverageRating.ToString("0.0") : "No ratings")</h2>
+                            <div class="rating-stars mb-2">
+                                @for (var i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi @(Model.AverageRating >= i ? "bi-star-fill" : (Model.AverageRating >= i - 0.5 ? "bi-star-half" : "bi-star"))" style="color: #ffc107;"></i>
+                                }
+                            </div>
+                            <small class="text-muted">Based on @Model.ReviewCount reviews</small>
+                        </div>
+
+                        <!-- Rating Distribution -->
+                        @if (Model.RatingDistribution != null && Model.RatingDistribution.Any())
+                        {
+                            <div class="rating-distribution">
+                                @for (var i = 5; i >= 1; i--)
+                                {
+                                    var percentage = Model.RatingDistribution.ContainsKey(i) ?
+                                    (Model.ReviewCount > 0 ? (Model.RatingDistribution[i] * 100 / Model.ReviewCount) : 0) : 0;
+
+                                    <div class="d-flex align-items-center mb-1">
+                                        <div class="text-muted me-2">@i <i class="bi bi-star-fill" style="color: #ffc107;"></i></div>
+                                        <div class="progress flex-grow-1" style="height: 8px;">
+                                            <div class="progress-bar bg-warning" role="progressbar"
+                                                 style="width: @percentage%;"
+                                                 aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <div class="ms-2 text-muted small">@percentage%</div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center">No ratings distribution available</p>
+                        }
+                    </div>
+                </div>
+
                 <!-- Similar Properties -->
                 <div class="card">
                     <div class="card-header bg-primary text-white">
@@ -204,35 +250,53 @@
             </div>
         </div>
 
-        <!-- Comments Section -->
+        <!-- Reviews Section -->
         <div class="mt-5">
-            <h4 class="mb-4">Comments</h4>
+            <h4 class="mb-4">Reviews</h4>
 
-            <!-- Add Comment Form -->
+            <!-- Add Review Form -->
             @if (User.Identity.IsAuthenticated)
             {
                 <div class="mb-4">
-                    <form asp-controller="Property" asp-action="AddComment" method="post">
+                    <form asp-controller="User" asp-action="AddReview" method="post">
                         <input type="hidden" name="PropertyId" value="@Model.Id" />
+
+                        <!-- Star Rating Selection -->
                         <div class="mb-3">
-                            <textarea class="form-control" name="Content" rows="3" placeholder="Write your comment here..."></textarea>
+                            <label class="form-label">Rating</label>
+                            <div class="star-rating">
+                                <div class="rating-group">
+                                    @for (var i = 1; i <= 5; i++)
+                                    {
+                                        <label aria-label="@i star" class="rating__label" for="rating-@i">
+                                            <i class="rating__icon rating__icon--star bi bi-star-fill"></i>
+                                        </label>
+                                        <input class="rating__input" name="Rating" id="rating-@i" value="@i" type="radio" required>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit Comment</button>
+
+                        <div class="mb-3">
+                            <label for="reviewComment" class="form-label">Your Review</label>
+                            <textarea class="form-control" id="reviewComment" name="Comment" rows="3" placeholder="Share your experience with this property..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
                     </form>
                 </div>
             }
             else
             {
                 <div class="alert alert-info mb-4">
-                    <p class="mb-2">Please log in to leave a comment.</p>
+                    <p class="mb-2">Please log in to leave a review.</p>
                     <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
                 </div>
             }
 
-            <!-- Comments List -->
-            @if (Model.Comments != null && Model.Comments.Any())
+            <!-- Reviews List -->
+            @if (Model.Reviews != null && Model.Reviews.Any())
             {
-                foreach (var comment in Model.Comments)
+                foreach (var review in Model.Reviews)
                 {
                     <div class="card mb-3">
                         <div class="card-body">
@@ -241,26 +305,36 @@
                                     <img src="/images/user.jpg" alt="User" class="rounded-circle" style="width: 40px; height: 40px;">
                                 </div>
                                 <div class="ms-3">
-                                    <h6 class="mb-0">@comment.UserName</h6>
-                                    <small class="text-muted">@comment.CreatedDate.ToString("MMMM dd, yyyy")</small>
+                                    <h6 class="mb-0">@review.</h6>
+                                    <div class="d-flex align-items-center">
+                                        <small class="text-muted me-2">@review.CreatedAt.ToString("MMMM dd, yyyy")</small>
+                                        <div class="star-rating-display">
+                                            @for (var i = 1; i <= 5; i++)
+                                            {
+                                                <i class="bi @(review.Rating >= i ? "bi-star-fill" : "bi-star")" style="color: #ffc107; font-size: 0.8rem;"></i>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
-                                @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == comment.UserId)
+                                @if (User.FindFirstValue(ClaimTypes.NameIdentifier) == review.UserId)
                                 {
                                     <div class="ms-auto">
-                                        <button class="btn btn-sm btn-outline-danger delete-comment" data-comment-id="@comment.Id">
+                                        <a asp-controller="User" asp-action="RemoveReview" asp-route-reviewId="@review.Id"
+                                           class="btn btn-sm btn-outline-danger"
+                                           onclick="return confirm('Are you sure you want to delete this review?');">
                                             <i class="bi bi-trash"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 }
                             </div>
-                            <p class="mb-0">@comment.Content</p>
+                            <p class="mb-0">@review.Comment</p>
                         </div>
                     </div>
                 }
             }
             else
             {
-                <p class="text-muted">No comments yet. Be the first to comment!</p>
+                <p class="text-muted">No reviews yet. Be the first to review this property!</p>
             }
         </div>
     </div>
@@ -285,21 +359,81 @@
             });
         }
 
-        // Comment delete functionality
-        $(document).ready(function() {
-            $('.delete-comment').on('click', function() {
-                const commentId = $(this).data('comment-id');
-                if (confirm('Are you sure you want to delete this comment?')) {
-                    $.ajax({
-                        url: '@Url.Action("DeleteComment")',
-                        type: 'POST',
-                        data: { commentId: commentId },
-                        success: function() {
-                            location.reload();
+        // Favorite button functionality
+        $(document).ready(function () {
+            $('#favoriteButton').on('click', function () {
+                const propertyId = $(this).data('property-id');
+
+                $.ajax({
+                    url: '@Url.Action("ToggleFavoriteAjax")',
+                    type: 'POST',
+                    data: { propertyId: propertyId },
+                    success: function (response) {
+                        const button = $('#favoriteButton');
+                        const icon = button.find('i');
+                        const text = button.find('#favoriteText');
+
+                        if (response.isFavorite) {
+                            button.removeClass('btn-outline-danger').addClass('btn-danger');
+                            icon.removeClass('bi-heart').addClass('bi-heart-fill');
+                            text.text('Remove from Favorites');
+                        } else {
+                            button.removeClass('btn-danger').addClass('btn-outline-danger');
+                            icon.removeClass('bi-heart-fill').addClass('bi-heart');
+                            text.text('Add to Favorites');
                         }
-                    });
-                }
+                    }
+                });
+            });
+
+            // Star rating handler
+            $('.rating__input').on('click', function () {
+                let value = $(this).val();
+                $('.rating__input').each(function (index) {
+                    let star = index + 1;
+                    if (star <= value) {
+                        $(this).siblings('label').find('i').removeClass('bi-star').addClass('bi-star-fill');
+                    } else {
+                        $(this).siblings('label').find('i').removeClass('bi-star-fill').addClass('bi-star');
+                    }
+                });
             });
         });
     </script>
+
+    <style>
+        /* Star Rating Styles */
+        .rating-group {
+            display: inline-flex;
+        }
+
+        .rating__icon {
+            pointer-events: none;
+            font-size: 1.5rem;
+            color: #ffc107;
+        }
+
+        .rating__input {
+            position: absolute !important;
+            left: -9999px !important;
+        }
+
+        .rating__label {
+            cursor: pointer;
+            padding: 0 0.1em;
+            font-size: 1.5rem;
+        }
+
+        .rating__input:checked ~ .rating__label .rating__icon {
+            color: #ddd;
+        }
+
+        .rating-group:hover .rating__label .rating__icon {
+            color: #ffc107;
+        }
+
+        .rating__input:hover ~ .rating__label .rating__icon {
+            color: #ddd;
+        }
+    </style>
 }

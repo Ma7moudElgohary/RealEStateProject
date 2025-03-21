@@ -19,5 +19,7 @@ namespace RealEstate.Models
         public ApplicationUser User { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+
     }
 }

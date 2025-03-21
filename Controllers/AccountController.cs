@@ -35,6 +35,7 @@ namespace RealEStateProject.Controllers
             return View("Register");
         }
 
+        // Add this to your Register method in AccountController, after creating the user:
         [HttpPost]
         public async Task<IActionResult> Register(RegisterUserViewModel userFromRequest)
         {
@@ -48,11 +49,20 @@ namespace RealEStateProject.Controllers
                 userModel.UserType = userFromRequest.UserType;
                 userModel.PhoneNumber = userFromRequest.PhoneNumber ?? "0000000";
 
-
                 IdentityResult result = await userManager.CreateAsync(userModel, userFromRequest.Password);
 
                 if (result.Succeeded)
                 {
+                    // Assign role based on UserType
+                    if (userFromRequest.UserType == UserType.Agent)
+                    {
+                        await userManager.AddToRoleAsync(userModel, "Agent");
+                    }
+                    else
+                    {
+                        await userManager.AddToRoleAsync(userModel, "User");
+                    }
+
                     await signInManager.SignInAsync(userModel, false);
                     return RedirectToAction("Index", "Home");
                 }
@@ -84,7 +94,7 @@ namespace RealEStateProject.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-           
+
             return View("Login");
         }
 
@@ -101,7 +111,10 @@ namespace RealEStateProject.Controllers
                     bool found = await userManager.CheckPasswordAsync(userFromDataBase, userFromRequest.Password);
                     if (found)
                     {
-                        await signInManager.SignInAsync(userFromDataBase, userFromRequest.RemeberMe);
+                        List<Claim> claims = new List<Claim>();
+                        claims.Add(new Claim("UserType", userFromDataBase.UserType.ToString()));
+
+                        await signInManager.SignInWithClaimsAsync(userFromDataBase, userFromRequest.RemeberMe, claims);
                         return RedirectToAction("Index", "Home");
                     }
                 }

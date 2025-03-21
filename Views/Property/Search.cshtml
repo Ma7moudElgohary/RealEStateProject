@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = "Property Search";
-    // ViewData["HideFooter"] = true;
+    ViewData["HideFooter"] = true;
 
 }
 
@@ -225,7 +225,7 @@
                                             <span class="me-2">
                                                 @(property.Type == PropertyType.SALE ? "For Sale" : "For Rent")
                                             </span>
-                                            @* <span>LISTING BY: @property.ListingAgent</span> *@
+                                            <span>LISTING BY: @property.AgentName</span>
                                         </p>
                                     </div>
                                 </div>

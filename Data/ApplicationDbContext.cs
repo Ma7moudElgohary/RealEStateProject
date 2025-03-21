@@ -23,5 +23,7 @@ namespace RealEstate.Data
 
         public DbSet<PropertyRequest> PropertyRequests { get; set; }
 
+        public DbSet<Review> Reviews { get; set; }
+
     }
 }

@@ -3,7 +3,8 @@
     public class PropertyImagesViewModel
     {
         public int Id { get; set; }
-        public List<IFormFile>? FormFiles { get; set; }
-        public IEnumerable<string>? Images { get; set; } = Enumerable.Empty<string>();
+        public IFormFile FeaturedImage { get; set; }
+        public List<IFormFile>? NewImages { get; set; }
+        public IEnumerable<string>? Images { get; set; }
     }
 }

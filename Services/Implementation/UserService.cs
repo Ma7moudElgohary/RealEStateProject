@@ -24,6 +24,7 @@ namespace RealEstate.Services
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _userRepository = userRepository;
         }
 
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
@@ -42,7 +43,7 @@ namespace RealEstate.Services
 
             var dashboard = new UserDashboardViewModel
             {
-                Favorites = user.Favorites?.Select(f => new PropertyViewModel
+                Favorites = user.Favorites?.Select(f => new PropertyFavoriteViewModel
                 {
                     Id = f.Property.Id,
                     Title = f.Property.Title,
@@ -54,12 +55,12 @@ namespace RealEstate.Services
                     ZipCode = f.Property.ZipCode,
                     Type = f.Property.Type,
                     Status = f.Property.Status,
-                    CreatedAt = f.Property.CreatedAt,
+                    //CreatedAt = f.Property.CreatedAt,
                     AgentName = $"{f.Property.Agent.FirstName} {f.Property.Agent.LastName}",
-                    IsFavorite = true,
-                    ImageUrls = f.Property.Images.Select(i => i.ImageUrl).ToList(),
-                    FeaturedImageUrl = f.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
-                }).ToList() ?? new List<PropertyViewModel>(),
+                    //IsFavorite = true,
+                    //ImageUrls = f.Property.Images.Select(i => i.ImageUrl).ToList(),
+                    //FeaturedImageUrl = f.Property.FeaturedImage
+                }).ToList(),
 
                 Requests = user.Requests?.Select(r => new PropertyRequestViewModel
                 {
@@ -80,7 +81,7 @@ namespace RealEstate.Services
                         AgentName = $"{r.Property.Agent.FirstName} {r.Property.Agent.LastName}",
                         IsFavorite = false,
                         ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
-                        FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                        FeaturedImageUrl = r.Property.FeaturedImage,
                     },
                     UserName = $"{user.FirstName} {user.LastName}",
                     UserEmail = user.Email,
@@ -132,7 +133,7 @@ namespace RealEstate.Services
                     AgentName = $"{agent.FirstName} {agent.LastName}",
                     IsFavorite = false,
                     ImageUrls = p.Images.Select(i => i.ImageUrl).ToList(),
-                    FeaturedImageUrl = p.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                    FeaturedImageUrl = p.FeaturedImage,
                 }).ToList() ?? new List<PropertyViewModel>(),
 
                 Requests = allRequests.Select(r => new PropertyRequestViewModel
@@ -154,7 +155,7 @@ namespace RealEstate.Services
                         AgentName = $"{agent.FirstName} {agent.LastName}",
                         IsFavorite = false,
                         ImageUrls = r.Property.Images.Select(i => i.ImageUrl).ToList(),
-                        FeaturedImageUrl = r.Property.Images.FirstOrDefault(i => i.IsFeatured)?.ImageUrl
+                        FeaturedImageUrl = r.Property.FeaturedImage
                     },
                     UserName = $"{r.User.FirstName} {r.User.LastName}",
                     UserEmail = r.User.Email,

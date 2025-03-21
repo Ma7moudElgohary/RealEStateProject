@@ -49,7 +49,16 @@ namespace RealEstate.Models
 
         public ICollection<PropertyImage>? Images { get; set; }
 
+        public string? FeaturedImage { get; set; }
+
         public ICollection<PropertyRequest>? Requests { get; set; }
+
+        public ICollection<Review>? Reviews { get; set; }
+
+        public static implicit operator Property(Task<Property> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public enum PropertyType

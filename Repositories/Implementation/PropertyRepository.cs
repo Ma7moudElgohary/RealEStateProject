@@ -14,6 +14,13 @@ namespace RealEStateProject.Repositories.Implementation
         {
         }
 
+        public async Task<int> AddAsync(Property entity)
+        {
+            _context.Properties.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity.Id;
+        }
+
         public async Task<IEnumerable<Property>> GetByAgentIdAsync(string agentId)
         {
             return await _context.Properties

@@ -66,6 +66,8 @@ namespace RealEstate.Controllers
             var userId = User.Identity.IsAuthenticated ? GetUserId() : null;
             var property = await _propertyService.GetPropertyByIdAsync(id, userId);
 
+            var propertyViewModel = await _propertyService.GetPropertyViewModelByIdAsync(id);
+
             if (property == null)
             {
                 return NotFound();
@@ -151,7 +153,7 @@ namespace RealEstate.Controllers
             var viewModel = new PropertyImagesViewModel
             {
                 Id = property.Id,
-                Images = property.ImageUrls
+                Images = (IEnumerable<string>)property.ImageUrls
             };
             return View(viewModel);
         }
@@ -216,7 +218,8 @@ namespace RealEstate.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> ToggleFavorite(int propertyId)
+        [HttpPost]
+        public async Task<IActionResult> ToggleFavoriteAjax(int propertyId)
         {
             var userId = GetUserId();
             var isFavorite = await _favoriteService.IsFavoriteAsync(propertyId, userId);
@@ -224,13 +227,15 @@ namespace RealEstate.Controllers
             if (isFavorite)
             {
                 await _favoriteService.RemoveFavoriteAsync(propertyId, userId);
+                isFavorite = false;
             }
             else
             {
                 await _favoriteService.AddFavoriteAsync(propertyId, userId);
+                isFavorite = true;
             }
 
-            return RedirectToAction(nameof(Details), new { id = propertyId });
+            return Json(new { isFavorite });
         }
 
         [Authorize]
@@ -238,7 +243,24 @@ namespace RealEstate.Controllers
         {
             var userId = GetUserId();
             var favorites = await _favoriteService.GetFavoritesByUserIdAsync(userId);
+
             return View(favorites);
         }
+
+        //[Authorize]
+        //[HttpPost]
+        //public async Task<IActionResult> RemoveFavorite(int id)
+        //{
+        //    var userId = GetUserId();
+        //    var favorite = await _favoriteService.GetFavoriteByIdAsync(id);
+
+        //    // Check if the favorite exists and belongs to the current user
+        //    if (favorite != null && favorite.UserId == userId)
+        //    {
+        //        await _favoriteService.RemoveFavoriteAsync(id);
+        //    }
+
+        //    return RedirectToAction("Favorites");
+        //}
     }
 }

@@ -5,7 +5,7 @@ namespace RealEstate.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -14,7 +14,7 @@ namespace RealEstate.Models
 
         public UserType? UserType { get; set; }
 
-        public string UserImageURL { get; set; }
+        public string? UserImageURL { get; set; }
 
         public ICollection<Property>? Properties { get; set; } = new List<Property>();
 
@@ -22,7 +22,7 @@ namespace RealEstate.Models
 
         public ICollection<PropertyRequest>? Requests { get; set; } = new List<PropertyRequest>();
 
-        
+
     }
     public enum UserType
     {

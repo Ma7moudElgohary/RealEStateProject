@@ -1,0 +1,56 @@
+﻿@model RealEStateProject.ViewModels.User.UserDashboardViewModel
+
+
+<h2>User Dashboard</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New User</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.FirstName</td>
+            <td>@Model.LastName</td>
+            <td>@Model.Email</td>
+            <td>@Model.PhoneNumber</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@Model.FirstName" class="btn btn-info btn-sm">Details</a>
+                <a asp-action="Edit" asp-route-id="@Model.FirstName" class="btn btn-warning btn-sm">Edit</a>
+                <a asp-action="Delete" asp-route-id="@Model.FirstName" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Favorites</h3>
+@if (Model.Favorites.Any())
+{
+    <div class="row">
+        @foreach (var favorite in Model.Favorites)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@favorite.AgentName</h5>
+                        <p class="card-text">@favorite.Description</p>
+                        <a href="#" class="btn btn-danger btn-sm">Remove</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No favorites found.</p>
+}
