@@ -1,12 +1,9 @@
 ﻿@model RealEStateProject.ViewModels.User.UserDashboardViewModel
 
-
 <h2>User Dashboard</h2>
-
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New User</a>
 </p>
-
 <table class="table table-striped">
     <thead>
         <tr>
@@ -24,14 +21,13 @@
             <td>@Model.Email</td>
             <td>@Model.PhoneNumber</td>
             <td>
-                <a asp-action="Details" asp-route-id="@Model.FirstName" class="btn btn-info btn-sm">Details</a>
-                <a asp-action="Edit" asp-route-id="@Model.FirstName" class="btn btn-warning btn-sm">Edit</a>
-                <a asp-action="Delete" asp-route-id="@Model.FirstName" class="btn btn-danger btn-sm">Delete</a>
+                <a asp-controller="User" asp-action="Details" class="btn btn-info btn-sm">Details</a>
+                <a asp-controller="User" asp-action="Edit" class="btn btn-warning btn-sm">Edit</a>
+                <a asp-controller="User" asp-action="Delete" class="btn btn-danger btn-sm">Delete</a>
             </td>
         </tr>
     </tbody>
 </table>
-
 <h3>Favorites</h3>
 @if (Model.Favorites.Any())
 {

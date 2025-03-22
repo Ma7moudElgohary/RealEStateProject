@@ -16,7 +16,7 @@ namespace RealEStateProject.Models
 
         public int YearsOfExperience { get; set; }
 
-        public string ProfileImageUrl { get; set; }
+        public string? ProfileImageUrl { get; set; }
 
         public virtual ApplicationUser User { get; set; }
 

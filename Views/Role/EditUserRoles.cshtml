@@ -1,0 +1,156 @@
+﻿@model RealEStateProject.ViewModels.Roles.EditUserRolesViewModel
+@{
+    ViewData["Title"] = "Edit User Roles";
+}
+
+<link rel="stylesheet" href="~/css/Roles/EditUserRoles.css" />
+
+<div class="edit-roles-container">
+    <div class="container">
+        <div class="edit-panel fade-in">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Edit User Roles</h1>
+                <p class="page-subtitle">Manage roles and permissions for user: <span class="user-highlight">@Model.UserName</span></p>
+            </div>
+
+            <!-- Alerts -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>@TempData["ErrorMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Back Link -->
+            <div class="action-row">
+                <a asp-action="ManageUserRoles" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to User Roles
+                </a>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i> Editing: <span class="username">@Model.UserName</span>
+                </div>
+            </div>
+
+            <!-- Form Card -->
+            <div class="roles-card">
+                <div class="card-header">
+                    <div class="card-header-bg"></div>
+                    <div class="card-header-content">
+                        <h5><i class="fas fa-user-tag"></i> Assign Role</h5>
+                        <span class="roles-count">@Model.UserRoles.Count Roles Available</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditUserRoles" method="post">
+                        <div asp-validation-summary="All" class="validation-summary"></div>
+                        <input type="hidden" asp-for="UserId" />
+                        <input type="hidden" asp-for="UserName" />
+
+                        <div class="roles-selection-container">
+                            <div class="selection-instruction">
+                                <i class="fas fa-info-circle"></i>
+                                <p>Select a role for this user. Users can have only one role at a time.</p>
+                            </div>
+
+                            <div class="roles-list">
+                                @foreach (var role in Model.UserRoles)
+                                {
+                                    <div class="role-item @(role.IsSelected ? "selected" : "")">
+                                        <div class="role-check">
+                                            <input class="role-check-input" type="radio"
+                                                   name="SelectedRoleId"
+                                                   value="@role.RoleId"
+                                                   id="role_@role.RoleId"
+                                            @(role.IsSelected ? "checked" : "") />
+                                            <label class="role-check-label" for="role_@role.RoleId">
+                                                <div class="role-info">
+                                                    <div class="role-name">
+                                                        <i class="fas fa-user-shield"></i> @role.RoleName
+                                                    </div>
+                                                    <div class="role-description">
+                                                        @GetRoleDescription(role.RoleName)
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="action-btn save-btn">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                            <a asp-action="ManageUserRoles" class="action-btn cancel-btn">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetRoleDescription(string roleName)
+    {
+        switch (roleName)
+        {
+            case "Admin":
+                return "Full access to all system features and settings";
+            case "Agent":
+                return "Can manage properties and client interactions";
+            case "User":
+                return "Standard user with basic access privileges";
+            default:
+                return "Custom role with specific permissions";
+        }
+    }
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Highlight selected role item
+            $('.role-check-input').change(function() {
+                // Remove selected class from all items
+                $('.role-item').removeClass('selected');
+
+                // Add selected class to currently checked item
+                if ($(this).is(':checked')) {
+                    $(this).closest('.role-item').addClass('selected');
+                }
+            });
+
+            // Animation for role items
+            $('.role-item').each(function(index) {
+                $(this).addClass('slide-in');
+                $(this).css('animation-delay', (index * 0.1) + 's');
+            });
+
+            // Button hover effects
+            $('.action-btn').hover(
+                function() {
+                    $(this).addClass('pulse');
+                },
+                function() {
+                    $(this).removeClass('pulse');
+                }
+            );
+        });
+    </script>
+}

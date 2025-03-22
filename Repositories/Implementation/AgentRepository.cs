@@ -13,8 +13,6 @@ namespace RealEStateProject.Repositories
         {
         }
 
-       
-
         public async Task<Agent> GetByUserIdAsync(string userId)
         {
             return await _dbSet
@@ -23,6 +21,17 @@ namespace RealEStateProject.Repositories
                 .FirstOrDefaultAsync(a => a.UserId == userId);
         }
 
-    
+
+        public async Task<Agent> GetByPropertyIdAsync(int propertyId)
+        {
+            return await _dbSet
+                .Include(a => a.User)
+                .Include(a => a.Properties)
+                .FirstOrDefaultAsync(a => a.Properties.Any(p => p.Id == propertyId));
+        }
+
+
+
+
     }
 }

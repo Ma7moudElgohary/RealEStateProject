@@ -21,6 +21,8 @@ namespace RealEstate.Data
 
         public DbSet<Favorite> Favorites { get; set; }
 
+        public DbSet<Message> Messages { get; set; }
+
         public DbSet<PropertyRequest> PropertyRequests { get; set; }
 
         public DbSet<Review> Reviews { get; set; }

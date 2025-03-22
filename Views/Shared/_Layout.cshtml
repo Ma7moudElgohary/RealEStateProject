@@ -3,431 +3,106 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Aesthetic Villanueva</title>
+    <title>@ViewData["Title"]  EstateWebsite</title>
+
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="~/img/1.png" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="icon" href="img/favicon.ico">
+    <!--Other-->
+    <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/lib/sweetalert2/sweetalert2.min.css" />
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="stylesheet" href="~/theme/css/google web fonts.css" />
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="~/theme/fontawesome-free-6.5.2-web/css/all.css" />
+    <link rel="stylesheet" href="~/theme/fontawesome-free-6.5.2-web/css/all.min.css" />
+
+    <!-- Libraries Stylesheet -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/RealEStateProject.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-   
+    <link rel="stylesheet" href="~/EstateWebsite.styles.css" asp-append-version="true" />
+
+    <link rel="stylesheet" href="~/theme/lib/animate/animate.min.css" />
+    <link rel="stylesheet" href="~/theme/lib/owlcarousel/assets/owl.carousel.min.css" />
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link rel="stylesheet" href="~/theme/css/bootstrap.min.css" />
+    <!-- Template Stylesheet -->
+    <link rel="stylesheet" href="~/theme/css/style.css" />
+
+
+    <!-- Include jQuery first -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Owl Carousel CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+<!-- Include Bootstrap Icons for navigation arrows -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+<!-- Include Owl Carousel JS (after jQuery) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 </head>
-
-
-
 <body>
-
     <partial name="_Header" />
 
-
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-            
-        </main>
-    </div>
-
+    <main role="main">
+        @RenderBody()
+    </main>
 
     @if (ViewData["HideFooter"] == null || (bool)ViewData["HideFooter"] == false)
     {
         <partial name="_Footer" />
     }
 
-
-
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-        // Add hover effect to navbar buttons
-        document.querySelectorAll('.btn-nav').forEach(button => {
-            button.addEventListener('mouseenter', function(e) {
-                const x = e.clientX - e.target.getBoundingClientRect().left;
-                const y = e.clientY - e.target.getBoundingClientRect().top;
+        // Property image hover effect
+        document.querySelectorAll('.property-card').forEach(card => {
+            card.addEventListener('mouseenter', function () {
+                this.querySelector('.property-image').style.transform = 'scale(1.05)';
+            });
 
-                const ripple = document.createElement('span');
-                ripple.style.left = `${x}px`;
-                ripple.style.top = `${y}px`;
-
-                this.appendChild(ripple);
-
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
+            card.addEventListener('mouseleave', function () {
+                this.querySelector('.property-image').style.transform = 'scale(1)';
             });
         });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Sticky header effect
+        const header = document.querySelector('.navbar');
+        const scrollWatcher = () => {
+            if (window.scrollY > 100) {
+                header.classList.add('navbar-scrolled');
+            } else {
+                header.classList.remove('navbar-scrolled');
+            }
+        };
+
+        window.addEventListener('scroll', scrollWatcher);
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
-
-<style>
-    :root {
-        --primary-color: #6a11cb;
-        --secondary-color: #2575fc;
-        --accent-color: #ff9a9e;
-        --dark-color: #2c1e4b;
-        --light-color: #f8f9fa;
-        --text-color: #252525;
-        --white: #ffffff;
-    }
-
-    body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    main {
-        flex: 1;
-    }
-
-    /* Fantasy Modern Header Styles */
-    .navbar {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
-        box-shadow: 0 4px 20px rgba(106, 17, 203, 0.25);
-        padding: 0.6rem 0;
-        position: relative;
-        overflow: hidden;
-    }
-
-        .navbar::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
-            opacity: 0.5;
-            z-index: 0;
-        }
-
-    .navbar-brand {
-        color: var(--white) !important;
-        font-weight: 700;
-        font-size: 1.5rem;
-        display: flex;
-        align-items: center;
-        position: relative;
-        z-index: 1;
-    }
-
-        .navbar-brand img {
-            height: 40px;
-            margin-right: 12px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-            transition: all 0.3s ease;
-        }
-
-        .navbar-brand:hover img {
-            transform: rotate(5deg);
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4)) brightness(1.1);
-        }
-
-    .nav-item {
-        position: relative;
-        z-index: 1;
-    }
-
-    .nav-link {
-        color: var(--white) !important;
-        font-weight: 500;
-        padding: 0.5rem 1rem;
-        position: relative;
-        transition: all 0.3s ease;
-        border-radius: 4px;
-    }
-
-        .nav-link::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--accent-color) !important;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-
-            .nav-link:hover::before {
-                width: 60%;
-            }
-
-        .nav-link i {
-            margin-right: 5px;
-            font-size: 0.9rem;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-link:hover i {
-            transform: translateY(-2px);
-        }
-
-    .navbar-buttons {
-        position: relative;
-        z-index: 1;
-    }
-
-    .btn-nav {
-        padding: 0.4rem 1rem;
-        border-radius: 30px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        border: none;
-        position: relative;
-        overflow: hidden;
-    }
-
-        .btn-nav::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            transition: width 0.5s, height 0.5s;
-        }
-
-        .btn-nav:hover::before {
-            width: 200px;
-            height: 200px;
-        }
-
-    .btn-login {
-        background-color: transparent;
-        border: 1.5px solid var(--white);
-        color: var(--white);
-    }
-
-    .btn-register {
-        background-color: var(--accent-color);
-        color: var(--white);
-        margin-left: 8px;
-        box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
-    }
-
-    .navbar-toggler {
-        border: none;
-        padding: 0.4rem;
-        color: var(--white);
-        z-index: 1;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-    }
-
-        .navbar-toggler:focus {
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
-        }
-
-    /* Modern Compact Footer Styles */
-    .footer {
-        background: linear-gradient(to right, var(--dark-color), var(--primary-color));
-        color: var(--white);
-        padding: 1.5rem 0 0.5rem;
-        position: relative;
-        overflow: hidden;
-        margin-top: 2rem;
-    }
-
-        .footer::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color), var(--accent-color));
-        }
-
-    .footer-content {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: flex-start;
-        padding-bottom: 1rem;
-    }
-
-    .footer-logo {
-        height: 50px;
-        margin-right: 15px;
-        filter: brightness(1.2) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-    }
-
-    .footer-brand {
-        display: flex;
-        align-items: center;
-        margin-bottom: 0.5rem;
-    }
-
-        .footer-brand h3 {
-            margin: 0;
-            font-weight: 700;
-            font-size: 1.3rem;
-            background: linear-gradient(to right, var(--white), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-    .footer-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem 2rem;
-    }
-
-    .footer-link {
-        color: var(--white);
-        text-decoration: none;
-        position: relative;
-        padding: 0.2rem 0;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-    }
-
-        .footer-link::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background-color: var(--accent-color);
-            transition: width 0.3s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--accent-color);
-        }
-
-            .footer-link:hover::before {
-                width: 100%;
-            }
-
-    .footer-contact {
-        display: flex;
-        gap: 1rem;
-        margin: 0.5rem 0;
-    }
-
-    .contact-item {
-        display: flex;
-        align-items: center;
-        font-size: 0.85rem;
-    }
-
-        .contact-item i {
-            color: var(--accent-color);
-            margin-right: 5px;
-        }
-
-    .newsletter-form {
-        position: relative;
-        max-width: 400px;
-    }
-
-    .newsletter-input {
-        width: 100%;
-        padding: 0.5rem 1rem;
-        padding-right: 3rem;
-        border-radius: 30px;
-        border: none;
-        background-color: rgba(255, 255, 255, 0.1);
-        color: var(--white);
-        font-size: 0.9rem;
-    }
-
-        .newsletter-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--accent-color);
-        }
-
-        .newsletter-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-    .newsletter-btn {
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        bottom: 5px;
-        width: 2.5rem;
-        border-radius: 50%;
-        border: none;
-        background: var(--accent-color);
-        color: var(--white);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-    }
-
-        .newsletter-btn:hover {
-            background: var(--secondary-color);
-            transform: scale(1.05);
-        }
-
-    .footer-social {
-        display: flex;
-        gap: 0.75rem;
-        margin-top: 1rem;
-    }
-
-    .social-link {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.1);
-        color: var(--white);
-        transition: all 0.3s ease;
-    }
-
-        .social-link:hover {
-            background: var(--accent-color);
-            transform: translateY(-3px);
-            color: var(--white);
-        }
-
-    .footer-bottom {
-        padding-top: 0.75rem;
-        margin-top: 0.75rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        font-size: 0.8rem;
-    }
-
-    .footer-bottom-links {
-        display: flex;
-        gap: 1rem;
-    }
-
-    .footer-bottom-link {
-        color: rgba(255, 255, 255, 0.7);
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-
-        .footer-bottom-link:hover {
-            color: var(--accent-color);
-        }
-
-</style>

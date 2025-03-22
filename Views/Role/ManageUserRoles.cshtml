@@ -1,0 +1,280 @@
+﻿@model IEnumerable<RealEStateProject.ViewModels.Roles.UserRolesViewModel>
+@{
+    ViewData["Title"] = "Manage User Roles";
+}
+
+<link rel="stylesheet" href="~/css/Roles/ManageUserRoles.css" />
+
+<div class="manage-roles-container">
+    <div class="container">
+        <div class="manage-panel fade-in">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Manage User Roles</h1>
+                <p class="page-subtitle">Control and organize user access within your RealEstate platform</p>
+            </div>
+
+            <!-- Alerts -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>@TempData["ErrorMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Actions Row -->
+            <div class="action-row">
+                <a asp-action="Index" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Roles
+                </a>
+
+                <a asp-action="AddRole" class="edit-btn action-btn">
+                    <i class="fas fa-plus-circle"></i> Add New Role
+                </a>
+            </div>
+
+            <!-- Filters -->
+            <div class="filter-container">
+                <div class="filter-label">
+                    <i class="fas fa-filter me-2"></i> Filter:
+                </div>
+                <button type="button" class="filter-btn active" data-filter="all">All Users</button>
+                <button type="button" class="filter-btn" data-filter="Admin">Admins</button>
+                <button type="button" class="filter-btn" data-filter="Agent">Agents</button>
+                <button type="button" class="filter-btn" data-filter="User">Regular Users</button>
+                <button type="button" class="filter-btn" data-filter="Other">Other Roles</button>
+            </div>
+
+            <!-- Search -->
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by name or username...">
+            </div>
+
+            <!-- Users Table -->
+            <div class="users-card">
+                <div class="card-header">
+                    <div class="card-header-bg"></div>
+                    <div class="card-header-content">
+                        <h5><i class="fas fa-users-cog"></i> Users and Their Roles</h5>
+                        <span class="users-count">@Model.Count() Users</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="users-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-user"></i> Username</th>
+                                    <th><i class="fas fa-id-card"></i> Full Name</th>
+                                    <th><i class="fas fa-tags"></i> Roles</th>
+                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Any())
+                                {
+                                    @foreach (var user in Model)
+                                    {
+                                        <tr class="user-row" data-roles="@user.Roles">
+                                            <td class="username">@user.UserName</td>
+                                            <td>@user.FirstName @user.LastName</td>
+                                            <td>
+                                                <div class="roles-container">
+                                                    @foreach (var role in user.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                                                    {
+                                                        <span class="role-badge">
+                                                            <i class="fas fa-check-circle"></i> @role.Trim()
+                                                        </span>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td class="actions-cell">
+                                                <a asp-action="EditUserRoles" asp-route-userId="@user.UserId" class="action-btn edit-btn">
+                                                    <i class="fas fa-user-edit"></i> Edit Roles
+                                                </a>
+                                                <button type="button" class="action-btn delete-btn"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteUserModal"
+                                                        data-user-id="@user.UserId" data-user-name="@user.UserName">
+                                                    <i class="fas fa-user-times"></i> Delete
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4">
+                                            <div class="empty-state">
+                                                <div class="empty-state-icon">
+                                                    <i class="fas fa-users-slash"></i>
+                                                </div>
+                                                <h3 class="empty-state-title">No Users Found</h3>
+                                                <p class="empty-state-description">
+                                                    There are no users in the system yet or your search returned no results.
+                                                </p>
+                                                <a href="#" class="add-user-btn">
+                                                    <i class="fas fa-user-plus me-2"></i> Add New User
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalLabel">
+                    <i class="fas fa-user-times me-2"></i> Confirm User Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+
+                    <div class="delete-warning">
+                        <p class="fs-5">Are you sure you want to delete the user <span class="delete-username" id="userNameDisplay"></span>?</p>
+                    </div>
+
+                    <div class="warning-alert">
+                        <div class="warning-alert-title">
+                            <i class="fas fa-info-circle"></i> Warning
+                        </div>
+                        <ul class="warning-list">
+                            <li>This action cannot be undone</li>
+                            <li>All data associated with this user will be permanently deleted</li>
+                            <li>Any properties linked to this user will need to be reassigned</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn cancel-btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i> Cancel
+                </button>
+                <a href="#" id="confirmDeleteUserBtn" class="modal-btn confirm-delete-btn">
+                    <i class="fas fa-trash-alt me-2"></i> Delete User
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Table row animation
+            $('.user-row').each(function(index) {
+                $(this).addClass('slide-in');
+                $(this).css('animation-delay', (index * 0.05) + 's');
+            });
+
+            // Filter functionality
+            $('.filter-btn').click(function () {
+                var filterValue = $(this).data('filter');
+
+                // Highlight active button
+                $('.filter-btn').removeClass('active');
+                $(this).addClass('active');
+
+                if (filterValue === 'all') {
+                    $('.user-row').show();
+                } else if (filterValue === 'Other') {
+                    // Show users that don't have Admin, Agent, or User roles
+                    $('.user-row').each(function () {
+                        var roles = $(this).data('roles').toString();
+                        if (!roles.includes('Admin') && !roles.includes('Agent') && !roles.includes('User')) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                } else {
+                    // Show users with specific role
+                    $('.user-row').each(function () {
+                        var roles = $(this).data('roles').toString();
+                        if (roles.includes(filterValue)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                }
+            });
+
+            // Search functionality
+            $('#searchInput').on('input', function() {
+                performSearch();
+            });
+
+            function performSearch() {
+                var searchText = $('#searchInput').val().toLowerCase();
+
+                if (searchText === '') {
+                    $('.user-row').show();
+                    return;
+                }
+
+                $('.user-row').each(function () {
+                    var username = $(this).find('td:eq(0)').text().toLowerCase();
+                    var fullName = $(this).find('td:eq(1)').text().toLowerCase();
+
+                    if (username.includes(searchText) || fullName.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            // Handle delete modal data
+            $('#deleteUserModal').on('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                const button = $(event.relatedTarget);
+
+                // Extract info from data attributes
+                const userId = button.data('user-id');
+                const userName = button.data('user-name');
+
+                // Update the modal's content
+                $('#userNameDisplay').text(userName);
+                $('#confirmDeleteUserBtn').attr('href', '@Url.Action("DeleteUser", "Role")?userId=' + userId);
+            });
+
+            // Button hover effects
+            $('.action-btn, .filter-btn').hover(
+                function() {
+                    $(this).addClass('pulse');
+                },
+                function() {
+                    $(this).removeClass('pulse');
+                }
+            );
+        });
+    </script>
+}

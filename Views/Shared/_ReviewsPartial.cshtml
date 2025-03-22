@@ -1,0 +1,171 @@
+﻿@model dynamic
+@using RealEstate.Models
+
+<div class="reviews-section">
+    @if (Model.TotalReviews > 0)
+    {
+            <h4>Reviews (@Model.TotalReviews)</h4>
+            <div class="reviews-list">
+            @foreach (var review in Model.Reviews)
+            {
+                        <div class="review-item card mb-3">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= review.Rating)
+                                        {
+                                                            <i class="bi bi-star-fill text-warning"></i>
+                                        }
+                                        else
+                                        {
+                                                            <i class="bi bi-star text-muted"></i>
+                                        }
+                                    }
+                                            <span class="text-muted ms-2">@review.CreatedAt.ToString("MMM d, yyyy")</span>
+                                        </h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                    @(string.IsNullOrEmpty(review.UserId) ? "Anonymous User" : User.Identity.Name)
+                                        </h6>
+                                    </div>
+                            @if (User.Identity.IsAuthenticated && (User.FindFirst("sub")?.Value == review.UserId || User.Identity.Name == review.UserId))
+                            {
+                                            <div class="btn-group">
+                                                <a href="@Url.Action("Edit", "Reviews", new { id = review.Id })" class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="Edit this review">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button class="btn btn-sm btn-outline-danger delete-review" 
+                                                        data-review-id="@review.Id" 
+                                                        data-property-id="@review.PropertyId"
+                                                        data-bs-toggle="tooltip" 
+                                                        title="Delete this review">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                            }
+                                </div>
+                                <p class="card-text mt-3">@review.Comment</p>
+
+                                <div class="review-property mt-2">
+                                    <small class="text-muted">
+                                        <a href="@Url.Action("Details", "Properties", new { id = review.PropertyId })">
+                                    @(review.Property?.Name ?? $"Property #{review.PropertyId}")
+                                        </a>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+            }
+            </div>
+
+        @if (Model.TotalPages > 1)
+        {
+                    <nav aria-label="Review pagination">
+                        <ul class="pagination justify-content-center">
+                    @if (Model.CurrentPage > 1)
+                    {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = 1, propertyId = ViewBag.PropertyId })" aria-label="First">
+                                            <span aria-hidden="true">&laquo;&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = Model.CurrentPage - 1, propertyId = ViewBag.PropertyId })" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                    }
+
+                    @{
+                        int startPage = Math.Max(1, Model.CurrentPage - 2);
+                        int endPage = Math.Min(Model.TotalPages, startPage + 4);
+
+                        if (endPage - startPage < 4 && startPage > 1)
+                        {
+                            startPage = Math.Max(1, endPage - 4);
+                        }
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                                    <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = i, propertyId = ViewBag.PropertyId })">@i</a>
+                                    </li>
+                    }
+
+                    @if (Model.CurrentPage < Model.TotalPages)
+                    {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = Model.CurrentPage + 1, propertyId = ViewBag.PropertyId })" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("Index", new { page = Model.TotalPages, propertyId = ViewBag.PropertyId })" aria-label="Last">
+                                            <span aria-hidden="true">&raquo;&raquo;</span>
+                                        </a>
+                                    </li>
+                    }
+                        </ul>
+                    </nav>
+        }
+    }
+    else
+    {
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle me-2"></i> No reviews yet. Be the first to review this property!
+            </div>
+    }
+
+    @if (User.Identity.IsAuthenticated)
+    {
+            <div class="mt-4">
+                <a href="@Url.Action("Create", "Reviews", new { propertyId = ViewBag.PropertyId })" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-2"></i>Write a Review
+                </a>
+            </div>
+    }
+    else
+    {
+            <div class="mt-4 alert alert-secondary">
+                <i class="bi bi-info-circle me-2"></i> <a href="@Url.Action("Login", "Account", new { returnUrl = Context.Request.Path })">Sign in</a> to leave a review.
+            </div>
+    }
+</div>
+
+@section Scripts {
+        <script>
+            $(function () {
+                // Enable tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+
+                // Handle delete button clicks
+                $('.delete-review').on('click', function () {
+                    const reviewId = $(this).data('review-id');
+                    const propertyId = $(this).data('property-id');
+
+                    if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
+                        $.ajax({
+                            url: '@Url.Action("Delete", "Reviews")/' + reviewId,
+                            type: 'POST',
+                            data: {
+                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                            },
+                            success: function (result) {
+                                location.reload();
+                            },
+                            error: function (xhr, status, error) {
+                                alert('An error occurred while deleting the review. Please try again.');
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    }
+                });
+            });
+        </script>
+}

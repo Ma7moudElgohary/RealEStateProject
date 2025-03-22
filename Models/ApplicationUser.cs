@@ -22,6 +22,8 @@ namespace RealEstate.Models
 
         public ICollection<PropertyRequest>? Requests { get; set; } = new List<PropertyRequest>();
 
+        public ICollection<Review>? Reviews { get; set; } = new List<Review>();
+
 
     }
     public enum UserType

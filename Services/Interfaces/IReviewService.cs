@@ -12,8 +12,11 @@ namespace RealEStateProject.Services.Interfaces
 
         Task<int> DeleteAsync(int id);
 
-        Task<IEnumerable<Review>> GetByPropertyIdAsync(int propertyId);
+        //Task<IEnumerable<Review>> GetByPropertyIdAsync(int propertyId);
 
         Task<double> GetAverageRatingAsync(int propertyId);
+
+        Task<IEnumerable<Review>> GetReviewsByPropertyIdAsync(int propertyId, int page = 1, int pageSize = 10);
+        Task<int> GetReviewCountForPropertyAsync(int propertyId);
     }
 }

@@ -1,0 +1,169 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewData["Title"] = "Role Management";
+}
+
+<link rel="stylesheet" href="~/css/Roles/RoleIndex.css" />
+
+<div class="role-management-container">
+    <div class="container">
+        <div class="role-panel fade-in">
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1 class="page-title">Role Management</h1>
+                <p class="page-subtitle">Control and organize user access within your RealEstate platform</p>
+            </div>
+
+            <!-- Alerts -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle"></i>
+                    <div>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>@TempData["ErrorMessage"]</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Actions Row -->
+            <div class="action-row">
+                <a asp-action="AddRole" class="action-btn primary-btn">
+                    <i class="fas fa-plus-circle"></i> Create New Role
+                </a>
+                <a asp-action="ManageUserRoles" class="action-btn info-btn">
+                    <i class="fas fa-users-cog"></i> Manage User Roles
+                </a>
+            </div>
+
+            <!-- Roles Table -->
+            <div class="roles-card">
+                <div class="card-header">
+                    <div class="card-header-bg"></div>
+                    <div class="card-header-content">
+                        <h5><i class="fas fa-user-tag"></i> Roles</h5>
+                        <span class="roles-count">@Model.Count() Roles</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-container">
+                        <table class="roles-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-fingerprint"></i> Role ID</th>
+                                    <th><i class="fas fa-tag"></i> Role Name</th>
+                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var role in Model)
+                                {
+                                    <tr class="role-row slide-in">
+                                        <td class="role-id">@role.Id</td>
+                                        <td class="role-name">@role.Name</td>
+                                        <td class="actions-cell">
+                                            <div class="btn-group">
+                                                @* <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm action-btn edit-btn"> *@
+                                                @*     <i class="fas fa-edit"></i> Edit *@
+                                                @* </a> *@
+                                                <button type="button" class="btn btn-sm action-btn delete-btn"
+                                                        data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                                        data-role-id="@role.Id" data-role-name="@role.Name">
+                                                    <i class="fas fa-trash"></i> Delete
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="fas fa-trash-alt me-2"></i> Confirm Role Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="warning-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+
+                    <p class="fs-5 mb-4">Are you sure you want to delete the role <strong id="roleNameDisplay"></strong>?</p>
+
+                    <div class="warning-alert">
+                        <div class="mb-2 fw-bold"><i class="fas fa-info-circle me-2"></i> This action can only succeed if:</div>
+                        <ul class="mb-0">
+                            <li>No users are currently assigned to this role</li>
+                            <li>This role is not a system role</li>
+                            <li>This role is not referenced by system functions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn cancel-btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i> Cancel
+                </button>
+                <a href="#" id="confirmDeleteBtn" class="modal-btn confirm-delete-btn">
+                    <i class="fas fa-trash-alt me-2"></i> Delete Role
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Table row animation
+            $('.role-row').each(function(index) {
+                $(this).css('animation-delay', (index * 0.05) + 's');
+            });
+
+            // Handle delete modal data
+            $('#deleteModal').on('show.bs.modal', function (event) {
+                // Button that triggered the modal
+                const button = $(event.relatedTarget);
+
+                // Extract info from data attributes
+                const roleId = button.data('role-id');
+                const roleName = button.data('role-name');
+
+                // Update the modal's content
+                $('#roleNameDisplay').text(roleName);
+                $('#confirmDeleteBtn').attr('href', '@Url.Action("DeleteRole", "Role")/' + roleId);
+            });
+
+            // Button hover effects
+            $('.action-btn').hover(
+                function() {
+                    $(this).addClass('pulse');
+                },
+                function() {
+                    $(this).removeClass('pulse');
+                }
+            );
+        });
+    </script>
+}

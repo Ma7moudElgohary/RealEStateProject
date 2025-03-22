@@ -84,7 +84,7 @@ namespace RealEStateProject.ViewModels.Property
 
 
 
-        public IEnumerable<ReviewViewModel> Reviews { get; set; }
+        public IEnumerable<ReviewViewModel>? Reviews { get; set; }
 
         public double AverageRating { get; set; }
 

@@ -131,9 +131,9 @@
 
 <!-- Main Content - Map and Listings -->
 <div class="container-fluid p-0">
-    <div class="row g-0">
+    <div class="row g-0 property-container">
         <!-- Map Section (Left) -->
-        <div class="col-12 col-lg-6 position-relative" style="height: calc(100vh - 70px);">
+        <div class="col-12 col-lg-6 map-fixed">
             <div id="propertyMap" class="h-100 w-100"></div>
             <div class="position-absolute top-0 left-0 m-3">
                 <div class="bg-white shadow rounded p-2">
@@ -159,7 +159,7 @@
         </div>
 
         <!-- Property Listings Section (Right) -->
-        <div class="col-12 col-lg-6">
+        <div class="col-12 col-lg-6 listing-scrollable">
             <div class="p-3">
                 <!-- Results Header -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -178,60 +178,61 @@
                 </div>
 
                 <!-- Property Results -->
-                @if (Model.Properties == null || !Model.Properties.Any())
+               @if (Model.Properties == null || !Model.Properties.Any())
+        {
+            <div class="alert alert-warning">
+                <h4 class="alert-heading">No Properties Found!</h4>
+                <p class="mb-0">No properties match your search criteria. Try adjusting your filters.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-2">
+                @foreach (var property in Model.Properties)
                 {
-                    <div class="alert alert-warning">
-                        <h4 class="alert-heading">No Properties Found!</h4>
-                        <p class="mb-0">No properties match your search criteria. Try adjusting your filters.</p>
-                    </div>
-                }
-                else
-                {
-                    <div class="row g-3">
-                        @foreach (var property in Model.Properties)
-                        {
-                            <div class="col-12">
-                                <div class="card property-card h-100 border-0 shadow-sm">
-                                    <div class="position-relative">
-                                        <a asp-action="Details" asp-route-id="@property.Id">
-                                            @if (property.ImageUrls != null && property.ImageUrls.Any())
-                                            {
-                                                <img class="card-img-top rounded-top" src="@property.ImageUrls.First()" style="height: 220px; object-fit: cover;">
-                                            }
-                                            else
-                                            {
-                                                <img class="card-img-top rounded-top" src="/img/default-property.jpg" style="height: 220px; object-fit: cover;">
-                                            }
-                                        </a>
-                                        <button class="btn btn-light rounded-circle position-absolute end-0 top-0 m-2 favorite-btn" data-property-id="@property.Id">
-                                            <i class="fa fa-heart-o"></i>
-                                        </button>
-
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <h5 class="text-primary fw-bold mb-0">$@property.Price.ToString("N0")</h5>
-                                            <span class="text-dark">
-                                                <i class="fa fa-bed me-1"></i>@property.Bedrooms
-                                                <i class="fa fa-bath ms-2 me-1"></i>@property.Bathrooms
-                                                <i class="fa fa-ruler-combined ms-2 me-1"></i>@property.SquareFeet sqft
-                                            </span>
-                                        </div>
-                                        <h6 class="card-title mb-2">@property.Title</h6>
-                                        <p class="card-text text-muted mb-0">
-                                            <i class="fa fa-map-marker-alt me-1"></i>@property.Address
-                                        </p>
-                                        <p class="card-text mt-2 small">
+                    <div class="col-4">
+                        <div class="card property-card h-100 border-0 shadow-sm small">
+                            <div class="position-relative">
+                                <a asp-action="Details" asp-route-id="@property.Id">
+                                    @if (property.ImageUrls != null && property.ImageUrls.Any())
+                                    {
+                                        <img class="card-img-top rounded-top" src="@property.ImageUrls.First()" style="height: 140px; object-fit: cover;">
+                                    }
+                                    else
+                                    {
+                                        <img class="card-img-top rounded-top" src="/img/default-property.jpg" style="height: 140px; object-fit: cover;">
+                                    }
+                                </a>
+                                <button class="btn btn-light rounded-circle position-absolute end-0 top-0 m-2 favorite-btn btn-sm" data-property-id="@property.Id">
+                                    <i class="fa fa-heart-o"></i>
+                                </button>
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="text-primary fw-bold mb-0">$@property.Price.ToString("N0")</h6>
+                                    <span class="text-dark small">
+                                        <i class="fa fa-bed me-1"></i>@property.Bedrooms
+                                        <i class="fa fa-bath ms-1 me-1"></i>@property.Bathrooms
+                                    </span>
+                                </div>
+                                <p class="card-title mb-1 small">@property.Title</p>
+                                <p class="card-text text-muted mb-0 small">
+                                    <i class="fa fa-map-marker-alt me-1"></i>@property.Address
+                                </p>
+                                <p class="card-text mt-2 small">
                                             <span class="me-2">
                                                 @(property.Type == PropertyType.SALE ? "For Sale" : "For Rent")
                                             </span>
                                             <span>LISTING BY: @property.AgentName</span>
                                         </p>
-                                    </div>
-                                </div>
                             </div>
-                        }
+                        </div>
                     </div>
+                }
+            </div>
+        }
+    </div>
+</div>
 
                     <!-- Pagination -->
                     @if (Model.Pagination != null && Model.Pagination.TotalPages > 1)
@@ -299,21 +300,35 @@
 
         // Map initialization and functionality
         function initMap() {
-            var map = new google.maps.Map(document.getElementById('propertyMap'), {
-                center: { lat: 31.0409, lng: 31.3785 }, // Default to Mansoura
-                zoom: 10,
-                mapTypeId: google.maps.MapTypeId.ROADMAP,
-                scrollwheel: true  // Explicitly enable scroll wheel zoom
-            });
+    var map = new google.maps.Map(document.getElementById('propertyMap'), {
+        center: { lat: 31.0409, lng: 31.3785 }, // Default to Mansoura
+        zoom: 10,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        scrollwheel: true
+    });
 
-            // Add properties to the map (if properties exist)
-            if (typeof propertyData !== 'undefined' && propertyData.length > 0) {
-                displayPropertiesOnMap(map, propertyData);
-            }
+    // Add properties to the map directly (no need to check if propertyData exists)
+    var propertyData = @Html.Raw(Json.Serialize(Model.Properties.Select(p => new
+    {
+        id = p.Id,
+        title = p.Title,
+        price = p.Price,
+        address = p.Address,
+        bedrooms = p.Bedrooms,
+        bathrooms = p.Bathrooms,
+        squareFeet = p.SquareFeet,
+        type = p.Type.ToString(),
+        latitude = p.Latitude,
+        longitude = p.Longitude
+    })));
+    
+    if (propertyData && propertyData.length > 0) {
+        displayPropertiesOnMap(map, propertyData);
+    }
 
-            // Set up UI controls
-            setupMapControls(map);
-        }
+    // Set up UI controls
+    setupMapControls(map);
+}
 
         function displayPropertiesOnMap(map, properties) {
             // Array to store all markers
@@ -468,9 +483,7 @@
                 });
             });
 
-            // Property data provided by backend
-            // This should be added to as a JavaScript variable
-            /*
+            // Property data provided by backend        
             var propertyData = @Html.Raw(Json.Serialize(Model.Properties.Select(p => new
             {
                 id = p.Id,
@@ -484,7 +497,7 @@
                 latitude = p.Latitude,
                 longitude = p.Longitude
             })));
-            */
+           
         });
     </script>
 }

@@ -42,7 +42,7 @@ namespace RealEstate.Models
 
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
-        public string AgentId { get; set; }
+        public string? AgentId { get; set; }
 
         [ForeignKey("AgentId")]
         public ApplicationUser Agent { get; set; }
@@ -80,5 +80,52 @@ namespace RealEstate.Models
         PENDING,
         APPROVED,
         REJECTED
+    }
+
+    public enum City
+    {
+        Cairo,
+        Alexandria,
+        Giza,
+        ShubraElKheima,
+        PortSaid,
+        Suez,
+        Luxor,
+        Mansoura,
+        Tanta,
+        Asyut,
+        Ismailia,
+        Fayyum,
+        Zagazig,
+        Aswan,
+        Damietta,
+        Damanhur,
+        alMinya,
+        BeniSuef,
+        Qena,
+        Sohag,
+        Hurghada,
+        ShibinElKom,
+        Banha,
+        KafrelSheikh,
+        Arish,
+        Mallawi,
+        Bilbais,
+        MarsaMatruh,
+        Idku,
+        MitGhamr,
+        AlHamidiyya,
+        Desouk,
+        Qalyub,
+        AbuKabir,
+        KafrelDawwar,
+        Girga,
+        Akhmim,
+        Matareya,
+        AbuQir,
+        KafrElZayat,
+        ShibinElQanater,
+        Rosetta
+
     }
 }

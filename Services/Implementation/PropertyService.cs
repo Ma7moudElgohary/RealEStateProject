@@ -383,6 +383,7 @@ namespace RealEStateProject.Services.Implementation
             {
                 Id = property.Id,
                 Title = property.Title,
+                AgentId = property.AgentId,
                 Description = property.Description,
                 Price = property.Price,
                 SquareFeet = property.Area,

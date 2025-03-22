@@ -1,247 +1,292 @@
 ﻿@{
-    ViewData["Title"] = "About Us";
+    ViewData["Title"] = "About";
 }
-
-<div class="container my-5">
-    <!-- Hero Section -->
-    <div class="row mb-5">
-        <div class="col-lg-12 text-center">
-            <h1 class="display-4 fw-bold mb-4" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">About Aesthetic Villanueva</h1>
-            <p class="lead">Your trusted partner in finding the perfect property since 2010</p>
-            <div class="divider mx-auto my-4" style="width: 80px; height: 4px; background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));"></div>
+<!-- About Hero Start -->
+<div class="container-fluid header bg-white p-0">
+    <div class="row g-0 align-items-center flex-column-reverse flex-md-row" style="padding-top: 80px; margin-top: 1rem;">
+        <div class="col-md-6 p-5 mt-lg-5">
+            <h1 class="display-5 animated fadeIn mb-4" style="padding-top: 1rem;">About <span class="text-primary">Our Company</span></h1>
+            <p class="animated fadeIn mb-4 pb-2">
+                We're dedicated to helping you find the perfect property. With years of experience in the real estate market,
+                our team of professionals is committed to providing exceptional service and guidance throughout your property journey.
+            </p>
+            <a asp-action="Contact" asp-controller="Home" class="btn btn-primary py-3 px-5 me-3 animated fadeIn mt-3">Contact Us</a>
         </div>
-    </div>
-
-    <!-- Our Story Section -->
-    <div class="row mb-5 align-items-center">
-        <div class="col-lg-6 mb-4 mb-lg-0">
-            <div class="position-relative">
-                <img src="/api/placeholder/600/400" alt="Our Story" class="img-fluid rounded-3 shadow" style="object-fit: cover;" />
-                <div class="position-absolute" style="bottom: -20px; right: -20px; width: 100px; height: 100px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 50%; z-index: -1;"></div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <h2 class="fw-bold mb-4" style="color: var(--dark-color);">Our Story</h2>
-            <p>Founded in 2010, Aesthetic Villanueva began with a simple mission: to transform the real estate experience by combining innovative technology with personalized service. What started as a small team of passionate real estate professionals has grown into one of the most trusted agencies in the region.</p>
-            <p>Our journey has been defined by our commitment to excellence, integrity, and client satisfaction. We believe that finding a home is more than a transaction—it's about finding a place where memories are made and dreams come true.</p>
-        </div>
-    </div>
-
-    <!-- Our Values Section -->
-    <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold" style="color: var(--dark-color);">Our Core Values</h2>
-            <div class="divider mx-auto my-3" style="width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));"></div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="mb-3 mx-auto" style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-house-heart text-white" style="font-size: 2rem;"></i>
-                    </div>
-                    <h4 class="card-title mb-3" style="color: var(--dark-color);">Client-Focused</h4>
-                    <p class="card-text">We put our clients' needs first, providing personalized service that exceeds expectations. Your dream home is our priority.</p>
+        <div class="col-md-6 animated fadeIn">
+            <div class="owl-carousel header-carousel">
+                <div class="owl-carousel-item">
+                    <img class="img-fluid" src="~/theme/img/Property-2.jpg" alt="Our Office">
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="mb-3 mx-auto" style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-clipboard-check text-white" style="font-size: 2rem;"></i>
-                    </div>
-                    <h4 class="card-title mb-3" style="color: var(--dark-color);">Integrity</h4>
-                    <p class="card-text">We operate with complete transparency and honesty in every transaction. Trust is the foundation of our business relationships.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="mb-3 mx-auto" style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-graph-up-arrow text-white" style="font-size: 2rem;"></i>
-                    </div>
-                    <h4 class="card-title mb-3" style="color: var(--dark-color);">Innovation</h4>
-                    <p class="card-text">We embrace cutting-edge technology and creative solutions to simplify and enhance the real estate experience.</p>
+                <div class="owl-carousel-item">
+                    <img class="img-fluid" src="~/theme/img/Property-3.jpg" alt="Our Team">
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Team Section -->
-    <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold" style="color: var(--dark-color);">Meet Our Team</h2>
-            <div class="divider mx-auto my-3" style="width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));"></div>
-            <p class="mb-5">Our experienced team of real estate professionals is dedicated to helping you find your perfect property</p>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm">
-                <img src="/api/placeholder/400/300" class="card-img-top" alt="Team Member">
-                <div class="card-body text-center p-4">
-                    <h4 class="card-title" style="color: var(--dark-color);">Sarah Johnson</h4>
-                    <p class="text-muted mb-2">Founder & CEO</p>
-                    <p class="card-text">With over 15 years of experience in luxury real estate, Sarah leads our team with passion and expertise.</p>
-                    <div class="d-flex justify-content-center mt-3">
-                        <a href="#" class="me-2 social-icon"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="me-2 social-icon"><i class="bi bi-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-envelope"></i></a>
-                    </div>
+</div>
+<!-- About Hero End -->
+<!-- Our Story Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                <div class="about-img position-relative overflow-hidden p-5 pe-0">
+                    <img class="img-fluid w-100" src="~/theme/img/about.jpg">
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm">
-                <img src="/api/placeholder/400/300" class="card-img-top" alt="Team Member">
-                <div class="card-body text-center p-4">
-                    <h4 class="card-title" style="color: var(--dark-color);">Michael Chen</h4>
-                    <p class="text-muted mb-2">Senior Property Consultant</p>
-                    <p class="card-text">Michael specializes in residential properties and has helped hundreds of families find their dream homes.</p>
-                    <div class="d-flex justify-content-center mt-3">
-                        <a href="#" class="me-2 social-icon"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="me-2 social-icon"><i class="bi bi-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-envelope"></i></a>
+            <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                <h1 class="mb-4">Our Story</h1>
+                <p class="mb-4">Founded in 2010, we started with a simple mission: to make property searching and buying an enjoyable experience. What began as a small office with just three agents has grown into one of the region's most trusted real estate companies.</p>
+                <p class="mb-4">Over the years, we've helped thousands of families find their dream homes and assisted investors in building profitable property portfolios. Our success comes from our commitment to understanding each client's unique needs and providing personalized solutions.</p>
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <h6 class="mb-3"><i class="fa fa-check text-primary me-2"></i>Licensed Professionals</h6>
+                        <h6 class="mb-0"><i class="fa fa-check text-primary me-2"></i>Modern Approach</h6>
+                    </div>
+                    <div class="col-sm-6">
+                        <h6 class="mb-3"><i class="fa fa-check text-primary me-2"></i>Fair Pricing</h6>
+                        <h6 class="mb-0"><i class="fa fa-check text-primary me-2"></i>24/7 Support</h6>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-4">
-            <div class="card border-0 shadow-sm">
-                <img src="/api/placeholder/400/300" class="card-img-top" alt="Team Member">
-                <div class="card-body text-center p-4">
-                    <h4 class="card-title" style="color: var(--dark-color);">Elena Rodriguez</h4>
-                    <p class="text-muted mb-2">Commercial Property Specialist</p>
-                    <p class="card-text">Elena's expertise in commercial real estate has made her the go-to advisor for business property investments.</p>
-                    <div class="d-flex justify-content-center mt-3">
-                        <a href="#" class="me-2 social-icon"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="me-2 social-icon"><i class="bi bi-twitter"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-envelope"></i></a>
-                    </div>
-                </div>
+                <a class="btn btn-primary py-3 px-5 mt-3" href="">Learn More</a>
             </div>
         </div>
     </div>
-
-    <!-- Stats Section -->
-    <div class="row py-5 mb-5" style="background: linear-gradient(135deg, rgba(106, 17, 203, 0.05), rgba(37, 117, 252, 0.05)); border-radius: 15px;">
-        <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold" style="color: var(--dark-color);">Our Impact</h2>
-            <div class="divider mx-auto my-3" style="width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));"></div>
+</div>
+<!-- Our Story End -->
+<!-- Our Values Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="mb-3">Our Core Values</h1>
+            <p>We operate with a set of principles that guide every interaction and transaction, ensuring we maintain the highest standards in all we do.</p>
         </div>
-
-        <div class="col-md-3 col-6 text-center mb-4 mb-md-0">
-            <div class="display-4 fw-bold mb-2" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">15+</div>
-            <p class="mb-0">Years of Experience</p>
-        </div>
-
-        <div class="col-md-3 col-6 text-center mb-4 mb-md-0">
-            <div class="display-4 fw-bold mb-2" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">5000+</div>
-            <p class="mb-0">Happy Clients</p>
-        </div>
-
-        <div class="col-md-3 col-6 text-center">
-            <div class="display-4 fw-bold mb-2" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">8500+</div>
-            <p class="mb-0">Properties Sold</p>
-        </div>
-
-        <div class="col-md-3 col-6 text-center">
-            <div class="display-4 fw-bold mb-2" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">30+</div>
-            <p class="mb-0">Expert Agents</p>
-        </div>
-    </div>
-
-    <!-- Testimonials -->
-    <div class="row mb-5">
-        <div class="col-12 text-center mb-4">
-            <h2 class="fw-bold" style="color: var(--dark-color);">What Our Clients Say</h2>
-            <div class="divider mx-auto my-3" style="width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));"></div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="mb-3" style="color: var(--accent-color);">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="card-text fst-italic mb-4">"Working with Aesthetic Villanueva made finding our dream home a breeze. Their team was professional, knowledgeable, and genuinely cared about our needs. We couldn't be happier with our new home!"</p>
-                    <div class="d-flex align-items-center">
-                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">JD</div>
-                        <div class="ms-3">
-                            <h5 class="mb-0" style="color: var(--dark-color);">John & Dana Smith</h5>
-                            <small class="text-muted">Homeowners since 2023</small>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="service-item rounded overflow-hidden">
+                    <div class="position-relative p-4 pt-0">
+                        <div class="service-icon">
+                            <i class="fa fa-shield-alt fa-3x"></i>
                         </div>
+                        <h4 class="mb-3">Integrity</h4>
+                        <p>We believe in honest and transparent dealings with all our clients. What we promise is what we deliver.</p>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body p-4">
-                    <div class="mb-3" style="color: var(--accent-color);">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                    </div>
-                    <p class="card-text fst-italic mb-4">"As a first-time home buyer, I was nervous about the process. The team at Aesthetic Villanueva guided me every step of the way, making it simple and straightforward. I can't thank them enough!"</p>
-                    <div class="d-flex align-items-center">
-                        <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">RL</div>
-                        <div class="ms-3">
-                            <h5 class="mb-0" style="color: var(--dark-color);">Rebecca Lewis</h5>
-                            <small class="text-muted">Homeowner since 2024</small>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="service-item rounded overflow-hidden">
+                    <div class="position-relative p-4 pt-0">
+                        <div class="service-icon">
+                            <i class="fa fa-handshake fa-3x"></i>
                         </div>
+                        <h4 class="mb-3">Excellence</h4>
+                        <p>We strive for excellence in every aspect of our service, from property listing to closing deals.</p>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Call to Action -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="card border-0 p-5 text-center" style="background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); border-radius: 15px;">
-                <div class="card-body py-4">
-                    <h2 class="text-white fw-bold mb-3">Ready to Find Your Dream Property?</h2>
-                    <p class="text-white mb-4">Let our experienced team guide you through the process and help you find the perfect home.</p>
-                    <div>
-                        <a href="@Url.Action("Contact", "Home")" class="btn btn-light btn-lg px-4 me-2" style="border-radius: 30px;">Contact Us</a>
-                        <a href="@Url.Action("Properties", "Home")" class="btn btn-outline-light btn-lg px-4" style="border-radius: 30px;">Browse Properties</a>
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="service-item rounded overflow-hidden">
+                    <div class="position-relative p-4 pt-0">
+                        <div class="service-icon">
+                            <i class="fa fa-heart fa-3x"></i>
+                        </div>
+                        <h4 class="mb-3">Client-Focused</h4>
+                        <p>Our clients' needs and satisfaction are at the heart of everything we do. Your dream is our mission.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- Our Values End -->
+<!-- Our Achievements Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="bg-light rounded p-3">
+            <div class="bg-white rounded p-4" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                        <img class="img-fluid rounded w-100" src="~/theme/img/call-to-action.jpg" alt="">
+                    </div>
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                        <div class="mb-4">
+                            <h1 class="mb-3">Our Achievements</h1>
+                            <p>Over the years, we've achieved significant milestones that reflect our commitment to excellence and client satisfaction.</p>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="bg-light rounded p-3 text-center">
+                                    <h1 class="mb-0" data-toggle="counter-up">5000+</h1>
+                                    <span class="text-primary">Properties Sold</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bg-light rounded p-3 text-center">
+                                    <h1 class="mb-0" data-toggle="counter-up">12000+</h1>
+                                    <span class="text-primary">Happy Clients</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bg-light rounded p-3 text-center mt-3">
+                                    <h1 class="mb-0" data-toggle="counter-up">15</h1>
+                                    <span class="text-primary">Years Experience</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bg-light rounded p-3 text-center mt-3">
+                                    <h1 class="mb-0" data-toggle="counter-up">25</h1>
+                                    <span class="text-primary">Awards Won</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Our Achievements End -->
+<!-- Leadership Team Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+            <h1 class="mb-3">Leadership Team</h1>
+            <p>Meet the experienced professionals who lead our company with vision, expertise, and dedication to client success.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="team-item rounded overflow-hidden">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/theme/img/team-1.jpg" alt="">
+                        <div class="position-absolute start-50 top-100 translate-middle d-flex align-items-center">
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4 mt-3">
+                        <h5 class="fw-bold mb-0">Sarah Johnson</h5>
+                        <small>CEO & Founder</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="team-item rounded overflow-hidden">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/theme/img/team-2.jpg" alt="">
+                        <div class="position-absolute start-50 top-100 translate-middle d-flex align-items-center">
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4 mt-3">
+                        <h5 class="fw-bold mb-0">John Smithn</h5>
+                        <small>Chief Operations Officer</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="team-item rounded overflow-hidden">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/theme/img/team-3.jpg" alt="">
+                        <div class="position-absolute start-50 top-100 translate-middle d-flex align-items-center">
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4 mt-3">
+                        <h5 class="fw-bold mb-0">Emily Davis</h5>
+                        <small>Sales Director</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
+                <div class="team-item rounded overflow-hidden">
+                    <div class="position-relative">
+                        <img class="img-fluid" src="~/theme/img/team-4.jpg" alt="">
+                        <div class="position-absolute start-50 top-100 translate-middle d-flex align-items-center">
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-twitter"></i></a>
+                            <a class="btn btn-square mx-1" href=""><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                    <div class="text-center p-4 mt-3">
+                        <h5 class="fw-bold mb-0">Michael Brown</h5>
+                        <small>Marketing Manager</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Leadership Team End -->
+<!-- Contact CTA Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="bg-light rounded p-3">
+            <div class="bg-white rounded p-4" style="border: 1px dashed rgba(0, 185, 142, .3)">
+                <div class="row g-5 align-items-center">
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.1s">
+                        <img class="img-fluid rounded w-100" src="~/theme/img/call-to-action.jpg" alt="">
+                    </div>
+                    <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                        <div class="mb-4">
+                            <h1 class="mb-3">Have Questions About Our Services?</h1>
+                            <p>Our team of experts is ready to assist you with any inquiries about property buying, selling, or investment opportunities.</p>
+                        </div>
+                        <a href="" class="btn btn-primary py-3 px-4 me-2"><i class="fa fa-phone-alt me-2"></i>Call Us Today</a>
+                        <a href="" class="btn btn-dark py-3 px-4"><i class="fa fa-calendar-alt me-2"></i>Schedule a Meeting</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Contact CTA End -->
+@section Scripts {
+    <!-- Include jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Owl Carousel CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+    <!-- Include Bootstrap Icons for navigation arrows -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <!-- Include Owl Carousel JS (after jQuery) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <!-- Include CounterUp for stats animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
 
-<!-- Custom CSS for this page -->
-<style>
-    .social-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(106, 17, 203, 0.1);
-        color: var(--primary-color);
-        transition: all 0.3s ease;
-    }
+    <script>
+        $(document).ready(function() {
+            // Initialize the header carousel
+            $(".header-carousel").owlCarousel({
+                autoplay: true,
+                smartSpeed: 1500,
+                items: 1,
+                dots: false,
+                loop: true,
+                nav: true,
+                navText: [
+                    '<i class="bi bi-chevron-left"></i>',
+                    '<i class="bi bi-chevron-right"></i>'
+                ]
+            });
 
-        .social-icon:hover {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            transform: translateY(-3px);
-        }
-</style>
+            // Initialize counter-up
+            $('[data-toggle="counter-up"]').counterUp({
+                delay: 10,
+                time: 2000
+            });
+
+            // Add animation to elements when they become visible
+            $(window).scroll(function () {
+                if ($(this).scrollTop() > 300) {
+                    $('.wow').addClass('animated');
+                }
+            });
+        });
+    </script>
+}

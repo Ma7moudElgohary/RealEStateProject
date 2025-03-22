@@ -29,7 +29,7 @@ namespace RealEStateProject.ViewModels.Property
         public string State { get; set; }
         public string ZipCode { get; set; }
         public string Street { get; set; }
-        public string Governorate { get; set; }
+
 
 
         // Property status and type information

@@ -24,16 +24,25 @@ namespace RealEStateProject.Services.Implementation
 
         public async Task<Review> CreateAsync(Review review)
         {
-            var property = _propertyRepository.GetByIdAsync(review.PropertyId);
-            var rev = new Review
-            {
-                PropertyId = review.PropertyId,
-                Rating = review.Rating,
-                Comment = review.Comment,
-                UserId = review.UserId,
-                CreatedAt = DateTime.UtcNow,
-                Property = property.Result
-            };
+            //var property = _propertyRepository.GetByIdAsync(review.PropertyId);
+            //var rev = new Review
+            //{
+            //    PropertyId = review.PropertyId,
+            //    Rating = review.Rating,
+            //    Comment = review.Comment,
+            //    UserId = "0fc97d92-f580-42a3-a9b7-23f378f3caaa",
+            //    CreatedAt = DateTime.UtcNow,
+            //    Property = property.Result
+            //};
+
+            //await _repository.AddAsync(review);
+            //await _repository.SaveChangesAsync();
+            //return review;
+            // Don't assign the Property object, just use the foreign key
+            review.CreatedAt = DateTime.UtcNow;
+
+            // Use the userId passed from the controller
+            // Don't hardcode the UserId here
 
             await _repository.AddAsync(review);
             await _repository.SaveChangesAsync();
@@ -85,6 +94,27 @@ namespace RealEStateProject.Services.Implementation
             return entity;
         }
 
+        public async Task<IEnumerable<Review>> GetReviewsByPropertyIdAsync(int propertyId, int page = 1, int pageSize = 10)
+        {
 
+            int itemsToSkip = (page - 1) * pageSize;
+
+            var reviews = await _repository.FindAsync(r => r.PropertyId == propertyId);
+
+            return reviews
+                .OrderByDescending(r => r.CreatedAt)
+                .Skip(itemsToSkip)
+                .Take(pageSize)
+                .ToList();
+        }
+
+        public async Task<int> GetReviewCountForPropertyAsync(int propertyId)
+        {
+
+            var reviews = await _repository.FindAsync(r => r.PropertyId == propertyId);
+
+            // Return the count
+            return reviews.Count();
+        }
     }
 }

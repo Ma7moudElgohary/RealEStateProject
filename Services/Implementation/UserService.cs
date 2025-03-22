@@ -206,6 +206,7 @@ namespace RealEstate.Services
 
         public async Task UpdateUserAsync(ApplicationUser user)
         {
+
             await _userRepository.UpdateAsync(user);
         }
 

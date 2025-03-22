@@ -7,7 +7,9 @@ namespace RealEStateProject.Services.Interfaces
     public interface IAgentService : IBaseService<Agent, AgentViewModel>
     {
         Task<AgentViewModel> GetAgentByUserIdAsync(string userId);
-        
+
         Task<bool> IsUserAgentAsync(string userId);
+
+        Task<Agent> GetAgentByPropertyIdAsync(int propertyId);
     }
 }

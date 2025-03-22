@@ -6,6 +6,11 @@ using System.Security.Claims;
 using RealEstate.Models;
 using RealEstate.Services;
 using RealEStateProject.ViewModels.Property;
+using Microsoft.EntityFrameworkCore;
+using RealEStateProject.Models;
+using RealEStateProject.Services.Interfaces;
+using RealEStateProject.Repositories.Interfaces;
+using RealEStateProject.Repositories;
 
 namespace RealEstate.Controllers
 {
@@ -14,13 +19,25 @@ namespace RealEstate.Controllers
     {
         private readonly IPropertyService _propertyService;
         private readonly IFavoriteService _favoriteService;
+        private readonly IMessageService _messageService;
+        private readonly IAgentRepository _agentRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<PropertyController> _logger;
 
-        public PropertyController(IPropertyService propertyService, IFavoriteService favoriteService, IMapper mapper)
+        public PropertyController(
+            IPropertyService propertyService,
+            IFavoriteService favoriteService,
+            IMessageService messageService,
+            IAgentRepository agentRepository,
+            IMapper mapper,
+            ILogger<PropertyController> logger)
         {
             _propertyService = propertyService;
             _favoriteService = favoriteService;
+            _messageService = messageService;
+            _agentRepository = agentRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         private string GetUserId()
@@ -45,6 +62,7 @@ namespace RealEstate.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
+
             var properties = await _propertyService.GetPropertiesByAgentIdAsync(userId, userId);
             return View(properties);
         }
@@ -245,6 +263,69 @@ namespace RealEstate.Controllers
             var favorites = await _favoriteService.GetFavoritesByUserIdAsync(userId);
 
             return View(favorites);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ContactAgent(ContactAgentViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Json(new { success = false, message = "Please fill all required fields." });
+            }
+
+            try
+            {
+                // Make sure the AgentId is set if it's not coming from the form
+                if (string.IsNullOrEmpty(model.AgentId))
+                {
+                    // Get the property to find its agent
+                    var propertyViewModel = await _propertyService.GetPropertyByIdAsync(model.PropertyId, null);
+
+                    if (propertyViewModel != null)
+                    {
+                        // Use the AgentId from the PropertyViewModel
+                        model.AgentId = propertyViewModel.AgentId;
+                    }
+                    else
+                    {
+                        return Json(new { success = false, message = "Property not found." });
+                    }
+                }
+
+                await _messageService.SendContactMessageAsync(model);
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending contact message: " + ex.Message);
+                return Json(new { success = false, message = "An error occurred while sending your message." });
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Messages()
+        {
+            var userId = GetUserId();
+            var messages = await _messageService.GetMessagesByAgentIdAsync(userId);
+            return View(messages);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> MarkMessageAsRead(int id)
+        {
+            await _messageService.MarkAsReadAsync(id);
+            return RedirectToAction(nameof(Messages));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> DeleteMessage(int id)
+        {
+            await _messageService.DeleteAsync(id);
+            return RedirectToAction(nameof(Messages));
         }
 
         //[Authorize]

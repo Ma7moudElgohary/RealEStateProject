@@ -4,6 +4,8 @@ namespace RealEStateProject.ViewModels.User
 {
     public class UserProfileViewModel
     {
+
+
         [Required(ErrorMessage = "First name is required")]
         [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
         public string FirstName { get; set; }
@@ -18,5 +20,12 @@ namespace RealEStateProject.ViewModels.User
 
         [Phone(ErrorMessage = "Invalid phone number")]
         public string PhoneNumber { get; set; }
+
+        public string? ProfilePicture { get; set; }
+
+        [Display(Name = "Profile Image")]
+        public IFormFile? ProfileImageFile { get; set; }
+
+        public string? Id { get; set; }
     }
 }

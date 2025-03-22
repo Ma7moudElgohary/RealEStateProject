@@ -83,6 +83,7 @@ namespace RealEStateProject.Repositories.Implementation
             return await _context.Properties
                 .Include(p => p.Agent)
                 .Include(p => p.Images)
+                .Include(p => p.Reviews)
                 .FirstOrDefaultAsync(p => p.Id == (int)id);
         }
 

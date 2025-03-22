@@ -11,5 +11,7 @@ namespace RealEStateProject.Repositories.Interfaces
         //Task<int> AddAsync(Agent agent);
         //Task UpdateAsync(Agent agent);
         //Task DeleteAsync(int id);
+
+        Task<Agent> GetByPropertyIdAsync(int propertyId);
     }
 }

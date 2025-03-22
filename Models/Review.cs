@@ -26,5 +26,8 @@ namespace RealEstate.Models
 
         public string? UserId { get; set; }
 
+        [ForeignKey("UserId")]
+        public ApplicationUser? User { get; set; }
+
     }
 }
