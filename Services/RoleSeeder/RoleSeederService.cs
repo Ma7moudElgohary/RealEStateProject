@@ -16,7 +16,6 @@ namespace RealEStateProject.Services.RoleSeeder
 
         public async Task SeedRolesAsync()
         {
-            // Create roles if they don't exist
             string[] roleNames = { "Admin", "Agent", "User" };
 
             foreach (var roleName in roleNames)
