@@ -69,104 +69,6 @@
     </div>
 </form>
 <!-- Category Start -->
-@* <div class="container-xxl py-5">
-    <div class="container">
-        <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-            <h1 class="mb-3">Property Types</h1>
-            <p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore lorem kasd vero ipsum sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-apartment.png" alt="Icon">
-                        </div>
-                        <h6>Apartment</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-villa.png" alt="Icon">
-                        </div>
-                        <h6>Villa</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-house.png" alt="Icon">
-                        </div>
-                        <h6>Home</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-housing.png" alt="Icon">
-                        </div>
-                        <h6>Office</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-building.png" alt="Icon">
-                        </div>
-                        <h6>Building</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.3s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-neighborhood.png" alt="Icon">
-                        </div>
-                        <h6>Townhouse</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.5s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-condominium.png" alt="Icon">
-                        </div>
-                        <h6>Shop</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-            <div class="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.7s">
-                <a class="cat-item d-block bg-light text-center rounded p-3" href="">
-                    <div class="rounded p-4">
-                        <div class="icon mb-3">
-                            <img class="img-fluid" src="~/theme/img/icon-luxury.png" alt="Icon">
-                        </div>
-                        <h6>Garage</h6>
-                        <span>123 Properties</span>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</div> *@
 <!-- Category End -->
 <div class="container-xxl py-5">
     <div class="container">
@@ -186,7 +88,7 @@
                         <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                             <div class="property-item rounded overflow-hidden">
                                 <div class="position-relative overflow-hidden">
-                                    <a href=""><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
+                                    <a asp-action="Details" asp-controller="Property" asp-route-id="@property.Id"><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
                                     <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">For @property.Type</div>
                                     <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">@property.Type</div>
                                 </div>
@@ -212,7 +114,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="property-item rounded overflow-hidden">
                                 <div class="position-relative overflow-hidden">
-                                    <a href=""><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
+                                    <a asp-action="Details" asp-controller="Property" asp-route-id="@property.Id"><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
                                     <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">For @property.Type</div>
                                     <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">@property.Type</div>
                                 </div>
@@ -238,7 +140,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="property-item rounded overflow-hidden">
                                 <div class="position-relative overflow-hidden">
-                                    <a href=""><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
+                                    <a asp-action="Details" asp-controller="Property" asp-route-id="@property.Id"><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
                                     <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">For @property.Type</div>
                                     <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">@property.Type</div>
                                 </div>
@@ -315,7 +217,7 @@
                         <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                             <div class="property-item rounded overflow-hidden">
                                 <div class="position-relative overflow-hidden">
-                                    <a href=""><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
+                                    <a asp-action="Details" asp-controller="Property" asp-route-id="@property.Id"><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
                                     <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">For @property.Type</div>
                                     <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">@property.Type</div>
                                 </div>
@@ -341,7 +243,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="property-item rounded overflow-hidden">
                                 <div class="position-relative overflow-hidden">
-                                    <a href=""><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
+                                    <a asp-action="Details" asp-controller="Property" asp-route-id="@property.Id"><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
                                     <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">For @property.Type</div>
                                     <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">@property.Type</div>
                                 </div>
@@ -367,7 +269,7 @@
                         <div class="col-lg-4 col-md-6">
                             <div class="property-item rounded overflow-hidden">
                                 <div class="position-relative overflow-hidden">
-                                    <a href=""><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
+                                    <a asp-action="Details" asp-controller="Property" asp-route-id="@property.Id"><img class="img-fluid" src="@property.FeaturedImageUrl" alt=""></a>
                                     <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">For @property.Type</div>
                                     <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">@property.Type</div>
                                 </div>
