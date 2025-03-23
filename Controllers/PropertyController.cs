@@ -73,6 +73,17 @@ namespace RealEstate.Controllers
             var userId = User.Identity.IsAuthenticated ? GetUserId() : null;
             var searchResults = await _propertyService.SearchPropertiesAsync(filter, userId, page, pageSize);
 
+            // Add this if the user is authenticated
+            if (userId != null)
+            {
+                var favorites = await _favoriteService.GetFavoritesByUserIdAsync(userId);
+                ViewBag.FavoriteIds = favorites.Select(f => f.PropertyId).ToList();
+            }
+            else
+            {
+                ViewBag.FavoriteIds = new List<int>();
+            }
+
             ViewBag.PropertyTypes = GetEnumSelectList<PropertyType>();
 
             return View(searchResults);

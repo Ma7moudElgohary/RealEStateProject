@@ -203,9 +203,16 @@
                                         <img class="card-img-top rounded-top" src="/img/default-property.jpg" style="height: 140px; object-fit: cover;">
                                     }
                                 </a>
-                                <button class="btn btn-light rounded-circle position-absolute end-0 top-0 m-2 favorite-btn btn-sm" data-property-id="@property.Id">
-                                    <i class="fa fa-heart-o"></i>
-                                </button>
+                                        <button class="btn btn-light rounded-circle position-absolute end-0 top-0 m-2 favorite-btn btn-sm" data-property-id="@property.Id">
+                                            @if (User.Identity.IsAuthenticated && ViewBag.FavoriteIds != null && ViewBag.FavoriteIds.Contains(property.Id))
+                                            {
+                                                <i class="fa fa-heart"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-heart-o"></i>
+                                            }
+                                        </button>
                             </div>
                             <div class="card-body p-2">
                                 <div class="d-flex justify-content-between align-items-center mb-1">
@@ -482,6 +489,79 @@
                     }
                 });
             });
+
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const propertyId = this.getAttribute('data-property-id');
+                    const icon = this.querySelector('i');
+
+                    // Call the same AJAX endpoint used in the Details view
+                    $.ajax({
+                        url: '/Property/ToggleFavoriteAjax',
+                        type: 'POST',
+                        data: { propertyId: propertyId },
+                        success: function (response) {
+                            if (response.isFavorite) {
+                                icon.classList.remove('fa-heart-o');
+                                icon.classList.add('fa-heart');
+                                showToast('Added to favorites!', 'success');
+                            } else {
+                                icon.classList.remove('fa-heart');
+                                icon.classList.add('fa-heart-o');
+                                showToast('Removed from favorites', 'info');
+                            }
+                        },
+                        error: function () {
+                            showToast('Error updating favorites. Please try again.', 'error');
+                        }
+                    });
+                });
+            });
+
+            // Add toast function if not already present
+            function showToast(message, type = 'info') {
+                // Create toast container if it doesn't exist
+                let toastContainer = document.querySelector('.toast-container');
+                if (!toastContainer) {
+                    toastContainer = document.createElement('div');
+                    toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+                    document.body.appendChild(toastContainer);
+                }
+
+                // Create toast element
+                const toastId = 'toast-' + Date.now();
+                const toast = document.createElement('div');
+                toast.className = `toast align-items-center text-white bg-${type === 'success' ? 'success' : type === 'error' ? 'danger' : 'primary'} border-0`;
+                toast.id = toastId;
+                toast.setAttribute('role', 'alert');
+                toast.setAttribute('aria-live', 'assertive');
+                toast.setAttribute('aria-atomic', 'true');
+
+                toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            `;
+
+                toastContainer.appendChild(toast);
+
+                // Initialize and show toast
+                const bsToast = new bootstrap.Toast(toast, {
+                    animation: true,
+                    autohide: true,
+                    delay: 3000
+                });
+                bsToast.show();
+
+                // Remove toast after it's hidden
+                toast.addEventListener('hidden.bs.toast', function () {
+                    toast.remove();
+                });
+            }
 
             // Property data provided by backend        
             var propertyData = @Html.Raw(Json.Serialize(Model.Properties.Select(p => new

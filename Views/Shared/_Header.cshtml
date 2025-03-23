@@ -8,13 +8,13 @@
                 <img src="~/img/2.png" alt="Perfect Home Realty" height="42">
                 <span class="ms-3 fw-bold text-primary">Aesthetic Villanueva</span>
             </a>
-            
+
             <!-- Mobile Toggle Button -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" 
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
+
             <!-- Navigation Items -->
             <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                 <ul class="navbar-nav mx-auto">
@@ -28,69 +28,109 @@
                             <i class="fa fa-building text-primary me-1"></i> Properties
                         </a>
                     </li>
-@*                     <li class="nav-item">
-                        <a class="nav-link px-3" asp-controller="Home" asp-action="Agents">
-                            <i class="fa fa-users text-primary me-1"></i> Agents
-                        </a>
+                    @*                     <li class="nav-item">
+                    <a class="nav-link px-3" asp-controller="Home" asp-action="Agents">
+                    <i class="fa fa-users text-primary me-1"></i> Agents
+                    </a>
                     </li> *@
+
+                    @*                     <li class="nav-item">
+                    <a class="nav-link px-3" asp-controller="Home" asp-action="Contact">
+                    <i class="fa fa-envelope text-primary me-1"></i> Contact
+                    </a>
+                    </li> *@
+
                     <li class="nav-item">
                         <a class="nav-link px-3" asp-controller="Home" asp-action="About">
                             <i class="fa fa-info-circle text-primary me-1"></i> About
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3" asp-controller="Home" asp-action="Contact">
-                            <i class="fa fa-envelope text-primary me-1"></i> Contact
-                        </a>
-                    </li>
-
-                    @if (User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link px-3" asp-controller="Property" asp-action="Favorites">
-                                <i class="fa fa-heart text-primary me-1"></i> Favorites
-                            </a>
-                        </li>
-
-                        @if (User.IsInRole("Agent") || User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link px-3" asp-controller="Property" asp-action="Index">
-                                    <i class="fa fa-list text-primary me-1"></i> My Listings
-                                </a>
-                            </li>
-                        }
-
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle px-3" href="#" id="adminDropdown" role="button" 
-                                   data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-cog text-primary me-1"></i> Admin
-                                </a>
-                                <ul class="dropdown-menu shadow border-0" aria-labelledby="adminDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Role" asp-action="Index">Manage Roles</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Property" asp-action="AdminDashboard">Dashboard</a></li>
-                                </ul>
-                            </li>
-                        }
-                    }
                 </ul>
 
                 <!-- Authentication Buttons -->
                 <div class="navbar-buttons">
                     @if (User.Identity.IsAuthenticated)
+
                     {
                         <div class="d-flex align-items-center">
-                            <span class="me-3 text-light">
-                                <i class="fa fa-user-circle text-primary me-1"></i> Hello, @User.Identity.Name
+                            <!-- Manage Dropdown with higher z-index -->
+                            <div class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle text-light d-flex align-items-center" href="#" id="manageDropdown"
+                                   role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-user-circle text-primary me-2"></i>
+                                    <span>Manage</span>
+                                </a>
+                                <ul class="dropdown-menu shadow border-0" aria-labelledby="manageDropdown"
+                                    style="min-width: 200px;">
+                                    <!-- Profile link for all authenticated users -->
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="User" asp-action="Index">
+                                            <i class="fa fa-user text-primary me-2"></i> Profile
+                                        </a>
+                                    </li>
+
+                                    <!-- Common for all authenticated users -->
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Property" asp-action="Favorites">
+                                            <i class="fa fa-heart text-primary me-2"></i> Favorites
+                                        </a>
+                                    </li>
+
+                                    <!-- For Agents -->
+                                    @if (User.IsInRole("Agent") && !User.IsInRole("Admin"))
+
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Property" asp-action="Index">
+                                                <i class="fa fa-list text-primary me-2"></i> My Listings
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Property" asp-action="Messages">
+                                                <i class="fa fa-envelope text-primary me-2"></i> Messages
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <!-- For Admins -->
+                                    @if (User.IsInRole("Admin"))
+
+                                    {
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Property" asp-action="AdminAllProperties">
+                                                <i class="fa fa-building text-primary me-2"></i> All Properties
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Role" asp-action="Index">
+                                                <i class="fa fa-users-cog text-primary me-2"></i> Manage Roles
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" asp-controller="Role" asp-action="ManageUserRoles">
+                                                <i class="fa fa-tachometer-alt text-primary me-2"></i> Dashboard
+                                            </a>
+                                        </li>
+                                    }
+
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Account" asp-action="Logout">
+                                            <i class="fa fa-sign-out-alt text-primary me-2"></i> Logout
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <span class="ms-3 text-light">
+                                Hello, @User.Identity.Name
                             </span>
-                            <a class="btn btn-outline-primary py-2 px-4" asp-controller="Account" asp-action="Logout">
-                                <i class="fa fa-sign-out-alt me-1"></i> Logout
-                            </a>
                         </div>
                     }
+
                     else
+
                     {
                         <a class="btn btn-outline-primary py-2 px-4 me-2" asp-controller="Account" asp-action="Login">
                             <i class="fa fa-sign-in-alt me-1"></i> Login
@@ -106,6 +146,7 @@
 
     <!-- Breadcrumbs -->
     @if (!Context.Request.Path.Value.Contains("/Home/Index") && !Context.Request.Path.Value.Equals("/"))
+
     {
         <div class="container-fluid bg-light py-3 border-bottom">
             <div class="container">

@@ -3,77 +3,74 @@
     ViewData["Title"] = "Manage User Roles";
 }
 
-<link rel="stylesheet" href="~/css/Roles/ManageUserRoles.css" />
-
-<div class="manage-roles-container">
-    <div class="container">
-        <div class="manage-panel fade-in">
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
             <!-- Page Header -->
-            <div class="page-header">
-                <h1 class="page-title">Manage User Roles</h1>
-                <p class="page-subtitle">Control and organize user access within your RealEstate platform</p>
-            </div>
+            <h1 class="property-title">Manage User Roles</h1>
+            <p class="property-location">Control and organize user access within your RealEstate platform</p>
 
             <!-- Alerts -->
             @if (TempData["SuccessMessage"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="fas fa-check-circle"></i>
-                    <div>@TempData["SuccessMessage"]</div>
+                    <i class="fas fa-check-circle me-2"></i>
+                    @TempData["SuccessMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
             @if (TempData["ErrorMessage"] != null)
             {
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <div>@TempData["ErrorMessage"]</div>
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    @TempData["ErrorMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
 
             <!-- Actions Row -->
-            <div class="action-row">
-                <a asp-action="Index" class="back-link">
+            <div class="d-flex justify-content-between mb-4">
+                <a asp-action="Index" class="btn btn-outline-primary">
                     <i class="fas fa-arrow-left"></i> Back to Roles
                 </a>
 
-                <a asp-action="AddRole" class="edit-btn action-btn">
+                <a asp-action="AddRole" class="btn btn-primary">
                     <i class="fas fa-plus-circle"></i> Add New Role
                 </a>
             </div>
 
             <!-- Filters -->
-            <div class="filter-container">
-                <div class="filter-label">
-                    <i class="fas fa-filter me-2"></i> Filter:
+            <div class="search-filters mb-4">
+                <div class="filter-title">
+                    <i class="fas fa-filter"></i> Filter
                 </div>
-                <button type="button" class="filter-btn active" data-filter="all">All Users</button>
-                <button type="button" class="filter-btn" data-filter="Admin">Admins</button>
-                <button type="button" class="filter-btn" data-filter="Agent">Agents</button>
-                <button type="button" class="filter-btn" data-filter="User">Regular Users</button>
-                <button type="button" class="filter-btn" data-filter="Other">Other Roles</button>
-            </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-primary active" data-filter="all">All Users</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="Admin">Admins</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="Agent">Agents</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="User">Regular Users</button>
+                    <button type="button" class="btn btn-outline-primary" data-filter="Other">Other Roles</button>
+                </div>
 
-            <!-- Search -->
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" id="searchInput" class="form-control" placeholder="Search by name or username...">
-            </div>
-
-            <!-- Users Table -->
-            <div class="users-card">
-                <div class="card-header">
-                    <div class="card-header-bg"></div>
-                    <div class="card-header-content">
-                        <h5><i class="fas fa-users-cog"></i> Users and Their Roles</h5>
-                        <span class="users-count">@Model.Count() Users</span>
+                <div class="mt-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search by name or username...">
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="table-container">
-                        <table class="users-table" id="usersTable">
-                            <thead>
+            </div>
+
+            <!-- Users Table - Now with increased height -->
+            <div class="property-card-horizontal" style="min-height: 600px;">
+                <div class="property-details-horizontal">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="property-title"><i class="fas fa-users-cog"></i> Users and Their Roles</h5>
+                        <span class="property-tag">@Model.Count() Users</span>
+                    </div>
+
+                    <div class="table-responsive" style="height: 500px; overflow-y: auto;">
+                        <table class="table table-hover" id="usersTable">
+                            <thead class="sticky-top bg-white">
                                 <tr>
                                     <th><i class="fas fa-user"></i> Username</th>
                                     <th><i class="fas fa-id-card"></i> Full Name</th>
@@ -90,24 +87,26 @@
                                             <td class="username">@user.UserName</td>
                                             <td>@user.FirstName @user.LastName</td>
                                             <td>
-                                                <div class="roles-container">
+                                                <div class="d-flex flex-wrap gap-1">
                                                     @foreach (var role in user.Roles.Split(',', StringSplitOptions.RemoveEmptyEntries))
                                                     {
-                                                        <span class="role-badge">
+                                                        <span class="property-tag">
                                                             <i class="fas fa-check-circle"></i> @role.Trim()
                                                         </span>
                                                     }
                                                 </div>
                                             </td>
-                                            <td class="actions-cell">
-                                                <a asp-action="EditUserRoles" asp-route-userId="@user.UserId" class="action-btn edit-btn">
-                                                    <i class="fas fa-user-edit"></i> Edit Roles
-                                                </a>
-                                                <button type="button" class="action-btn delete-btn"
-                                                        data-bs-toggle="modal" data-bs-target="#deleteUserModal"
-                                                        data-user-id="@user.UserId" data-user-name="@user.UserName">
-                                                    <i class="fas fa-user-times"></i> Delete
-                                                </button>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <a asp-action="EditUserRoles" asp-route-userId="@user.UserId" class="btn btn-outline-primary btn-sm">
+                                                        <i class="fas fa-user-edit"></i> Edit
+                                                    </a>
+                                                    <button type="button" class="btn btn-outline-danger btn-sm"
+                                                            data-bs-toggle="modal" data-bs-target="#deleteUserModal"
+                                                            data-user-id="@user.UserId" data-user-name="@user.UserName">
+                                                        <i class="fas fa-user-times"></i> Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     }
@@ -115,16 +114,16 @@
                                 else
                                 {
                                     <tr>
-                                        <td colspan="4">
-                                            <div class="empty-state">
-                                                <div class="empty-state-icon">
-                                                    <i class="fas fa-users-slash"></i>
+                                        <td colspan="4" class="text-center p-5">
+                                            <div class="d-flex flex-column align-items-center">
+                                                <div class="mb-3">
+                                                    <i class="fas fa-users-slash fa-3x text-muted"></i>
                                                 </div>
-                                                <h3 class="empty-state-title">No Users Found</h3>
-                                                <p class="empty-state-description">
+                                                <h3>No Users Found</h3>
+                                                <p class="text-muted">
                                                     There are no users in the system yet or your search returned no results.
                                                 </p>
-                                                <a href="#" class="add-user-btn">
+                                                <a href="#" class="btn btn-primary mt-2">
                                                     <i class="fas fa-user-plus me-2"></i> Add New User
                                                 </a>
                                             </div>
@@ -144,7 +143,7 @@
 <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteUserModalLabel">
                     <i class="fas fa-user-times me-2"></i> Confirm User Deletion
                 </h5>
@@ -152,19 +151,17 @@
             </div>
             <div class="modal-body">
                 <div class="text-center">
-                    <div class="warning-icon">
-                        <i class="fas fa-exclamation-triangle"></i>
+                    <div class="text-danger mb-3">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
                     </div>
 
-                    <div class="delete-warning">
-                        <p class="fs-5">Are you sure you want to delete the user <span class="delete-username" id="userNameDisplay"></span>?</p>
-                    </div>
+                    <p class="fs-5">Are you sure you want to delete the user <span class="fw-bold" id="userNameDisplay"></span>?</p>
 
-                    <div class="warning-alert">
-                        <div class="warning-alert-title">
+                    <div class="alert alert-warning mt-3">
+                        <div class="fw-bold mb-2">
                             <i class="fas fa-info-circle"></i> Warning
                         </div>
-                        <ul class="warning-list">
+                        <ul class="mb-0 text-start">
                             <li>This action cannot be undone</li>
                             <li>All data associated with this user will be permanently deleted</li>
                             <li>Any properties linked to this user will need to be reassigned</li>
@@ -173,10 +170,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="modal-btn cancel-btn" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="fas fa-times me-2"></i> Cancel
                 </button>
-                <a href="#" id="confirmDeleteUserBtn" class="modal-btn confirm-delete-btn">
+                <a href="#" id="confirmDeleteUserBtn" class="btn btn-danger">
                     <i class="fas fa-trash-alt me-2"></i> Delete User
                 </a>
             </div>
@@ -188,18 +185,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Table row animation
-            $('.user-row').each(function(index) {
-                $(this).addClass('slide-in');
-                $(this).css('animation-delay', (index * 0.05) + 's');
-            });
-
             // Filter functionality
-            $('.filter-btn').click(function () {
+            $('.btn[data-filter]').click(function () {
                 var filterValue = $(this).data('filter');
 
                 // Highlight active button
-                $('.filter-btn').removeClass('active');
+                $('.btn[data-filter]').removeClass('active');
                 $(this).addClass('active');
 
                 if (filterValue === 'all') {
@@ -228,12 +219,8 @@
             });
 
             // Search functionality
-            $('#searchInput').on('input', function() {
-                performSearch();
-            });
-
-            function performSearch() {
-                var searchText = $('#searchInput').val().toLowerCase();
+            $('#searchInput').on('input', function () {
+                var searchText = $(this).val().toLowerCase();
 
                 if (searchText === '') {
                     $('.user-row').show();
@@ -250,31 +237,17 @@
                         $(this).hide();
                     }
                 });
-            }
+            });
 
             // Handle delete modal data
             $('#deleteUserModal').on('show.bs.modal', function (event) {
-                // Button that triggered the modal
                 const button = $(event.relatedTarget);
-
-                // Extract info from data attributes
                 const userId = button.data('user-id');
                 const userName = button.data('user-name');
 
-                // Update the modal's content
                 $('#userNameDisplay').text(userName);
                 $('#confirmDeleteUserBtn').attr('href', '@Url.Action("DeleteUser", "Role")?userId=' + userId);
             });
-
-            // Button hover effects
-            $('.action-btn, .filter-btn').hover(
-                function() {
-                    $(this).addClass('pulse');
-                },
-                function() {
-                    $(this).removeClass('pulse');
-                }
-            );
         });
     </script>
 }

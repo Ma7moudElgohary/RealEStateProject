@@ -4,58 +4,38 @@
     ViewData["Title"] = "Add Role";
 }
 
-<div class="registration-container">
-    <div class="registration-panel">
-        <div class="panel-left">
-            <div class="panel-left-content">
-                <h1 class="welcome-title">Role Management</h1>
-                <p class="welcome-subtitle">Create and manage user roles for your RealEstate platform.</p>
+<link rel="stylesheet" href="~/css/site.css" />
 
-                <div class="benefits-list">
-                    <div class="benefit-item">
-                        <span class="benefit-icon"><i class="fas fa-user-shield"></i></span>
-                        <span>Control user permissions</span>
-                    </div>
-                    <div class="benefit-item"> 
-                        <span class="benefit-icon"><i class="fas fa-users-cog"></i></span>
-                        <span>Organize user hierarchies</span>
-                    </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon"><i class="fas fa-lock"></i></span>
-                        <span>Enhance platform security</span>
-                    </div>
-                    <div class="benefit-item">
-                        <span class="benefit-icon"><i class="fas fa-tasks"></i></span>
-                        <span>Customize access levels</span>
+<div class="container my-4">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title"><i class="fas fa-plus-circle"></i> Add Role</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AddRole" method="post">
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <div class="form-floating mb-3">
+                            <input asp-for="RoleName" class="form-control" id="floatingRoleName" placeholder="Role Name">
+                            <label for="floatingRoleName">Role Name</label>
+                            <span asp-validation-for="RoleName" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i> Create Role
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
+                            <i class="fas fa-arrow-left"></i> Back to Home
+                        </a>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Right Panel with Add Role Form -->
-        <div class="panel-right">
-            <h2 class="login-title">Add Role</h2>
-            <p class="login-subtitle">Create a new role to define user permissions within the system.</p>
-
-            <form asp-action="AddRole" method="post">
-                <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-                <div class="form-floating">
-                    <input asp-for="RoleName" class="form-control" id="floatingRoleName" placeholder="Role Name">
-                    <label for="floatingRoleName">Role Name</label>
-                    <span class="input-icon"><i class="fas fa-tag"></i></span>
-                    <span asp-validation-for="RoleName" class="text-danger"></span>
-                </div>
-
-                <button type="submit" class="btn login-btn btn-pulse w-100 mt-3">
-                    <i class="fas fa-plus-circle me-2"></i> Create Role
-                </button>
-            </form>
-
-            <div class="text-center mt-4">
-                <a asp-controller="Home" asp-action="Index" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Back to Home
-                </a>
             </div>
         </div>
     </div>
@@ -66,278 +46,4 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-    <script>
-        // Form validation animation
-        function setupFormAnimation() {
-            const formFields = document.querySelectorAll('.form-control');
-
-            formFields.forEach(field => {
-                field.addEventListener('focus', () => {
-                    field.parentNode.style.transform = 'translateY(-5px)';
-                    field.parentNode.style.transition = 'transform 0.3s ease';
-                });
-
-                field.addEventListener('blur', () => {
-                    field.parentNode.style.transform = 'translateY(0)';
-                });
-            });
-        }
-
-        // Initialize functions
-        document.addEventListener('DOMContentLoaded', function() {
-            setupFormAnimation();
-        });
-    </script>
 }
-
-<style>
-    .registration-container {
-        background-color: #ffffff;
-        min-height: 100vh;
-        padding: 3rem 0;
-        position: relative;
-        overflow: hidden;
-    }
-
-        .registration-container::before {
-            content: '';
-            position: absolute;
-            top: -10%;
-            right: -5%;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            opacity: 0.08;
-            z-index: 0;
-        }
-
-        .registration-container::after {
-            content: '';
-            position: absolute;
-            bottom: -15%;
-            left: -10%;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
-            opacity: 0.05;
-            z-index: 0;
-        }
-
-    .registration-panel {
-        background-color: #ffffff;
-        border-radius: .75rem;
-        overflow: hidden;
-        box-shadow: 0 15px 50px rgba(44, 30, 75, 0.08);
-        position: relative;
-        z-index: 1;
-        display: flex;
-        max-width: 1000px;
-        margin: 0 auto;
-    }
-
-    .panel-left {
-        width: 40%;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(150deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-    }
-
-    .panel-left-content {
-        padding: 3rem 2rem;
-        color: white;
-        text-align: center;
-        position: relative;
-        z-index: 2;
-    }
-
-    .panel-left::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IGlkPSJwYXR0ZXJuLWJnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ0cmFuc3BhcmVudCI+PC9yZWN0PjxwYXRoIGQ9Ik0tMTAgMTBsMjAgLTIwTTAgMGwyMCAtMjBNMTAgLTEwbDIwIC0yMCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC4xKSIgZmlsbD0ibm9uZSI+PC9wYXRoPjwvcGF0dGVybj48L2RlZnM+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSI+PC9yZWN0Pjwvc3ZnPg==');
-        opacity: 0.2;
-    }
-
-    .panel-right {
-        width: 60%;
-        padding: 3rem;
-    }
-
-    .welcome-title {
-        font-size: 2.2rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-        background: linear-gradient(to right, var(--white), rgba(255,255,255,0.8));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 5px 10px rgba(0,0,0,0.1);
-    }
-
-    .welcome-subtitle {
-        font-size: 1rem;
-        opacity: 0.9;
-        margin-bottom: 2rem;
-    }
-
-    .benefits-list {
-        text-align: left;
-        margin-top: 2rem;
-    }
-
-    .benefit-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1rem;
-        color: rgba(255,255,255,0.9);
-    }
-
-    .benefit-icon {
-        margin-right: 10px;
-        width: 28px;
-        height: 28px;
-        background: rgba(255,255,255,0.2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .login-title {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: var(--dark-color);
-        margin-bottom: 0.5rem;
-        position: relative;
-        display: inline-block;
-    }
-
-        .login-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 0;
-            width: 40px;
-            height: 4px;
-            background: linear-gradient(to right, var(--accent-color), var(--secondary-color));
-            border-radius: 2px;
-        }
-
-    .login-subtitle {
-        color: #666;
-        margin-bottom: 2rem;
-    }
-
-    .form-floating {
-        margin-bottom: 1.25rem;
-        position: relative;
-    }
-
-        .form-floating > .form-control {
-            height: 60px;
-            padding: 1rem 1rem;
-            border: none;
-            background-color: #f8f9fa;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .form-floating > label {
-            padding: 1rem 1rem;
-            color: #666;
-        }
-
-        .form-floating > .form-control:focus {
-            box-shadow: 0 0 0 2px rgba(106, 17, 203, 0.2);
-            background-color: #f0f2f5;
-        }
-
-    .input-icon {
-        position: absolute;
-        top: 20px;
-        right: 15px;
-        color: var(--primary-color);
-        z-index: 10;
-        opacity: 0.7;
-    }
-
-    .login-btn {
-        height: 55px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        border: none;
-        color: white;
-        font-weight: 600;
-        letter-spacing: 0.5px;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-        z-index: 1;
-        margin-top: 1rem;
-        box-shadow: 0 6px 15px rgba(106, 17, 203, 0.2);
-    }
-
-        .login-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
-            transition: all 0.4s ease;
-            z-index: -1;
-        }
-
-        .login-btn:hover::before {
-            left: 0;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(106, 17, 203, 0.25);
-        }
-
-    .btn-pulse {
-        animation: pulse 2s infinite;
-    }
-
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        color: var(--dark-color);
-        text-decoration: none;
-        margin-top: 1.5rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-    }
-
-        .back-link i {
-            margin-right: 5px;
-            transition: transform 0.3s ease;
-        }
-
-        .back-link:hover {
-            color: var(--primary-color);
-        }
-
-            .back-link:hover i {
-                transform: translateX(-3px);
-            }
-
-    .text-danger {
-        color: #dc3545;
-        font-size: 0.85rem;
-        margin-top: 0.25rem;
-        display: block;
-    }
-
-
-</style>

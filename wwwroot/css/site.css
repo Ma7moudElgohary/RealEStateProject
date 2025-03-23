@@ -730,3 +730,17 @@ body {
 .carousel-item img[src*="placeholder"] + .image-counter {
     background-color: rgba(0, 0, 0, 0.8) !important;
 }
+
+
+
+.dropdown-menu {
+    z-index: 2000;
+}
+
+.navbar {
+    z-index: 1030;
+}
+
+.sticky-top {
+    z-index: 1020;
+}
