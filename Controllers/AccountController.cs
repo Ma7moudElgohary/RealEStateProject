@@ -87,7 +87,6 @@ namespace RealEStateProject.Controllers
         }
         #endregion
 
-
         #region Login
 
         [HttpGet]

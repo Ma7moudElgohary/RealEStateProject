@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RealEstate.Repositories;
 
@@ -58,14 +59,28 @@ namespace RealEstate.Services
             return await _repository.CountAsync();
         }
 
+        public List<SelectListItem> GetEnumSelectList<T>()
+        {
+            var enumValues = Enum.GetValues(typeof(T)).Cast<T>().ToList();
+            var selectList = enumValues.Select((e, i) => new SelectListItem
+            {
+                Value = i.ToString(),
+                Text = e.ToString()
+            }).ToList();
+
+            return selectList;
+        }
+
         protected IEnumerable<TViewModel> MapToViewModels(IEnumerable<TEntity> entities)
         {
             return _mapper.Map<IEnumerable<TViewModel>>(entities);
         }
 
-        protected TEntity MapToEntity(TViewModel viewModel)
+        public TEntity MapToEntity(TViewModel viewModel)
         {
             return _mapper.Map<TEntity>(viewModel);
         }
+
+
     }
 }

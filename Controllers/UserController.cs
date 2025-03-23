@@ -32,7 +32,7 @@ namespace RealEStateProject.Controllers
             _userService = userService;
         }
 
-        [Authorize]
+        // GET: User profile
         public IActionResult Index()
         {
             var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -41,6 +41,7 @@ namespace RealEStateProject.Controllers
             return View(user);
         }
 
+        // POST: Add Review
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview([Bind("Rating,Comment,PropertyId")] Review review)
@@ -87,6 +88,8 @@ namespace RealEStateProject.Controllers
             }
         }
 
+
+        // POST: Remove review
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveReview(int reviewId)
@@ -123,6 +126,7 @@ namespace RealEStateProject.Controllers
             return BadRequest();
         }
 
+        // GET: Get reviews for a property
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetPropertyReviews(int propertyId, int page = 1, int pageSize = 5)
@@ -148,6 +152,7 @@ namespace RealEStateProject.Controllers
             return PartialView("_ReviewsPartial", model);
         }
 
+        // GET: Edit user profile
         [HttpGet]
         public IActionResult EditProfile()
         {
@@ -167,6 +172,7 @@ namespace RealEStateProject.Controllers
             return View(viewModel);
         }
 
+        // Update user profile
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(UserProfileViewModel model)

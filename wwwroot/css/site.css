@@ -230,6 +230,46 @@ body {
         margin-right: 5px;
     }
 
+
+.property-item {
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+    .property-item .position-relative {
+        height: 220px;
+        overflow: hidden;
+    }
+
+        .property-item .position-relative img {
+            width: 100;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .property-item .p-4.pb-0 {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .property-item p {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .property-item .h5.mb-2 {
+        height: 48px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        white-space: normal;
+    }
+
 .view-details {
     background-color: var(--primary);
     color: white;
@@ -743,4 +783,51 @@ body {
 
 .sticky-top {
     z-index: 1020;
+}
+
+.team-item {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+    .team-item .position-relative {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .team-item .img-fluid {
+        width: 100%;
+        height: 90%;
+        object-fit: cover;
+    }
+
+    .team-item .text-center {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+.btn-square {
+    background-color: #fff;
+    White background box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    Add shadow for depth width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    Ensure it stays on top
+}
+
+.team-item .text-center {
+    flex-grow: 1;
+    This allows the text section to expand if needed display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 30px;
+    Add space for the buttons
 }

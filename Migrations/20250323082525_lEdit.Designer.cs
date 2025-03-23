@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RealEstate.Data;
 
@@ -11,9 +12,11 @@ using RealEstate.Data;
 namespace RealEStateProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323082525_lEdit")]
+    partial class lEdit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,9 +412,6 @@ namespace RealEStateProject.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("YearBuilt")
-                        .HasColumnType("int");
-
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -445,6 +445,43 @@ namespace RealEStateProject.Migrations
                     b.HasIndex("PropertyId");
 
                     b.ToTable("PropertyImages");
+                });
+
+            modelBuilder.Entity("RealEstate.Models.PropertyRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PropertyRequest");
                 });
 
             modelBuilder.Entity("RealEstate.Models.Review", b =>
@@ -597,6 +634,25 @@ namespace RealEStateProject.Migrations
                     b.Navigation("Property");
                 });
 
+            modelBuilder.Entity("RealEstate.Models.PropertyRequest", b =>
+                {
+                    b.HasOne("RealEstate.Models.Property", "Property")
+                        .WithMany("Requests")
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RealEstate.Models.ApplicationUser", "User")
+                        .WithMany("Requests")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RealEstate.Models.Review", b =>
                 {
                     b.HasOne("RealEstate.Models.Property", "Property")
@@ -625,12 +681,16 @@ namespace RealEStateProject.Migrations
 
                     b.Navigation("Properties");
 
+                    b.Navigation("Requests");
+
                     b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("RealEstate.Models.Property", b =>
                 {
                     b.Navigation("Images");
+
+                    b.Navigation("Requests");
 
                     b.Navigation("Reviews");
                 });

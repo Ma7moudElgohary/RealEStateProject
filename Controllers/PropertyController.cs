@@ -6,13 +6,8 @@ using System.Security.Claims;
 using RealEstate.Models;
 using RealEstate.Services;
 using RealEStateProject.ViewModels.Property;
-using Microsoft.EntityFrameworkCore;
-using RealEStateProject.Models;
 using RealEStateProject.Services.Interfaces;
-using RealEStateProject.Repositories.Interfaces;
-using RealEStateProject.Repositories;
-using NuGet.Protocol.Core.Types;
-using RealEStateProject.Services;
+
 
 namespace RealEstate.Controllers
 {
@@ -42,26 +37,9 @@ namespace RealEstate.Controllers
             _logger = logger;
         }
 
-        private string GetUserId()
-        {
-            return User.FindFirstValue(ClaimTypes.NameIdentifier);
-        }
 
-        // This method is used to generate a list of SelectListItem objects from an enum type.
-        // will add to interface repository and service
-        public static List<SelectListItem> GetEnumSelectList<T>()
-        {
-            var enumValues = Enum.GetValues(typeof(T)).Cast<T>().ToList();
-            var selectList = enumValues.Select((e, i) => new SelectListItem
-            {
-                Value = i.ToString(),
-                Text = e.ToString()
-            }).ToList();
-
-            return selectList;
-        }
-
-        [Authorize(Roles ="Agent")]
+        // GET: Properties
+        [Authorize(Roles = "Agent")]
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
@@ -70,6 +48,7 @@ namespace RealEstate.Controllers
             return View(properties);
         }
 
+        // GET: Search
         [AllowAnonymous]
         public async Task<IActionResult> Search(PropertySearchFilterViewModel filter, int page = 1, int pageSize = 10)
         {
@@ -87,11 +66,12 @@ namespace RealEstate.Controllers
                 ViewBag.FavoriteIds = new List<int>();
             }
 
-            ViewBag.PropertyTypes = GetEnumSelectList<PropertyType>();
+            ViewBag.PropertyTypes = _propertyService.GetEnumSelectList<PropertyType>();
 
             return View(searchResults);
         }
 
+        // GET: Properties/Details/id
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
@@ -99,8 +79,6 @@ namespace RealEstate.Controllers
             var property = await _propertyService.GetPropertyByIdAsync(id, userId);
 
             property.Agent = await _agentService.GetAgentByPropertyIdAsync(id);
-
-            //var propertyViewModel = await _propertyService.GetPropertyViewModelByIdAsync(id);
 
             if (property == null)
             {
@@ -117,25 +95,28 @@ namespace RealEstate.Controllers
             return View(property);
         }
 
+        // GET: Properties/Create
         [Authorize(Roles = "Agent")]
         public IActionResult Create()
         {
             var viewModel = new PropertyViewModel
             {
-                PropertyTypes = GetEnumSelectList<PropertyType>(),
-                PropertyStatuses = GetEnumSelectList<PropertyStatus>()
+                PropertyTypes = _propertyService.GetEnumSelectList<PropertyType>(),
+
+                PropertyStatuses = _propertyService.GetEnumSelectList<PropertyStatus>()
             };
             return View(viewModel);
         }
 
+        // POST: Properties/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(PropertyViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                viewModel.PropertyTypes = GetEnumSelectList<PropertyType>();
-                viewModel.PropertyStatuses = GetEnumSelectList<PropertyStatus>();
+                viewModel.PropertyTypes = _propertyService.GetEnumSelectList<PropertyType>();
+                viewModel.PropertyStatuses = _propertyService.GetEnumSelectList<PropertyStatus>();
                 return View(viewModel);
             }
             // Get the current user ID
@@ -145,7 +126,7 @@ namespace RealEstate.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        // GET: Properties/Edit/id
         public async Task<IActionResult> Edit(int id)
         {
             var userId = GetUserId();
@@ -156,19 +137,20 @@ namespace RealEstate.Controllers
                 return NotFound();
             }
 
-            property.PropertyTypes = GetEnumSelectList<PropertyType>();
-            property.PropertyStatuses = GetEnumSelectList<PropertyStatus>();
+            property.PropertyTypes = _propertyService.GetEnumSelectList<PropertyType>();
+            property.PropertyStatuses = _propertyService.GetEnumSelectList<PropertyStatus>();
             return View(property);
         }
 
+        // POST: Properties/Edit/id
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PropertyViewModel viewModel)
         {
             if (!ModelState.IsValid)
             {
-                viewModel.PropertyTypes = GetEnumSelectList<PropertyType>();
-                viewModel.PropertyStatuses = GetEnumSelectList<PropertyStatus>();
+                viewModel.PropertyTypes = _propertyService.GetEnumSelectList<PropertyType>();
+                viewModel.PropertyStatuses = _propertyService.GetEnumSelectList<PropertyStatus>();
                 return View(viewModel);
             }
 
@@ -177,45 +159,7 @@ namespace RealEstate.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> UpdateImages(int id)
-        {
-            var userId = GetUserId();
-            var property = await _propertyService.GetPropertyByIdAsync(id, userId);
-
-            if (property == null)
-            {
-                return NotFound();
-            }
-
-            var viewModel = new PropertyImagesViewModel
-            {
-                Id = property.Id,
-                Images = (IEnumerable<string>)property.ImageUrls
-            };
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateImages(PropertyImagesViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-
-            // Call image update service
-            await _propertyService.UpdatePropertyImagesAsync(viewModel);
-            return RedirectToAction(nameof(Index));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteImage(int propertyId, string imageUrl)
-        {
-            await _propertyService.DeletePropertyImageAsync(propertyId, imageUrl);
-            return RedirectToAction(nameof(UpdateImages), new { id = propertyId });
-        }
-
+        // GET: Properties/Delete/id
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetUserId();
@@ -230,6 +174,7 @@ namespace RealEstate.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // GET: Properties/Explore
         [AllowAnonymous]
         public async Task<IActionResult> Explore(string query, int? minPrice, int? maxPrice,
                                                int? bedrooms, int? bathrooms, PropertyType? type)
@@ -245,8 +190,7 @@ namespace RealEstate.Controllers
             };
 
             var userId = User.Identity.IsAuthenticated ? GetUserId() : null;
-            var searchResults = await _propertyService.SearchPropertiesAsync(filter, userId, 1, 20);
-
+            var searchResults = await _propertyService.SearchPropertiesAsync(filter, userId, 1, 20); _propertyService.GetEnumSelectList<PropertyType>();
             if (userId != null)
             {
                 var favorites = await _favoriteService.GetFavoritesByUserIdAsync(userId);
@@ -257,11 +201,11 @@ namespace RealEstate.Controllers
                 ViewBag.FavoriteIds = new List<int>();
             }
 
-            ViewBag.PropertyTypes = GetEnumSelectList<PropertyType>();
+            ViewBag.PropertyTypes = _propertyService.GetEnumSelectList<PropertyType>();
 
             return View("Search", searchResults);
         }
-
+        // GET: Properties/ToggleFavoriteAjax
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ToggleFavoriteAjax(int propertyId)
@@ -283,6 +227,7 @@ namespace RealEstate.Controllers
             return Json(new { isFavorite });
         }
 
+        // GET: Properties/Favorites
         [Authorize]
         public async Task<IActionResult> Favorites()
         {
@@ -292,7 +237,7 @@ namespace RealEstate.Controllers
             return View(favorites);
         }
 
-
+        // POST: Properties/ContactAgent
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ContactAgent(ContactAgentViewModel model)
@@ -331,6 +276,7 @@ namespace RealEstate.Controllers
             }
         }
 
+        // GET: Properties/Messages
         [Authorize]
         public async Task<IActionResult> Messages()
         {
@@ -339,6 +285,7 @@ namespace RealEstate.Controllers
             return View(messages);
         }
 
+        // POST: Properties/MarkMessageAsRead
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> MarkMessageAsRead(int id)
@@ -347,12 +294,18 @@ namespace RealEstate.Controllers
             return RedirectToAction(nameof(Messages));
         }
 
+        // POST: Properties/DeleteMessage
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> DeleteMessage(int id)
         {
             await _messageService.DeleteAsync(id);
             return RedirectToAction(nameof(Messages));
+        }
+
+        private string GetUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

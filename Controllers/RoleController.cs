@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RealEStateProject.Controllers
 {
-    [Authorize(Roles = "Admin")] 
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private readonly IRoleService _roleService;
@@ -103,10 +103,6 @@ namespace RealEStateProject.Controllers
             return View(model);
         }
 
-
-      
-
-
         // GET: Delete role (with onfirmation)
         public async Task<IActionResult> DeleteRole(string id)
         {
@@ -136,8 +132,6 @@ namespace RealEStateProject.Controllers
             }
             return RedirectToAction("Index");
         }
-
-
 
         // GET: Delete user
         public async Task<IActionResult> DeleteUser(string userId)

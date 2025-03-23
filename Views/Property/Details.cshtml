@@ -127,7 +127,7 @@
                         <div class="col-3">
                             <div class="d-flex flex-column align-items-center">
                                 <i class="fa fa-calendar text-primary mb-2 fa-2x"></i>
-                                <span class="fw-bold">@Model.YearBuilt</span>
+                                <span class="fw-bold">@(Model.YearBuilt == null ? "N/A" : Model.YearBuilt)</span>
                                 <small class="text-muted">Year Built</small>
                             </div>
                         </div>
@@ -247,16 +247,16 @@
                     </div>
                     <div class="d-flex align-items-center">
                         <i class="fa fa-id-card me-2"></i>
-                        <span>@Model.Agent.LicenseNumber</span>
+                        <span class="fw-bold">@(Model.Agent.LicenseNumber == null ? "N/A" : Model.Agent.LicenseNumber)</span>
                     </div>
                     <div class="mb-3">
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-telephone me-2"></i>
-                            <span>@Model.Agent.PhoneNumber</span>
+                            <span class="fw-bold">@(Model.Agent.PhoneNumber == null ? "N/A" : Model.Agent.PhoneNumber)</span>
                         </div>
                         <div class="d-flex align-items-center">
                             <i class="bi bi-envelope me-2"></i>
-                            <span>@Model.Agent.Email</span>
+                            <span class="fw-bold">@(Model.Agent.Email == null ? "N/A" : Model.Agent.Email)</span>
                         </div>
                     </div>
                     <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#contactAgentModal">Contact Agent</button>

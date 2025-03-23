@@ -60,6 +60,7 @@ namespace RealEStateProject.Services.Implementation
                 AgentId = agentId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
+                YearBuilt = propertyViewModel.YearBuilt,
                 Images = new List<PropertyImage>(),
 
             };
@@ -178,7 +179,6 @@ namespace RealEStateProject.Services.Implementation
             };
         }
 
-
         public async Task<int> UpdatePropertyAsync(PropertyViewModel model, string userId)
         {
             var property = await _propertyRepository.GetByIdAsync(model.Id);
@@ -244,51 +244,6 @@ namespace RealEStateProject.Services.Implementation
             await _propertyRepository.UpdateAsync(property);
             return property.Id;
         }
-
-        // In your UpdatePropertyAsync method
-        //public async Task UpdatePropertyAsync(PropertyViewModel model, string userId)
-        //{
-        //    var property = await _propertyRepository.GetByIdAsync(model.Id);
-
-        //    if (property == null || property.AgentId != userId)
-        //    {
-        //        throw new Exception("Property not found or you don't have permission to edit it");
-        //    }
-
-        //    // Update property fields
-        //    property.Title = model.Title;
-        //    property.Description = model.Description;
-        //    property.Type = model.Type;
-        //    property.Status = model.Status;
-        //    property.Price = model.Price;
-        //    property.Area = model.SquareFeet;
-        //    property.Bedrooms = model.Bedrooms;
-        //    property.Bathrooms = model.Bathrooms;
-        //    property.Address = model.Address;
-        //    property.City = model.City;
-        //    property.State = model.State;
-        //    property.ZipCode = model.ZipCode;
-        //    property.Latitude = model.Latitude;
-        //    property.Longitude = model.Longitude;
-        //    property.Agent.FirstName = model.AgentName;
-        //    property.Agent.PhoneNumber = model.AgentPhone;
-        //    property.Agent.Email = model.AgentEmail;
-
-        //    // Process image if uploaded
-        //    if (model.ImageUpload != null && model.ImageUpload.Length > 0)
-        //    {
-        //        if (!string.IsNullOrEmpty(property.FeaturedImage))
-        //        {
-        //            DeleteImageFromServer(property.FeaturedImage);
-        //        }
-
-        //        string featuredImagePath = await SaveImageAsync(model.ImageUpload, property.Id);
-        //        property.FeaturedImage = featuredImagePath;
-        //    }
-
-        //    await _propertyRepository.UpdateAsync(property);
-
-        //}
 
         public async Task DeletePropertyAsync(int id, string agentId)
         {
@@ -402,7 +357,10 @@ namespace RealEStateProject.Services.Implementation
                 AgentName = $"{property.Agent?.FirstName} {property.Agent?.LastName}".Trim(),
                 IsFavorite = isFavorite,
                 FeaturedImageUrl = property.FeaturedImage,
-                ImageUrls = imageUrls
+                ImageUrls = imageUrls,
+                YearBuilt = property.YearBuilt
+
+
             };
         }
 

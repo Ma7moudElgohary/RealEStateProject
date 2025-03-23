@@ -13,29 +13,18 @@ namespace RealEStateProject.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IPropertyService _propertyService;
-        public HomeController(ILogger<HomeController> logger, IPropertyService propertyService) // Inject the service
+        public HomeController(ILogger<HomeController> logger, IPropertyService propertyService)
         {
             _logger = logger;
             _propertyService = propertyService;
         }
 
-        public static List<SelectListItem> GetEnumSelectList<T>()
-        {
-            var enumValues = Enum.GetValues(typeof(T)).Cast<T>().ToList();
-            var selectList = enumValues.Select((e, i) => new SelectListItem
-            {
-                Value = i.ToString(),
-                Text = e.ToString()
-            }).ToList();
 
-            return selectList;
-        }
-
-
+        // Home page
         public async Task<IActionResult> Index()
         {
-            ViewBag.PropertyTypes = GetEnumSelectList<PropertyType>();
-            ViewBag.City = GetEnumSelectList<City>();
+            ViewBag.PropertyTypes = _propertyService.GetEnumSelectList<PropertyType>();
+            ViewBag.City = _propertyService.GetEnumSelectList<City>();
 
             // Get properties from the database
             var allProperties = await _propertyService.GetAllPropertiesAsync(null);
@@ -53,15 +42,18 @@ namespace RealEStateProject.Controllers
             return View("Index", model);
         }
 
+        // Privacy page
         public IActionResult Privacy()
         {
             return View();
         }
 
+        // About page
         public IActionResult About()
         {
             return View();
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

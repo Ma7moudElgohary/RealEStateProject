@@ -24,17 +24,14 @@ namespace RealEStateProject.Repositories
                 .FirstOrDefaultAsync(a => a.UserId == userId);
         }
 
-
         public async Task<AgentViewModel> GetByPropertyIdAsync(int propertyId)
         {
             var property = await _context.Properties.FindAsync(propertyId);
             if (property == null)
             {
-                // Property doesn't exist
                 return null;
             }
 
-            // Check if the property has an agent ID and if that agent exists
             if (property.AgentId != null)
             {
                 var agent = await _dbSet.Include(a => a.User)
@@ -47,7 +44,7 @@ namespace RealEStateProject.Repositories
 
             return null;
         }
-        // map agent to agent view model
+
         public AgentViewModel MapAgentToAgentViewModel(Agent agent)
         {
             return new AgentViewModel

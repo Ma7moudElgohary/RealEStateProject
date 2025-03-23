@@ -11,10 +11,6 @@ namespace RealEStateProject.ViewModels.User
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        //[Required(ErrorMessage = "Email is required")]
-        //[EmailAddress(ErrorMessage = "Invalid email format")]
-        //public string Email { get; set; }
-
         public bool RemeberMe { get; set; }
     }
 }

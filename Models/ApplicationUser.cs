@@ -20,8 +20,6 @@ namespace RealEstate.Models
 
         public ICollection<Favorite>? Favorites { get; set; } = new List<Favorite>();
 
-        public ICollection<PropertyRequest>? Requests { get; set; } = new List<PropertyRequest>();
-
         public ICollection<Review>? Reviews { get; set; } = new List<Review>();
 
 

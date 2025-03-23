@@ -51,9 +51,9 @@ namespace RealEstate.Models
 
         public string? FeaturedImage { get; set; }
 
-        public ICollection<PropertyRequest>? Requests { get; set; }
-
         public ICollection<Review>? Reviews { get; set; }
+
+        public int? YearBuilt { get; set; }
 
 
     }

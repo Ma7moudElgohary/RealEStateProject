@@ -38,7 +38,6 @@ namespace RealEstate.Infrastructure.Repositories
 
         }
 
-
         public async Task<int> AddRangeAsync(IEnumerable<T> entities)
         {
             await _dbSet.AddRangeAsync(entities);

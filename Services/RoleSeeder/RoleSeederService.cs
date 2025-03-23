@@ -47,7 +47,7 @@ namespace RealEStateProject.Services.RoleSeeder
 
             if (userExists == null)
             {
-                var result = await _userManager.CreateAsync(adminUser, "Admin@123"); // Strong default password
+                var result = await _userManager.CreateAsync(adminUser, "Admin@123");
 
                 if (result.Succeeded)
                 {

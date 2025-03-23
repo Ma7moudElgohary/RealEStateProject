@@ -37,7 +37,6 @@ namespace RealEStateProject
             builder.Services.AddScoped<IAgentRepository, AgentRepository>();
             builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
             builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
-            builder.Services.AddScoped<IPropertyRequestRepository, PropertyRequestRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IMessageRepository, MessageRepository>();
@@ -49,7 +48,6 @@ namespace RealEStateProject
             builder.Services.AddScoped<IAgentService, AgentService>();
             builder.Services.AddScoped<IPropertyImageRepository, PropertyImageRepository>();
             builder.Services.AddScoped<IFavoriteService, FavoriteService>();
-            builder.Services.AddScoped<IPropertyRequestService, PropertyRequestService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IMessageService, MessageService>();
