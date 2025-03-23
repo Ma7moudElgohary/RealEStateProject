@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstate.Models;
 using RealEStateProject.ViewModels.Agent;
+using RealEStateProject.ViewModels.Common;
 
 namespace RealEStateProject.ViewModels.Property
 {
@@ -95,19 +96,6 @@ namespace RealEStateProject.ViewModels.Property
         public Dictionary<int, int>? RatingDistribution { get; set; }
     }
 
-    public class ReviewViewModel
-    {
-        public int Id { get; set; }
 
-        public int Rating { get; set; }
-
-        public string Comment { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public string UserId { get; set; }
-
-        public string UserName { get; set; }
-    }
 
 }

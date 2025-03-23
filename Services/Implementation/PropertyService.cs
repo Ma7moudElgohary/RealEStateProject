@@ -476,7 +476,7 @@ namespace RealEStateProject.Services.Implementation
 
             // Get all reviews for this property
             var reviews = await _reviewRepository.GetAllByPropertyIdAsync(id);
-            var reviewViewModels = new List<ViewModels.Property.ReviewViewModel>();
+            var reviewViewModels = new List<ReviewViewModel>();
             var ratingDistribution = new Dictionary<int, int>();
 
             // Initialize rating distribution
@@ -489,7 +489,7 @@ namespace RealEStateProject.Services.Implementation
             {
                 var user = await _userService.GetUserByIdAsync(review.UserId);
 
-                reviewViewModels.Add(new ViewModels.Property.ReviewViewModel
+                reviewViewModels.Add(new ReviewViewModel
                 {
                     Id = review.Id,
                     Rating = review.Rating,

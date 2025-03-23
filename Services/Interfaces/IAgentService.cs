@@ -11,5 +11,7 @@ namespace RealEStateProject.Services.Interfaces
         Task<bool> IsUserAgentAsync(string userId);
 
         Task<AgentViewModel> GetAgentByPropertyIdAsync(int propertyId);
+
+        Task<int> AddAgentAsync(Agent agent);
     }
 }

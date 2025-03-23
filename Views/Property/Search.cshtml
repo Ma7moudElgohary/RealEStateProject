@@ -18,10 +18,18 @@
                 </button>
             </div>
             <div class="me-2 mb-2 mb-md-0">
-                <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">
-                    For @(string.IsNullOrEmpty(Model.Filters.Type.ToString()) ? "Sale" : Model.Filters.Type)
+                <button type="button" class="btn btn-outline-dark dropdown-toggl dropp" data-bs-toggle="dropdown">
+                    @if (string.IsNullOrEmpty(Model.Filters.Type.ToString()))
+                    {
+                        <span>Any</span>
+                    }
+                    else
+                    {
+                        <span>For @Model.Filters.Type</span>
+                    }
                 </button>
                 <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#" onclick="selectType('')">Any</a>
                     <a class="dropdown-item" href="#" onclick="selectType('SALE')">For Sale</a>
                     <a class="dropdown-item" href="#" onclick="selectType('RENT')">For Rent</a>
                     <input type="hidden" name="Type" id="typeInput" value="@Model.Filters.Type">
@@ -196,7 +204,7 @@
                                         <a asp-action="Details" asp-route-id="@property.Id">
                                             @if (property.ImageUrls != null && property.ImageUrls.Any())
                                             {
-                                                <img class="card-img-top rounded-top" src="@property.ImageUrls.First()" style="height: 140px; object-fit: cover;">
+                                                <img class="card-img-top rounded-top" src="@property.FeaturedImageUrl" style="height: 140px; object-fit: cover;">
                                             }
                                             else
                                             {
@@ -217,7 +225,7 @@
                                         </div>
                                         <p class="card-title mb-1 small">@property.Title</p>
                                         <p class="card-text text-muted mb-0 small">
-                                            <i class="fa fa-map-marker-alt me-1"></i>@property.Address
+                                            <i class="fa fa-map-marker-alt me-1"></i>@property.Address, @property.City, @property.State
                                         </p>
                                         <p class="card-text mt-2 small">
                                             <span class="me-2">
@@ -295,8 +303,15 @@
         }
 
         function selectType(type) {
-            document.getElementById('typeInput').value = type;
-        }
+    document.getElementById('typeInput').value = type;
+    // Update button text
+    if (type === '') {
+                document.querySelector('.dropp').textContent = 'Any';
+    } else {
+        const buttonText = type === 'SALE' ? 'For Sale' : 'For Rent';
+                document.querySelector('.dropp').textContent = buttonText;
+    }
+}
 
         // Map initialization and functionality
         function initMap() {

@@ -25,5 +25,18 @@ namespace RealEstate.Data
 
         public DbSet<Review> Reviews { get; set; }
 
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Configure cascading delete for Favorite->Property relationship
+            modelBuilder.Entity<Favorite>()
+                .HasOne(f => f.Property)
+                .WithMany()
+                .HasForeignKey(f => f.PropertyId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            base.OnModelCreating(modelBuilder);
+        }
+
     }
 }

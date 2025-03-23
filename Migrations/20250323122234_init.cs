@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace RealEStateProject.Migrations
 {
     /// <inheritdoc />
-    public partial class initDatabase : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -86,7 +86,7 @@ namespace RealEStateProject.Migrations
                     Agency = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Biography = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: false),
-                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -206,8 +206,9 @@ namespace RealEStateProject.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    AgentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AgentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     FeaturedImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    YearBuilt = table.Column<int>(type: "int", nullable: true),
                     AgentId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -222,8 +223,7 @@ namespace RealEStateProject.Migrations
                         name: "FK_Properties_AspNetUsers_AgentId",
                         column: x => x.AgentId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -244,9 +244,35 @@ namespace RealEStateProject.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Favorites_Properties_PropertyId",
+                        column: x => x.PropertyId,
+                        principalTable: "Properties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PropertyId = table.Column<int>(type: "int", nullable: false),
+                    AgentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SenderName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SenderEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SenderPhone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MessageText = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
@@ -267,36 +293,6 @@ namespace RealEStateProject.Migrations
                     table.PrimaryKey("PK_PropertyImages", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PropertyImages_Properties_PropertyId",
-                        column: x => x.PropertyId,
-                        principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PropertyRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PropertyId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PropertyRequests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PropertyRequests_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
-                        name: "FK_PropertyRequests_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "Id",
@@ -386,6 +382,11 @@ namespace RealEStateProject.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Messages_PropertyId",
+                table: "Messages",
+                column: "PropertyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Properties_AgentId",
                 table: "Properties",
                 column: "AgentId");
@@ -399,16 +400,6 @@ namespace RealEStateProject.Migrations
                 name: "IX_PropertyImages_PropertyId",
                 table: "PropertyImages",
                 column: "PropertyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyRequests_PropertyId",
-                table: "PropertyRequests",
-                column: "PropertyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyRequests_UserId",
-                table: "PropertyRequests",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_PropertyId",
@@ -443,10 +434,10 @@ namespace RealEStateProject.Migrations
                 name: "Favorites");
 
             migrationBuilder.DropTable(
-                name: "PropertyImages");
+                name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "PropertyRequests");
+                name: "PropertyImages");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

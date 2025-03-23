@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using RealEstate.Models;
 using RealEstate.Repositories;
+using RealEStateProject.Models;
 using RealEStateProject.ViewModels.Admin;
 using RealEStateProject.ViewModels.Agent;
 using RealEStateProject.ViewModels.Property;
@@ -34,7 +35,14 @@ namespace RealEstate.Services
 
         public async Task UpdateUserAsync(ApplicationUser user)
         {
+            var agent = new Agent
+            {
+                ProfileImageUrl = user.UserImageURL,
+                UserId = user.Id
 
+
+
+            };
             await _userRepository.UpdateAsync(user);
         }
 

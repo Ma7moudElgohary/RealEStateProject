@@ -9,7 +9,14 @@
             </p>
 
             <a asp-action="Explore" asp-controller="Property" class="btn btn-primary py-3 px-5 me-3 animated fadeIn mt-3">Explore </a>
-            <a asp-action="Create" asp-controller="Property" class="btn btn-primary py-3 px-5 me-3 animated fadeIn mt-3">Add Property </a>
+
+            <!-- For Agents -->
+            @if (User.IsInRole("Agent") && !User.IsInRole("Admin"))
+
+            {
+                <a asp-action="Create" asp-controller="Property" class="btn btn-primary py-3 px-5 me-3 animated fadeIn mt-3">Add Property </a>
+
+            }
 
 
         </div>
@@ -34,16 +41,22 @@
                 <div class="col-md-10">
                     <div class="row g-2">
                         <div class="col-md-4">
-                            <input name="searchName" type="text" class="form-control border-0 py-3" placeholder="Search Keyword">
+                            <input name="Location" type="text" class="form-control border-0 py-3" placeholder="Search Location">
                         </div>
                         <div class="col-md-4">
-                            <select name="categoryName" class="form-select border-0 py-3" asp-items="ViewBag.PropertyTypes">
-                                <option value="">Select a category</option>
+                            <select name="Type" class="form-select border-0 py-3" asp-items="ViewBag.PropertyTypes">
+                                <option value="">Property Type</option>
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <select name="city" class="form-select border-0 py-3" asp-items="ViewBag.City">
-                                <option value="">Select a City</option>
+                            <select name="MinPrice" class="form-select border-0 py-3">
+                                <option value="">Min Price</option>
+                                <option value="100000">$100,000</option>
+                                <option value="200000">$200,000</option>
+                                <option value="300000">$300,000</option>
+                                <option value="500000">$500,000</option>
+                                <option value="750000">$750,000</option>
+                                <option value="1000000">$1,000,000+</option>
                             </select>
                         </div>
                     </div>
@@ -51,12 +64,10 @@
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-dark border-0 w-100 py-3">Search</button>
                 </div>
-
             </div>
         </div>
     </div>
 </form>
-<!-- Search End -->
 <!-- Category Start -->
 @* <div class="container-xxl py-5">
     <div class="container">

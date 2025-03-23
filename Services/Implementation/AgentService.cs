@@ -36,5 +36,17 @@ namespace RealEStateProject.Services
             var agent = await _agentRepository.GetByPropertyIdAsync(propertyId);
             return agent;
         }
+
+        // add agent
+        public async Task<int> AddAgentAsync(Agent agent)
+        {
+            return await _agentRepository.AddAsync(agent);
+        }
+
+        // UPDATE AGENT
+        public async Task UpdateAgentAsync(Agent agent)
+        {
+            await _agentRepository.UpdateAsync(agent);
+        }
     }
 }

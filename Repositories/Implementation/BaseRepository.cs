@@ -32,9 +32,10 @@ namespace RealEstate.Infrastructure.Repositories
             return await _dbSet.Where(predicate).ToListAsync();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<int> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
+            return await SaveChangesAsync();
 
         }
 

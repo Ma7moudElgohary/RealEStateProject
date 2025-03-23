@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstate.Models;
+using RealEStateProject.Models;
+using RealEStateProject.Repositories.Interfaces;
+using RealEStateProject.Services.Interfaces;
+using RealEStateProject.ViewModels.Agent;
 using RealEStateProject.ViewModels.User;
 
 namespace RealEStateProject.Controllers
@@ -13,11 +17,16 @@ namespace RealEStateProject.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IAgentService _agentService;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(
+                 UserManager<ApplicationUser> userManager,
+                 SignInManager<ApplicationUser> signInManager,
+                 IAgentService agentService)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this._agentService = agentService;
         }
 
         #region Register
@@ -56,6 +65,22 @@ namespace RealEStateProject.Controllers
                     if (userFromRequest.UserType == UserType.Agent)
                     {
                         await userManager.AddToRoleAsync(userModel, "Agent");
+
+                        // Create the Agent entity
+                        var agent = new Agent
+                        {
+                            UserId = userModel.Id,
+                            // Set default values for required fields
+                            LicenseNumber = "Pending", // Default or placeholder value
+                            Agency = "Pending",
+                            Biography = "",
+                            YearsOfExperience = 0,
+                            User = userModel
+                        };
+
+                        // Save the agent to the database
+
+                        await _agentService.AddAgentAsync(agent);
                     }
                     else
                     {

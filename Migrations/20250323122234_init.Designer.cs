@@ -12,8 +12,8 @@ using RealEstate.Data;
 namespace RealEStateProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250322041557_initDatabase")]
-    partial class initDatabase
+    [Migration("20250323122234_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -179,7 +179,6 @@ namespace RealEStateProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfileImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
@@ -194,6 +193,50 @@ namespace RealEStateProject.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Agents");
+                });
+
+            modelBuilder.Entity("RealEStateProject.Models.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AgentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PropertyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SenderEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PropertyId");
+
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("RealEstate.Models.ApplicationUser", b =>
@@ -315,7 +358,6 @@ namespace RealEStateProject.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AgentId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("AgentId1")
@@ -370,6 +412,9 @@ namespace RealEStateProject.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("YearBuilt")
+                        .HasColumnType("int");
+
                     b.Property<string>("ZipCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -403,43 +448,6 @@ namespace RealEStateProject.Migrations
                     b.HasIndex("PropertyId");
 
                     b.ToTable("PropertyImages");
-                });
-
-            modelBuilder.Entity("RealEstate.Models.PropertyRequest", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PropertyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PropertyRequests");
                 });
 
             modelBuilder.Entity("RealEstate.Models.Review", b =>
@@ -538,6 +546,17 @@ namespace RealEStateProject.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RealEStateProject.Models.Message", b =>
+                {
+                    b.HasOne("RealEstate.Models.Property", "Property")
+                        .WithMany()
+                        .HasForeignKey("PropertyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Property");
+                });
+
             modelBuilder.Entity("RealEstate.Models.Favorite", b =>
                 {
                     b.HasOne("RealEstate.Models.Property", "Property")
@@ -561,9 +580,7 @@ namespace RealEStateProject.Migrations
                 {
                     b.HasOne("RealEstate.Models.ApplicationUser", "Agent")
                         .WithMany("Properties")
-                        .HasForeignKey("AgentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AgentId");
 
                     b.HasOne("RealEStateProject.Models.Agent", null)
                         .WithMany("Properties")
@@ -583,25 +600,6 @@ namespace RealEStateProject.Migrations
                     b.Navigation("Property");
                 });
 
-            modelBuilder.Entity("RealEstate.Models.PropertyRequest", b =>
-                {
-                    b.HasOne("RealEstate.Models.Property", "Property")
-                        .WithMany("Requests")
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RealEstate.Models.ApplicationUser", "User")
-                        .WithMany("Requests")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Property");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("RealEstate.Models.Review", b =>
                 {
                     b.HasOne("RealEstate.Models.Property", "Property")
@@ -611,7 +609,7 @@ namespace RealEStateProject.Migrations
                         .IsRequired();
 
                     b.HasOne("RealEstate.Models.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Property");
@@ -630,14 +628,12 @@ namespace RealEStateProject.Migrations
 
                     b.Navigation("Properties");
 
-                    b.Navigation("Requests");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("RealEstate.Models.Property", b =>
                 {
                     b.Navigation("Images");
-
-                    b.Navigation("Requests");
 
                     b.Navigation("Reviews");
                 });

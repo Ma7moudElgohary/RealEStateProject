@@ -55,7 +55,6 @@ namespace RealEstate.Controllers
             var userId = User.Identity.IsAuthenticated ? GetUserId() : null;
             var searchResults = await _propertyService.SearchPropertiesAsync(filter, userId, page, pageSize);
 
-            // Add this if the user is authenticated
             if (userId != null)
             {
                 var favorites = await _favoriteService.GetFavoritesByUserIdAsync(userId);
@@ -227,6 +226,15 @@ namespace RealEstate.Controllers
             return Json(new { isFavorite });
         }
 
+        // remove fevorite
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFavorite(int propertyId)
+        {
+            var userId = GetUserId();
+            await _favoriteService.RemoveFavoriteAsync(propertyId, userId);
+            return RedirectToAction(nameof(Favorites));
+        }
         // GET: Properties/Favorites
         [Authorize]
         public async Task<IActionResult> Favorites()
