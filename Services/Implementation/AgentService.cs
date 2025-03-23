@@ -18,10 +18,10 @@ namespace RealEStateProject.Services
         }
 
 
-        public async Task<AgentViewModel> GetAgentByUserIdAsync(string userId)
+        public async Task<Agent> GetAgentByUserIdAsync(string userId)
         {
             var agent = await _agentRepository.GetByUserIdAsync(userId);
-            return _mapper.Map<AgentViewModel>(agent);
+            return agent;
         }
 
         public async Task<bool> IsUserAgentAsync(string userId)
@@ -46,7 +46,37 @@ namespace RealEStateProject.Services
         // UPDATE AGENT
         public async Task UpdateAgentAsync(Agent agent)
         {
+
             await _agentRepository.UpdateAsync(agent);
+        }
+
+        // map agent to agent view model
+        public AgentViewModel MapAgentToAgentViewModel(Agent agent)
+        {
+            return new AgentViewModel
+            {
+                FullName = agent.User.FirstName + " " + agent.User.LastName,
+                Email = agent.User.Email,
+                PhoneNumber = agent.User.PhoneNumber,
+                PropertyCount = agent.Properties.Count,
+                LicenseNumber = agent.LicenseNumber,
+                Agency = agent.Agency,
+                Biography = agent.Biography,
+                YearsOfExperience = agent.YearsOfExperience,
+                ProfileImageUrl = agent.User.UserImageURL
+            };
+        }
+
+        // map agent view model to agent
+        public Agent MapAgentViewModelToAgent(AgentViewModel agentViewModel)
+        {
+            return new Agent
+            {
+                LicenseNumber = agentViewModel.LicenseNumber,
+                Agency = agentViewModel.Agency,
+                Biography = agentViewModel.Biography,
+                YearsOfExperience = agentViewModel.YearsOfExperience
+            };
         }
     }
 }

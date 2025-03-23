@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using RealEstate.Services;
 using System.Security.Claims;
 using RealEStateProject.ViewModels.User;
+using RealEStateProject.Models;
 
 namespace RealEStateProject.Controllers
 {
@@ -33,10 +34,15 @@ namespace RealEStateProject.Controllers
         }
 
         // GET: User profile
-        public IActionResult Index()
+        public async Task<IActionResult> IndexAsync()
         {
             var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _userService.GetUserByIdAsync(Id).Result;
+            var user = await _userService.GetUserByIdAsync(Id);
+
+            // Check if the user is an agent
+            var agent = await _agentService.GetAgentByUserIdAsync(Id);
+            ViewBag.IsAgent = agent != null;
+            ViewBag.Agent = agent;
 
             return View(user);
         }
@@ -152,12 +158,12 @@ namespace RealEStateProject.Controllers
             return PartialView("_ReviewsPartial", model);
         }
 
-        // GET: Edit user profile
         [HttpGet]
-        public IActionResult EditProfile()
+        public async Task<IActionResult> EditProfile()
         {
-            var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _userService.GetUserByIdAsync(Id).Result;
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _userService.GetUserByIdAsync(userId);
+            var agent = await _agentService.GetAgentByUserIdAsync(userId);
 
             var viewModel = new UserProfileViewModel
             {
@@ -166,13 +172,22 @@ namespace RealEStateProject.Controllers
                 LastName = user.LastName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                ProfilePicture = user.UserImageURL
+                ProfilePicture = user.UserImageURL,
+                IsAgent = agent != null
             };
+
+            // Set agent properties if the user is an agent
+            if (agent != null)
+            {
+                viewModel.LicenseNumber = agent.LicenseNumber;
+                viewModel.Agency = agent.Agency;
+                viewModel.Biography = agent.Biography;
+                viewModel.YearsOfExperience = agent.YearsOfExperience;
+            }
 
             return View(viewModel);
         }
 
-        // Update user profile
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProfile(UserProfileViewModel model)
@@ -201,26 +216,22 @@ namespace RealEStateProject.Controllers
                         return View(model);
                     }
 
-                    // Generate a unique filename
+                    // Save the file
                     var fileName = $"{Guid.NewGuid()}{extension}";
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "profiles");
-
-                    // Create directory if it doesn't exist
-                    if (!Directory.Exists(uploadsFolder))
-                    {
-                        Directory.CreateDirectory(uploadsFolder);
-                    }
-
+                    Directory.CreateDirectory(uploadsFolder);
                     var filePath = Path.Combine(uploadsFolder, fileName);
 
-                    // Save the file
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await model.ProfileImageFile.CopyToAsync(fileStream);
                     }
 
-                    // Update user with new image URL
                     user.UserImageURL = $"/uploads/profiles/{fileName}";
+                }
+                else if (!string.IsNullOrEmpty(model.ProfilePicture))
+                {
+                    user.UserImageURL = model.ProfilePicture;
                 }
 
                 // Update user properties
@@ -228,24 +239,30 @@ namespace RealEStateProject.Controllers
                 user.LastName = model.LastName;
                 user.Email = model.Email;
                 user.PhoneNumber = model.PhoneNumber;
-
-                // Update the user
-                if (!string.IsNullOrEmpty(model.ProfilePicture) && model.ProfilePicture != user.UserImageURL)
-                {
-                    user.UserImageURL = model.ProfilePicture;
-                }
-
                 await _userService.UpdateUserAsync(user);
+
+                // Update agent information
+                var agent = await _agentService.GetAgentByUserIdAsync(model.Id);
+
+                if (model.IsAgent)
+                {
+                    // Update agent properties
+                    agent.LicenseNumber = model.LicenseNumber;
+                    agent.Agency = model.Agency;
+                    agent.Biography = model.Biography;
+                    agent.YearsOfExperience = model.YearsOfExperience ?? 0;
+                    agent.ProfileImageUrl = user.UserImageURL;
+
+                    await _agentService.UpdateAgentAsync(agent);
+                }
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                // Log the exception
                 ModelState.AddModelError("", "Error updating profile: " + ex.Message);
                 return View(model);
             }
         }
-
     }
 }

@@ -1,10 +1,10 @@
 ﻿@model RealEstate.Models.ApplicationUser
-
 @{
     ViewData["Title"] = "User Profile";
     ViewData["HideFooter"] = true;
+    var isAgent = ViewBag.IsAgent != null && ViewBag.IsAgent;
+    var agent = ViewBag.Agent as RealEStateProject.Models.Agent;
 }
-
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
@@ -19,13 +19,13 @@
                         <img src="/images/default-profile.jpg" alt="Default Profile Picture" class="rounded-circle img-fluid mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                     }
                     <h5 class="card-title">@Model.FirstName @Model.LastName</h5>
-                    <p class="card-text text-muted">@(Model.UserType?.ToString() ?? "User")</p>
+                    <p class="card-text text-muted">@(Model.UserType?.ToString() ?? "User") @(isAgent ? "- Agent" : "")</p>
                     <a asp-action="EditProfile" class="btn btn-primary">Edit Profile</a>
                 </div>
             </div>
         </div>
         <div class="col-md-8">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Profile Information</h5>
                 </div>
@@ -67,6 +67,61 @@
                     </div>
                 </div>
             </div>
+
+            @if (isAgent && agent != null)
+            {
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Agent Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">License Number</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @agent.LicenseNumber
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Agency</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @agent.Agency
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Years of Experience</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @agent.YearsOfExperience
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Biography</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @(string.IsNullOrEmpty(agent.Biography) ? "No biography provided" : agent.Biography)
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Property Listings</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                @(agent.Properties?.Count ?? 0) properties
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>

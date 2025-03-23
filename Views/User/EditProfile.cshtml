@@ -17,6 +17,8 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="ProfilePicture" />
+                        <input type="hidden" asp-for="IsAgent" />
+                        <input type="hidden" asp-for="AgentId" />
 
                         <div class="row mb-4">
                             <div class="col-md-12 text-center mb-4">
@@ -66,6 +68,40 @@
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                         </div>
 
+                        @if (Model.IsAgent)
+                        {
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Agent Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="LicenseNumber" class="control-label"></label>
+                                        <input asp-for="LicenseNumber" class="form-control" />
+                                        <span asp-validation-for="LicenseNumber" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Agency" class="control-label"></label>
+                                        <input asp-for="Agency" class="form-control" />
+                                        <span asp-validation-for="Agency" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label asp-for="YearsOfExperience" class="control-label"></label>
+                                        <input asp-for="YearsOfExperience" class="form-control" type="number" min="0" />
+                                        <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Biography" class="control-label"></label>
+                                        <textarea asp-for="Biography" class="form-control" rows="4"></textarea>
+                                        <span asp-validation-for="Biography" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
                         <div class="form-group d-flex justify-content-between">
                             <a asp-action="Index" class="btn btn-secondary">Cancel</a>
                             <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -92,4 +128,3 @@
         };
     </script>
 }
-```
