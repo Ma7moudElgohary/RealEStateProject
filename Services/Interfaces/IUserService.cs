@@ -13,5 +13,6 @@ namespace RealEstate.Services
         Task<AdminDashboardViewModel> GetAdminDashboardAsync();
         Task UpdateUserAsync(ApplicationUser user);
         Task AssignRoleAsync(string userId, string role);
+
     }
 }
