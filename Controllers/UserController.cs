@@ -32,6 +32,7 @@ namespace RealEStateProject.Controllers
             _userService = userService;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             var Id = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -85,6 +86,7 @@ namespace RealEStateProject.Controllers
                 return View(ModelState);
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveReview(int reviewId)

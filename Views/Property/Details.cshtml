@@ -143,9 +143,6 @@
                             <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="features-tab" data-bs-toggle="tab" data-bs-target="#features" type="button" role="tab" aria-controls="features" aria-selected="false">Features</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
                             <button class="nav-link" id="location-tab" data-bs-toggle="tab" data-bs-target="#location" type="button" role="tab" aria-controls="location" aria-selected="false">Location</button>
                         </li>
                     </ul>
@@ -157,31 +154,6 @@
                             <p class="mt-3">
                                 <strong>Full Address:</strong> @Model.Address, @Model.City, @Model.State @Model.ZipCode
                             </p>
-                        </div>
-                        
-                        <!-- Features Tab -->
-                        <div class="tab-pane fade" id="features" role="tabpanel" aria-labelledby="features-tab">
-                            <h4 class="mb-3">Property Features</h4>
-                            <div class="row">
-                                @if (Model.Features != null && Model.Features.Any())
-                                {
-                                    foreach (var feature in Model.Features)
-                                    {
-                                        <div class="col-md-4 mb-2">
-                                            <div class="d-flex align-items-center">
-                                                <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                                <span>@feature</span>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                                else
-                                {
-                                    <div class="col-12">
-                                        <p class="text-muted">No additional features listed.</p>
-                                    </div>
-                                }
-                            </div>
                         </div>
                         
                         <!-- Location Tab -->
@@ -197,29 +169,19 @@
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h4 class="mb-0">Reviews</h4>
-                        <div class="d-flex align-items-center">
-                            <div class="rating-stars me-2">
-                                @for (var i = 1; i <= 5; i++)
-                                {
-                                    <i class="bi @(Model.AverageRating >= i ? "bi-star-fill" : (Model.AverageRating >= i - 0.5 ? "bi-star-half" : "bi-star"))" style="color: #ffc107;"></i>
-                                }
-                            </div>
-                            <span class="text-muted">(@Model.ReviewCount reviews)</span>
-                        </div>
+                        <h4 class="mb-0">Add Review</h4>
                     </div>
-
                     <!-- Add Review Form -->
                     @if (User.Identity.IsAuthenticated)
                     {
                         <div class="mb-4 border-bottom pb-4">
-                            <form id="reviewForm">
+                            <form id="reviewForm" action="@Url.Action("AddReview", "User")">
                                 <input type="hidden" name="PropertyId" value="@Model.Id" />
                                 @Html.AntiForgeryToken()
 
                                 <!-- Star Rating Selection -->
                                 <div class="mb-3">
-                                    <label class="form-label">Your Rating</label>
+                                    <label class="form-label mb-0">Your Rating</label>
                                     <div class="star-rating">
                                         <div class="rating-group">
                                             @for (var i = 1; i <= 5; i++)
@@ -265,6 +227,7 @@
 
         <!-- Sidebar Column -->
         <div class="col-lg-4">
+
             <!-- Agent Info -->
             <div class="card mb-4 border-0 shadow-sm">
                 <div class="card-header bg-primary text-white py-3">
@@ -273,87 +236,30 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
                         <div class="flex-shrink-0">
-                            <img src="/images/agent.jpg" alt="Agent" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+
+                                <img src="@Model.Agent.ProfileImageUrl" alt="Agent" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover;">
+
                         </div>
                         <div class="ms-3">
-                            <h5 class="mb-0">@Model.AgentName</h5>
+                            <h5 class="mb-0">@Model.Agent.FullName</h5>
                             <p class="text-muted mb-0">Real Estate Agent</p>
                         </div>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fa fa-id-card me-2"></i>
+                        <span>@Model.Agent.LicenseNumber</span>
                     </div>
                     <div class="mb-3">
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-telephone me-2"></i>
-                            <span>@Model.AgentPhone</span>
+                            <span>@Model.Agent.PhoneNumber</span>
                         </div>
                         <div class="d-flex align-items-center">
                             <i class="bi bi-envelope me-2"></i>
-                            <span>@Model.AgentEmail</span>
+                            <span>@Model.Agent.Email</span>
                         </div>
                     </div>
                     <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#contactAgentModal">Contact Agent</button>
-                </div>
-            </div>
-
-            <!-- Property Ratings Overview -->
-            <div class="card mb-4 border-0 shadow-sm">
-                <div class="card-header bg-primary text-white py-3">
-                    <h5 class="mb-0">Property Rating</h5>
-                </div>
-                <div class="card-body">
-                    <div class="text-center mb-3">
-                        <h2 class="mb-0">@(Model.AverageRating > 0 ? Model.AverageRating.ToString("0.0") : "No ratings")</h2>
-                        <div class="rating-stars mb-2">
-                            @for (var i = 1; i <= 5; i++)
-                            {
-                                <i class="bi @(Model.AverageRating >= i ? "bi-star-fill" : (Model.AverageRating >= i - 0.5 ? "bi-star-half" : "bi-star"))" style="color: #ffc107;"></i>
-                            }
-                        </div>
-                        <small class="text-muted">Based on @Model.ReviewCount reviews</small>
-                    </div>
-
-                    <!-- Rating Distribution -->
-                    @if (Model.RatingDistribution != null && Model.RatingDistribution.Any())
-                    {
-                        <div class="rating-distribution">
-                            @for (var i = 5; i >= 1; i--)
-                            {
-                                var percentage = Model.RatingDistribution.ContainsKey(i) ?
-                                (Model.ReviewCount > 0 ? (Model.RatingDistribution[i] * 100 / Model.ReviewCount) : 0) : 0;
-
-                                <div class="d-flex align-items-center mb-1">
-                                    <div class="text-muted me-2">@i <i class="bi bi-star-fill" style="color: #ffc107;"></i></div>
-                                    <div class="progress flex-grow-1" style="height: 8px;">
-                                        <div class="progress-bar bg-warning" role="progressbar"
-                                             style="width: @percentage%;"
-                                             aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <div class="ms-2 text-muted small">@percentage%</div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted text-center">No ratings distribution available</p>
-                    }
-                </div>
-            </div>
-
-            <!-- Similar Properties -->
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-primary text-white py-3">
-                    <h5 class="mb-0">Similar Properties</h5>
-                </div>
-                <div class="card-body">
-                    <div id="similarProperties">
-                        <!-- Similar properties will be loaded here via AJAX -->
-                        <div class="text-center py-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="text-muted mt-2">Loading similar properties...</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -409,83 +315,252 @@
         // Global variables
         let map;
         let marker;
-        let propertyLocation = { lat: @(Model.Latitude == null ? 40.7128:Model.Latitude), lng: @(Model.Longitude == null ? -74.0060:Model.Longitude) };
-        
+        let propertyLocation = { lat: @(Model.Latitude == null ? 40.7128 : Model.Latitude), lng: @(Model.Longitude == null ? -74.0060 : Model.Longitude) };
+
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            // Create toast container if it doesn't exist
+            if (!document.getElementById('toastContainer')) {
+                const container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.style.position = 'fixed';
+                container.style.top = '20px';
+                container.style.right = '20px';
+                container.style.zIndex = '1050';
+                document.body.appendChild(container);
+            }
+
+            // Create toast element
+            const toastId = 'toast-' + Date.now();
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'primary'}`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+
+            toast.innerHTML = `
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    `;
+
+            document.getElementById('toastContainer').appendChild(toast);
+
+            // Initialize and show toast
+            const bsToast = new bootstrap.Toast(toast, { delay: 5000 });
+            bsToast.show();
+
+            // Remove toast element after it's hidden
+            toast.addEventListener('hidden.bs.toast', function () {
+                toast.remove();
+            });
+        }
+
         // Initialize map
         function initMap() {
-            // Create map centered at property locationa
-            map = new google.maps.Map(document.getElementById("propertyMap"), {
-                zoom: 15,
-                center: propertyLocation,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-                },
-                fullscreenControl: true,
-                streetViewControl: true,
-                zoomControl: true
-            });
-            
-            // Add marker for property
-            marker = new google.maps.Marker({
-                position: propertyLocation,
-                map: map,
-                title: "@Model.Title",
-                animation: google.maps.Animation.DROP
-            });
-            
-            // Add info window for property
-            const infoWindow = new google.maps.InfoWindow({
-                content: `
-                    <div style="max-width: 200px;">
-                        <h6 style="margin-bottom: 5px;">@Model.Title</h6>
-                        <p style="margin-bottom: 5px;">@Model.Address</p>
-                        <p style="margin-bottom: 0;"><strong>$@Model.Price.ToString("N0")</strong></p>
-                    </div>
-                `
-            });
-            
-            // Open info window when marker is clicked
-            marker.addListener('click', function() {
+            try {
+                // Create map centered at property location
+                map = new google.maps.Map(document.getElementById("propertyMap"), {
+                    zoom: 15,
+                    center: propertyLocation,
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+                    },
+                    fullscreenControl: true,
+                    streetViewControl: true,
+                    zoomControl: true
+                });
+
+                // Add marker for property
+                marker = new google.maps.Marker({
+                    position: propertyLocation,
+                    map: map,
+                    title: "@Model.Title",
+                    animation: google.maps.Animation.DROP
+                });
+
+                // Add info window for property
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                                <div style="max-width: 200px;">
+                                    <h6 style="margin-bottom: 5px;">@Model.Title</h6>
+                                    <p style="margin-bottom: 5px;">@Model.Address</p>
+                                    <p style="margin-bottom: 0;"><strong>$@Model.Price.ToString("N0")</strong></p>
+                                </div>
+                            `
+                });
+
+                // Open info window when marker is clicked
+                marker.addListener('click', function () {
+                    infoWindow.open(map, marker);
+                });
+
+                // Initially open the info window
                 infoWindow.open(map, marker);
-            });
-            
-            // Initially open the info window
-            infoWindow.open(map, marker);
+            } catch (error) {
+                console.error("Map initialization error:", error);
+            }
         }
-        
-        // Document ready handler
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Bootstrap carousel with proper settings
-            var propertyCarousel = new bootstrap.Carousel(document.getElementById('propertyCarousel'), {
-                interval: 5000,  // 5 seconds between slides
-                wrap: true,      // Loop back to beginning
-                keyboard: true   // Allow keyboard navigation
-            });
-            
-            // Listen for tab activation
-            document.getElementById('location-tab').addEventListener('shown.bs.tab', function () {
-                // Initialize map only if not already initialized
-                if (!map) {
-                    initMap();
-                } else {
-                    // Trigger resize to fix rendering issues when tab was hidden
-                    google.maps.event.trigger(map, 'resize');
-                    map.setCenter(propertyLocation);
+
+        // Load reviews
+        function loadReviews(page = 1) {
+            const propertyId = @Model.Id;
+            $('#reviewsLoading').show();
+
+            $.ajax({
+                url: '@Url.Action("GetPropertyReviews", "User")',
+                type: 'GET',
+                data: {
+                    propertyId: propertyId,
+                    page: page,
+                    pageSize: 4
+                },
+                success: function (response) {
+                    $('#reviewsContainer').html(response);
+
+                    // Initialize tooltips
+                    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Review loading error:", error);
+                    $('#reviewsContainer').html('<div class="alert alert-danger">Failed to load reviews. Please try again later.</div>');
+                },
+                complete: function () {
+                    $('#reviewsLoading').hide();
                 }
             });
-            
-            // Track carousel image index for the counter in top-right
+        }
+
+        // review submission function
+        function submitReview() {
+            // Check if we're already submitting
+            if ($('#submitReview').prop('disabled')) {
+                return;
+            }
+
+            // Get form data
+            const propertyId = @Model.Id;
+            const rating = $('input[name="Rating"]:checked').val();
+            const comment = $('#reviewComment').val().trim();
+            const token = $('input[name="__RequestVerificationToken"]').val();
+
+            // Validate
+            if (!rating) {
+                showToast('Please select a rating', 'error');
+                return;
+            }
+
+            if (!comment) {
+                showToast('Please write a review comment', 'error');
+                return;
+            }
+
+            // Disable button
+            $('#submitReview').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...');
+
+            // Simplified AJAX call
+            $.ajax({
+                url: '@Url.Action("AddReview", "User")',
+                type: 'POST',
+                data: {
+                    PropertyId: propertyId,
+                    Rating: rating,
+                    Comment: comment,
+                    __RequestVerificationToken: token
+                },
+                success: function (response) {
+                    // Reset form fields
+                    $('#reviewComment').val('');
+                    $('input[name="Rating"]').prop('checked', false);
+                    $('.rating__input').each(function () {
+                        $(this).siblings('label').find('i').removeClass('bi-star-fill').addClass('bi-star');
+                    });
+
+                    // Show success message and reload reviews
+                    showToast('Review submitted successfully!', 'success');
+                    loadReviews(1);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Review submission error:", error);
+                    showToast('Failed to submit review. Please try again later.', 'error');
+                },
+                complete: function () {
+                    // Re-enable button
+                    $('#submitReview').prop('disabled', false).text('Submit Review');
+                }
+            });
+        }
+
+        // Delete review function
+        function deleteReview(reviewId) {
+            if (!reviewId) return;
+
+            $.ajax({
+                url: '@Url.Action("RemoveReview", "User")',
+                type: 'POST',
+                data: {
+                    reviewId: reviewId,
+                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function () {
+                    showToast('Review deleted successfully', 'success');
+                    loadReviews(1);
+                },
+                error: function (xhr) {
+                    console.error("Review deletion error:", xhr.responseText);
+                    if (xhr.status === 403) {
+                        showToast('You do not have permission to delete this review', 'error');
+                    } else {
+                        showToast('Failed to delete review', 'error');
+                    }
+                }
+            });
+        }
+
+        // Main initialization on document ready
+        $(document).ready(function () {
+            // Initialize carousel
+            const propertyCarousel = new bootstrap.Carousel(document.getElementById('propertyCarousel'), {
+                interval: 5000,
+                wrap: true,
+                keyboard: true
+            });
+
+            // Track carousel image index
             const carousel = document.getElementById('propertyCarousel');
             const currentImageIndex = document.getElementById('currentImageIndex');
-            
+
             if (carousel && currentImageIndex) {
                 carousel.addEventListener('slid.bs.carousel', function (event) {
                     currentImageIndex.textContent = (event.to + 1);
                 });
             }
-            
-            // Favorite button functionality
+
+            // Initialize location tab listener
+            const locationTab = document.getElementById('location-tab');
+            if (locationTab) {
+                locationTab.addEventListener('shown.bs.tab', function () {
+                    // Wait a moment to ensure the tab is fully shown
+                    setTimeout(function () {
+                        if (!map) {
+                            initMap();
+                        } else {
+                            google.maps.event.trigger(map, 'resize');
+                            map.setCenter(propertyLocation);
+                        }
+                    }, 100);
+                });
+            }
+
+            // Favorite button
             $('#favoriteButton').on('click', function () {
                 const propertyId = $(this).data('property-id');
 
@@ -507,213 +582,34 @@
                             icon.removeClass('bi-heart-fill').addClass('bi-heart');
                             text.text('Add to Favorites');
                         }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Favorite toggle error:", error);
+                        showToast('Unable to update favorites. Please try again.', 'error');
                     }
                 });
             });
 
             // Star rating handler
-            $('.rating__input').on('click', function () {
-                let value = $(this).val();
+            $('.rating__input').on('change', function () {
+                const value = $(this).val();
+
                 $('.rating__input').each(function (index) {
-                    let star = index + 1;
+                    const star = index + 1;
+                    const icon = $(this).siblings('label').find('i');
+
                     if (star <= value) {
-                        $(this).siblings('label').find('i').removeClass('bi-star').addClass('bi-star-fill');
+                        icon.removeClass('bi-star').addClass('bi-star-fill');
                     } else {
-                        $(this).siblings('label').find('i').removeClass('bi-star-fill').addClass('bi-star');
+                        icon.removeClass('bi-star-fill').addClass('bi-star');
                     }
                 });
             });
-            
-            // Load similar properties via AJAX
-            loadSimilarProperties();
-            
-            // Contact agent form submission
-            $('#sendContactForm').on('click', function() {
-                const form = $('#contactAgentForm');
-                if (form[0].checkValidity()) {
-                    const formData = form.serialize();
-                    
-                    $.ajax({
-                        url: '@Url.Action("ContactAgent", "Property")',
-                        type: 'POST',
-                        data: formData,
-                        success: function(response) {
-                            if (response.success) {
-                                $('#contactAgentModal').modal('hide');
-                                showToast('Message sent successfully. The agent will contact you soon.');
-                                form[0].reset();
-                            } else {
-                                showToast('Error sending message. Please try again later.', 'error');
-                            }
-                        },
-                        error: function() {
-                            showToast('Error sending message. Please try again later.', 'error');
-                        }
-                    });
-                } else {
-                    form[0].reportValidity();
-                }
-            });
 
-            // Manual control for carousel navigation
-            document.querySelector('.carousel-control-prev').addEventListener('click', function() {
-                propertyCarousel.prev();
-            });
-            
-            document.querySelector('.carousel-control-next').addEventListener('click', function() {
-                propertyCarousel.next();
-            });
-            
-            // Load initial reviews
-            loadReviews(1);
-            
-            // Submit review via AJAX
-            $('#submitReview').on('click', function() {
-                submitReview();
-            });
-            
-            // Handle pagination clicks
-            $(document).on('click', '.pagination .page-link', function(e) {
-                e.preventDefault();
-                const page = $(this).data('page');
-                loadReviews(page);
-            });
-            
-            // Handle review deletion
-            $(document).on('click', '.delete-review', function() {
-                if (confirm('Are you sure you want to delete this review?')) {
-                    const reviewId = $(this).data('review-id');
-                    deleteReview(reviewId);
-                }
-            });
-        });
-        
-        // Load similar properties
-        function loadSimilarProperties() {
-            $.ajax({
-                url: '@Url.Action("GetSimilarProperties", "Property")',
-                type: 'GET',
-                data: { 
-                    propertyId: @Model.Id,
-                    propertyType: '@Model.Type',
-                    city: '@Model.City',
-                    limit: 3
-                },
-                success: function(response) {
-                    $('#similarProperties').html(response);
-                },
-                error: function() {
-                    $('#similarProperties').html('<p class="text-muted">Unable to load similar properties</p>');
-                }
-            });
-        }
-        
-        // Function to load reviews
-        function loadReviews(page = 1) {
-            const propertyId = @Model.Id;
-            $('#reviewsLoading').show();
-            
-            $.ajax({
-                url: '@Url.Action("GetPropertyReviews", "User")',
-                type: 'GET',
-                data: {
-                    propertyId: propertyId,
-                    page: page,
-                    pageSize: 5
-                },
-                success: function(response) {
-                    $('#reviewsContainer').html(response);
-                    
-                    // Initialize tooltips
-                    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-                    tooltipTriggerList.map(function (tooltipTriggerEl) {
-                        return new bootstrap.Tooltip(tooltipTriggerEl);
-                    });
-                    
-                    // Smooth scroll to reviews if page > 1
-                    if (page > 1) {
-                        $('html, body').animate({
-                            scrollTop: $('#reviewsContainer').offset().top - 100
-                        }, 500);
-                    }
-                },
-                error: function() {
-                    $('#reviewsContainer').html('<div class="alert alert-danger">Failed to load reviews. Please try again later.</div>');
-                },
-                complete: function() {
-                    $('#reviewsLoading').hide();
-                }
-            });
-        }
-        
-        // Function to submit a new review
-        function submitReview() {
-            const form = $('#reviewForm');
-
-            // Validate form
-            if (!form[0].checkValidity()) {
-                form[0].reportValidity();
-                return;
-            }
-
-            // Get selected rating
-            const rating = $('input[name="Rating"]:checked').val();
-            if (!rating) {
-                alert('Please select a rating');
-                return;
-            }
-
-            // Disable submit button and show loading
-            $('#submitReview').prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...');
-
-            // Get the form data and add the anti-forgery token
-            const formData = new FormData(form[0]);
-
-            $.ajax({
-                url: '@Url.Action("AddReview", "User")',
-                type: 'POST',
-                data: form.serialize(),
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                },
-                success: function (response) {
-                    // Check if response indicates success
-                    if (response.success) {
-                        // Clear form
-                        $('#reviewComment').val('');
-                        $('input[name="Rating"]').prop('checked', false);
-
-                        // Reset star UI
-                        $('.rating__input').each(function () {
-                            $(this).siblings('label').find('i').removeClass('bi-star-fill').addClass('bi-star');
-                        });
-
-                        // Show success message
-                        showToast('Your review has been added successfully!', 'success');
-
-                        // Reload reviews
-                        loadReviews(1);
-                    } else {
-                        showToast('Error submitting review. Please try again.', 'error');
-                        console.error("Server returned error:", response);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("AJAX Error:", xhr.responseText);
-                    console.error("Status:", status);
-                    console.error("Error:", error);
-                    showToast('Failed to submit your review. Please try again.', 'error');
-                },
-                complete: function () {
-                    $('#submitReview').prop('disabled', false).text('Submit Review');
-                }
-            });
-        }
-
-        $(document).ready(function () {
             // Contact agent form submission
             $('#sendContactForm').on('click', function () {
                 const form = $('#contactAgentForm');
+
                 if (form[0].checkValidity()) {
                     // Show loading state
                     const button = $(this);
@@ -721,31 +617,22 @@
 
                     const formData = form.serialize();
 
-                    // Add anti-forgery token
-                    formData += '&__RequestVerificationToken=' + $('input[name="__RequestVerificationToken"]').val();
-
                     $.ajax({
-                        url: '/Property/ContactAgent',
+                        url: '@Url.Action("ContactAgent", "Property")',
                         type: 'POST',
                         data: formData,
                         success: function (response) {
                             if (response.success) {
-                                // Hide modal
                                 $('#contactAgentModal').modal('hide');
-
-                                // Show success message
                                 showToast('Your message has been sent to the agent. They will contact you soon.', 'success');
-
-                                // Reset form
                                 form[0].reset();
-
-                                // Pre-fill message template for next time
-                                $('#contactMessage').val('I\'m interested in this property (' + '@Model.Title' + ') and would like more information.');
+                                $('#contactMessage').val('I\'m interested in this property (@Model.Title) and would like more information.');
                             } else {
                                 showToast(response.message || 'Error sending message. Please try again later.', 'error');
                             }
                         },
                         error: function (xhr) {
+                            console.error("Contact agent error:", xhr.responseText);
                             let errorMessage = 'Error sending message. Please try again later.';
                             if (xhr.responseJSON && xhr.responseJSON.message) {
                                 errorMessage = xhr.responseJSON.message;
@@ -753,7 +640,6 @@
                             showToast(errorMessage, 'error');
                         },
                         complete: function () {
-                            // Restore button state
                             button.prop('disabled', false).text('Send Message');
                         }
                     });
@@ -761,30 +647,34 @@
                     form[0].reportValidity();
                 }
             });
-        });
 
-        // Function to delete a review
-        function deleteReview(reviewId) {
-            $.ajax({
-                url: '@Url.Action("RemoveReview", "User")',
-                type: 'POST',
-                data: {
-                    reviewId: reviewId,
-                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                },
-                success: function () {
-                    showToast('Review deleted successfully', 'success');
-                    loadReviews(1);
-                },
-                error: function (xhr) {
-                    if (xhr.status === 403) {
-                        showToast('You do not have permission to delete this review', 'error');
-                    } else {
-                        showToast('Failed to delete review', 'error');
-                    }
+            // Review submission button
+            $('#submitReview').on('click', function (e) {
+                e.preventDefault();
+                submitReview();
+            });
+
+            // Pagination click handler
+            $(document).on('click', '.pagination .page-link', function (e) {
+                e.preventDefault();
+                const page = $(this).data('page');
+                if (page) {
+                    loadReviews(page);
                 }
             });
 
-        }
+            // Delete button click handler - unchanged
+            $(document).on('click', '.delete-review', function (e) {
+                e.preventDefault();
+                const reviewId = $(this).data('review-id');
+
+                if (confirm('Are you sure you want to delete this review?')) {
+                    deleteReview(reviewId);
+                }
+            });
+
+            // Load initial reviews
+            loadReviews(1);
+        });
     </script>
 }

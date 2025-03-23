@@ -60,7 +60,8 @@ namespace RealEStateProject.Services.Implementation
                 AgentId = agentId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Images = new List<PropertyImage>()
+                Images = new List<PropertyImage>(),
+
             };
 
             // Save featured image if provided

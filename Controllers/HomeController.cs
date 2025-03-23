@@ -31,6 +31,7 @@ namespace RealEStateProject.Controllers
             return selectList;
         }
 
+
         public async Task<IActionResult> Index()
         {
             ViewBag.PropertyTypes = GetEnumSelectList<PropertyType>();

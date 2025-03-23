@@ -1,4 +1,4 @@
-﻿@using RealEstate.Models
+﻿﻿@using RealEstate.Models
 @model RealEStateProject.ViewModels.Property.PropertySearchViewModel
 
 @{
@@ -178,118 +178,111 @@
                 </div>
 
                 <!-- Property Results -->
-               @if (Model.Properties == null || !Model.Properties.Any())
-        {
-            <div class="alert alert-warning">
-                <h4 class="alert-heading">No Properties Found!</h4>
-                <p class="mb-0">No properties match your search criteria. Try adjusting your filters.</p>
-            </div>
-        }
-        else
-        {
-            <div class="row g-2">
-                @foreach (var property in Model.Properties)
+                @if (Model.Properties == null || !Model.Properties.Any())
                 {
-                    <div class="col-4">
-                        <div class="card property-card h-100 border-0 shadow-sm small">
-                            <div class="position-relative">
-                                <a asp-action="Details" asp-route-id="@property.Id">
-                                    @if (property.ImageUrls != null && property.ImageUrls.Any())
-                                    {
-                                        <img class="card-img-top rounded-top" src="@property.ImageUrls.First()" style="height: 140px; object-fit: cover;">
-                                    }
-                                    else
-                                    {
-                                        <img class="card-img-top rounded-top" src="/img/default-property.jpg" style="height: 140px; object-fit: cover;">
-                                    }
-                                </a>
-                                        <button class="btn btn-light rounded-circle position-absolute end-0 top-0 m-2 favorite-btn btn-sm" data-property-id="@property.Id">
-                                            @if (User.Identity.IsAuthenticated && ViewBag.FavoriteIds != null && ViewBag.FavoriteIds.Contains(property.Id))
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading">No Properties Found!</h4>
+                        <p class="mb-0">No properties match your search criteria. Try adjusting your filters.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-2">
+                        @foreach (var property in Model.Properties)
+                        {
+                            <div class="col-4">
+                                <div class="card property-card h-100 border-0 shadow-sm small">
+                                    <div class="position-relative">
+                                        <a asp-action="Details" asp-route-id="@property.Id">
+                                            @if (property.ImageUrls != null && property.ImageUrls.Any())
                                             {
-                                                <i class="fa fa-heart"></i>
+                                                <img class="card-img-top rounded-top" src="@property.ImageUrls.First()" style="height: 140px; object-fit: cover;">
                                             }
                                             else
                                             {
-                                                <i class="fa fa-heart-o"></i>
+                                                <img class="card-img-top rounded-top" src="/img/default-property.jpg" style="height: 140px; object-fit: cover;">
                                             }
+                                        </a>
+                                        <button class="btn @(User.Identity.IsAuthenticated && ViewBag.FavoriteIds != null && ViewBag.FavoriteIds.Contains(property.Id) ? "btn-danger" : "btn-outline-danger") position-absolute end-0 top-0 m-2 favorite-btn btn-sm" data-property-id="@property.Id">
+                                            <i class="bi @(User.Identity.IsAuthenticated && ViewBag.FavoriteIds != null && ViewBag.FavoriteIds.Contains(property.Id) ? "bi-heart-fill" : "bi-heart")"></i>
                                         </button>
-                            </div>
-                            <div class="card-body p-2">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="text-primary fw-bold mb-0">$@property.Price.ToString("N0")</h6>
-                                    <span class="text-dark small">
-                                        <i class="fa fa-bed me-1"></i>@property.Bedrooms
-                                        <i class="fa fa-bath ms-1 me-1"></i>@property.Bathrooms
-                                    </span>
-                                </div>
-                                <p class="card-title mb-1 small">@property.Title</p>
-                                <p class="card-text text-muted mb-0 small">
-                                    <i class="fa fa-map-marker-alt me-1"></i>@property.Address
-                                </p>
-                                <p class="card-text mt-2 small">
+                                    </div>
+                                    <div class="card-body p-2">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <h6 class="text-primary fw-bold mb-0">$@property.Price.ToString("N0")</h6>
+                                            <span class="text-dark small">
+                                                <i class="fa fa-bed me-1"></i>@property.Bedrooms
+                                                <i class="fa fa-bath ms-1 me-1"></i>@property.Bathrooms
+                                            </span>
+                                        </div>
+                                        <p class="card-title mb-1 small">@property.Title</p>
+                                        <p class="card-text text-muted mb-0 small">
+                                            <i class="fa fa-map-marker-alt me-1"></i>@property.Address
+                                        </p>
+                                        <p class="card-text mt-2 small">
                                             <span class="me-2">
                                                 @(property.Type == PropertyType.SALE ? "For Sale" : "For Rent")
                                             </span>
                                             <span>LISTING BY: @property.AgentName</span>
                                         </p>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        }
                     </div>
                 }
             </div>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.Pagination != null && Model.Pagination.TotalPages > 1)
+        {
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    @if (Model.Pagination.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
+                               asp-route-Type="@Model.Filters.Type"
+                               asp-route-MinPrice="@Model.Filters.MinPrice"
+                               asp-route-MaxPrice="@Model.Filters.MaxPrice"
+                               asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
+                               asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
+                               asp-route-page="@(Model.Pagination.CurrentPage - 1)">Previous</a>
+                        </li>
+                    }
+
+                    @for (int i = Math.Max(1, Model.Pagination.CurrentPage - 2); i <= Math.Min(Model.Pagination.TotalPages, Model.Pagination.CurrentPage + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.Pagination.CurrentPage ? "active" : "")">
+                            <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
+                               asp-route-Type="@Model.Filters.Type"
+                               asp-route-MinPrice="@Model.Filters.MinPrice"
+                               asp-route-MaxPrice="@Model.Filters.MaxPrice"
+                               asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
+                               asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
+                               asp-route-page="@i">@i</a>
+                        </li>
+                    }
+
+                    @if (Model.Pagination.CurrentPage < Model.Pagination.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
+                               asp-route-Type="@Model.Filters.Type"
+                               asp-route-MinPrice="@Model.Filters.MinPrice"
+                               asp-route-MaxPrice="@Model.Filters.MaxPrice"
+                               asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
+                               asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
+                               asp-route-page="@(Model.Pagination.CurrentPage + 1)">Next</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
         }
     </div>
 </div>
-
-                    <!-- Pagination -->
-                    @if (Model.Pagination != null && Model.Pagination.TotalPages > 1)
-                    {
-                        <nav class="mt-4">
-                            <ul class="pagination justify-content-center">
-                                @if (Model.Pagination.CurrentPage > 1)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
-                                           asp-route-Type="@Model.Filters.Type"
-                                           asp-route-MinPrice="@Model.Filters.MinPrice"
-                                           asp-route-MaxPrice="@Model.Filters.MaxPrice"
-                                           asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
-                                           asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
-                                           asp-route-page="@(Model.Pagination.CurrentPage - 1)">Previous</a>
-                                    </li>
-                                }
-
-                                @for (int i = Math.Max(1, Model.Pagination.CurrentPage - 2); i <= Math.Min(Model.Pagination.TotalPages, Model.Pagination.CurrentPage + 2); i++)
-                                {
-                                    <li class="page-item @(i == Model.Pagination.CurrentPage ? "active" : "")">
-                                        <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
-                                           asp-route-Type="@Model.Filters.Type"
-                                           asp-route-MinPrice="@Model.Filters.MinPrice"
-                                           asp-route-MaxPrice="@Model.Filters.MaxPrice"
-                                           asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
-                                           asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
-                                           asp-route-page="@i">@i</a>
-                                    </li>
-                                }
-
-                                @if (Model.Pagination.CurrentPage < Model.Pagination.TotalPages)
-                                {
-                                    <li class="page-item">
-                                        <a class="page-link" asp-action="Search" asp-route-Location="@Model.Filters.Location"
-                                           asp-route-Type="@Model.Filters.Type"
-                                           asp-route-MinPrice="@Model.Filters.MinPrice"
-                                           asp-route-MaxPrice="@Model.Filters.MaxPrice"
-                                           asp-route-MinBedrooms="@Model.Filters.MinBedrooms"
-                                           asp-route-MinBathrooms="@Model.Filters.MinBathrooms"
-                                           asp-route-page="@(Model.Pagination.CurrentPage + 1)">Next</a>
-                                    </li>
-                                }
-                            </ul>
-                        </nav>
-                    }
-                }
-            </div>
-        </div>
     </div>
 </div>
 
@@ -307,48 +300,48 @@
 
         // Map initialization and functionality
         function initMap() {
-    var map = new google.maps.Map(document.getElementById('propertyMap'), {
-        center: { lat: 31.0409, lng: 31.3785 }, // Default to Mansoura
-        zoom: 10,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
-        scrollwheel: true
-    });
+            var map = new google.maps.Map(document.getElementById('propertyMap'), {
+                center: { lat: 31.0409, lng: 31.3785 }, // Default to Mansoura
+                zoom: 10,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                scrollwheel: true
+            });
 
-    // Add properties to the map directly (no need to check if propertyData exists)
-    var propertyData = @Html.Raw(Json.Serialize(Model.Properties.Select(p => new
-    {
-        id = p.Id,
-        title = p.Title,
-        price = p.Price,
-        address = p.Address,
-        bedrooms = p.Bedrooms,
-        bathrooms = p.Bathrooms,
-        squareFeet = p.SquareFeet,
-        type = p.Type.ToString(),
-        latitude = p.Latitude,
-        longitude = p.Longitude
-    })));
-    
-    if (propertyData && propertyData.length > 0) {
-        displayPropertiesOnMap(map, propertyData);
-    }
+            // Add properties to the map directly (no need to check if propertyData exists)
+            var propertyData = @Html.Raw(Json.Serialize(Model.Properties.Select(p => new
+            {
+                id = p.Id,
+                title = p.Title,
+                price = p.Price,
+                address = p.Address,
+                bedrooms = p.Bedrooms,
+                bathrooms = p.Bathrooms,
+                squareFeet = p.SquareFeet,
+                type = p.Type.ToString(),
+                latitude = p.Latitude,
+                longitude = p.Longitude
+            })));
 
-    // Set up UI controls
-    setupMapControls(map);
-}
+            if (propertyData && propertyData.length > 0) {
+                displayPropertiesOnMap(map, propertyData);
+            }
+
+            // Set up UI controls
+            setupMapControls(map);
+        }
 
         function displayPropertiesOnMap(map, properties) {
             // Array to store all markers
             var markers = [];
             // Single info window that will be reused
             var infowindow = new google.maps.InfoWindow();
-            
+
             // Loop through properties and add markers for each
             for (let i = 0; i < properties.length; i++) {
                 const property = properties[i];
 
                 // Create location object for the property
-                const position = {lat: property.latitude, lng: property.longitude};
+                const position = { lat: property.latitude, lng: property.longitude };
 
                 // Create a marker for the property
                 const marker = new google.maps.Marker({
@@ -366,8 +359,8 @@
                 });
 
                 // Add click event to show info window when marker is clicked
-                google.maps.event.addListener(marker, 'click', (function(marker, property) {
-                    return function() {
+                google.maps.event.addListener(marker, 'click', (function (marker, property) {
+                    return function () {
                         showPropertyInfobox(marker, property, map, infowindow);
                     }
                 })(marker, property));
@@ -384,9 +377,9 @@
                 }
                 map.fitBounds(bounds);
                 // Add some padding
-                var listener = google.maps.event.addListenerOnce(map, "idle", function() { 
+                var listener = google.maps.event.addListenerOnce(map, "idle", function () {
                     if (map.getZoom() > 16) map.setZoom(16);
-                    google.maps.event.removeListener(listener); 
+                    google.maps.event.removeListener(listener);
                 });
             }
         }
@@ -394,13 +387,13 @@
         function showPropertyInfobox(marker, property, map, infowindow) {
             // Create infobox content
             var infoboxContent = `
-                <div class="infobox">
-                    <h5>$${property.price.toLocaleString()}</h5>
-                    <p>${property.bedrooms} bd | ${property.bathrooms} ba | ${property.squareFeet} sqft</p>
-                    <p>${property.address}</p>
-                    <a href="/Property/Details/${property.id}" class="btn btn-sm btn-primary">View Details</a>
-                </div>
-            `;
+                        <div class="infobox">
+                            <h5>$${property.price.toLocaleString()}</h5>
+                            <p>${property.bedrooms} bd | ${property.bathrooms} ba | ${property.squareFeet} sqft</p>
+                            <p>${property.address}</p>
+                            <a href="/Property/Details/${property.id}" class="btn btn-sm btn-primary">View Details</a>
+                        </div>
+                    `;
 
             // Set content and open the info window
             infowindow.setContent(infoboxContent);
@@ -409,13 +402,13 @@
 
         function setupMapControls(map) {
             // Add zoom in button functionality
-            document.getElementById('zoomIn').addEventListener('click', function() {
+            document.getElementById('zoomIn').addEventListener('click', function () {
                 var zoom = map.getZoom();
                 map.setZoom(zoom + 1);
             });
 
             // Add zoom out button functionality
-            document.getElementById('zoomOut').addEventListener('click', function() {
+            document.getElementById('zoomOut').addEventListener('click', function () {
                 var zoom = map.getZoom();
                 map.setZoom(zoom - 1);
             });
@@ -425,7 +418,7 @@
             var currentPolygon = null;
 
             // Toggle map options functionality
-            document.getElementById('toggleMapOptions').addEventListener('click', function() {
+            document.getElementById('toggleMapOptions').addEventListener('click', function () {
                 // Initialize drawing manager if it doesn't exist
                 if (!drawingManager) {
                     drawingManager = new google.maps.drawing.DrawingManager({
@@ -436,20 +429,20 @@
                             drawingModes: [google.maps.drawing.OverlayType.POLYGON]
                         }
                     });
-                    
+
                     // Add drawing complete listener
-                    google.maps.event.addListener(drawingManager, 'polygoncomplete', function(polygon) {
+                    google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
                         // Remove previous polygon if exists
                         if (currentPolygon) {
                             currentPolygon.setMap(null);
                         }
                         currentPolygon = polygon;
-                        
+
                         // Exit drawing mode
                         drawingManager.setDrawingMode(null);
                     });
                 }
-                
+
                 // Toggle drawing manager
                 if (drawingManager.getMap()) {
                     drawingManager.setMap(null);
@@ -459,13 +452,13 @@
             });
 
             // Remove drawing functionality
-            document.getElementById('removeDrawing').addEventListener('click', function() {
+            document.getElementById('removeDrawing').addEventListener('click', function () {
                 // Clear any drawings or custom boundaries
                 if (currentPolygon) {
                     currentPolygon.setMap(null);
                     currentPolygon = null;
                 }
-                
+
                 // Turn off drawing mode
                 if (drawingManager) {
                     drawingManager.setMap(null);
@@ -474,50 +467,35 @@
         }
 
         // Document ready handler
-        document.addEventListener('DOMContentLoaded', function() {
-            // Handle favorite buttons
-            document.querySelectorAll('.favorite-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const icon = this.querySelector('i');
-                    if (icon.classList.contains('fa-heart-o')) {
-                        icon.classList.remove('fa-heart-o');
-                        icon.classList.add('fa-heart');
-                    } else {
-                        icon.classList.remove('fa-heart');
-                        icon.classList.add('fa-heart-o');
+        document.addEventListener('DOMContentLoaded', function () {
+            // Property card favorite button functionality
+            $('.favorite-btn').on('click', function (e) {
+                e.preventDefault();
+                const btn = $(this);
+                const propertyId = btn.data('property-id');
+
+                $.ajax({
+                    url: '@Url.Action("ToggleFavoriteAjax")',
+                    type: 'POST',
+                    data: { propertyId: propertyId },
+                    success: function (response) {
+                        const icon = btn.find('i');
+                        if (response.isFavorite) {
+                            btn.removeClass('btn-outline-danger').addClass('btn-danger');
+                            icon.removeClass('bi-heart').addClass('bi-heart-fill');
+                            showToast('Added to favorites!', 'success');
+                        } else {
+                            btn.removeClass('btn-danger').addClass('btn-outline-danger');
+                            icon.removeClass('bi-heart-fill').addClass('bi-heart');
+                            showToast('Removed from favorites', 'info');
+                        }
+                    },
+                    error: function () {
+                        showToast('Error updating favorites. Please try again.', 'error');
                     }
                 });
             });
 
-            document.querySelectorAll('.favorite-btn').forEach(btn => {
-                btn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const propertyId = this.getAttribute('data-property-id');
-                    const icon = this.querySelector('i');
-
-                    // Call the same AJAX endpoint used in the Details view
-                    $.ajax({
-                        url: '/Property/ToggleFavoriteAjax',
-                        type: 'POST',
-                        data: { propertyId: propertyId },
-                        success: function (response) {
-                            if (response.isFavorite) {
-                                icon.classList.remove('fa-heart-o');
-                                icon.classList.add('fa-heart');
-                                showToast('Added to favorites!', 'success');
-                            } else {
-                                icon.classList.remove('fa-heart');
-                                icon.classList.add('fa-heart-o');
-                                showToast('Removed from favorites', 'info');
-                            }
-                        },
-                        error: function () {
-                            showToast('Error updating favorites. Please try again.', 'error');
-                        }
-                    });
-                });
-            });
 
             // Add toast function if not already present
             function showToast(message, type = 'info') {
@@ -539,13 +517,13 @@
                 toast.setAttribute('aria-atomic', 'true');
 
                 toast.innerHTML = `
-                <div class="d-flex">
-                    <div class="toast-body">
-                        ${message}
-                    </div>
-                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-            `;
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    `;
 
                 toastContainer.appendChild(toast);
 
@@ -563,7 +541,7 @@
                 });
             }
 
-            // Property data provided by backend        
+            // Property data provided by backend
             var propertyData = @Html.Raw(Json.Serialize(Model.Properties.Select(p => new
             {
                 id = p.Id,
@@ -577,7 +555,7 @@
                 latitude = p.Latitude,
                 longitude = p.Longitude
             })));
-           
+
         });
     </script>
 }

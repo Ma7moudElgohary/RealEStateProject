@@ -2,6 +2,7 @@
 using System.Runtime.Serialization;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using RealEstate.Models;
+using RealEStateProject.ViewModels.Agent;
 
 namespace RealEStateProject.ViewModels.Property
 {
@@ -57,16 +58,17 @@ namespace RealEStateProject.ViewModels.Property
         public PropertyStatus Status { get; set; }
 
         public int? YearBuilt { get; set; }
-        public List<string>? Features { get; set; }
+        //public List<string>? Features { get; set; }
 
         // Agent information
-        public string AgentName { get; set; }
+        public string? AgentName { get; set; }
+        public AgentViewModel? Agent { get; set; }
         public string? AgentId { get; set; }
-        public string AgentPhone { get; set; }
-        public string AgentEmail { get; set; }
+        public string? AgentPhone { get; set; }
+        public string? AgentEmail { get; set; }
 
         // Images
-        public IFormFile ImageUpload { get; set; }
+        public IFormFile? ImageUpload { get; set; }
         public IEnumerable<IFormFile>? AdditionalImages { get; set; }
         public string? FeaturedImageUrl { get; set; }
         public IEnumerable<string>? ImageUrls { get; set; }

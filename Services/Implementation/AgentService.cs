@@ -31,7 +31,7 @@ namespace RealEStateProject.Services
         }
 
         // get agent by property id
-        public async Task<Agent> GetAgentByPropertyIdAsync(int propertyId)
+        public async Task<AgentViewModel> GetAgentByPropertyIdAsync(int propertyId)
         {
             var agent = await _agentRepository.GetByPropertyIdAsync(propertyId);
             return agent;

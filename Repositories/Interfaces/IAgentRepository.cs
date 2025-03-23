@@ -1,5 +1,6 @@
 ﻿using RealEstate.Repositories;
 using RealEStateProject.Models;
+using RealEStateProject.ViewModels.Agent;
 
 namespace RealEStateProject.Repositories.Interfaces
 {
@@ -12,6 +13,6 @@ namespace RealEStateProject.Repositories.Interfaces
         //Task UpdateAsync(Agent agent);
         //Task DeleteAsync(int id);
 
-        Task<Agent> GetByPropertyIdAsync(int propertyId);
+        Task<AgentViewModel> GetByPropertyIdAsync(int propertyId);
     }
 }

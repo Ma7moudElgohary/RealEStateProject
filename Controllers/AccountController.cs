@@ -35,7 +35,6 @@ namespace RealEStateProject.Controllers
             return View("Register");
         }
 
-        // Add this to your Register method in AccountController, after creating the user:
         [HttpPost]
         public async Task<IActionResult> Register(RegisterUserViewModel userFromRequest)
         {

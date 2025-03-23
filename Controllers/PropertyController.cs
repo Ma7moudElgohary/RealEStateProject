@@ -11,6 +11,8 @@ using RealEStateProject.Models;
 using RealEStateProject.Services.Interfaces;
 using RealEStateProject.Repositories.Interfaces;
 using RealEStateProject.Repositories;
+using NuGet.Protocol.Core.Types;
+using RealEStateProject.Services;
 
 namespace RealEstate.Controllers
 {
@@ -20,7 +22,7 @@ namespace RealEstate.Controllers
         private readonly IPropertyService _propertyService;
         private readonly IFavoriteService _favoriteService;
         private readonly IMessageService _messageService;
-        private readonly IAgentRepository _agentRepository;
+        private readonly IAgentService _agentService;
         private readonly IMapper _mapper;
         private readonly ILogger<PropertyController> _logger;
 
@@ -28,14 +30,14 @@ namespace RealEstate.Controllers
             IPropertyService propertyService,
             IFavoriteService favoriteService,
             IMessageService messageService,
-            IAgentRepository agentRepository,
+            IAgentService agentService,
             IMapper mapper,
             ILogger<PropertyController> logger)
         {
             _propertyService = propertyService;
             _favoriteService = favoriteService;
             _messageService = messageService;
-            _agentRepository = agentRepository;
+            _agentService = agentService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -59,6 +61,7 @@ namespace RealEstate.Controllers
             return selectList;
         }
 
+        [Authorize(Roles ="Agent")]
         public async Task<IActionResult> Index()
         {
             var userId = GetUserId();
@@ -95,7 +98,9 @@ namespace RealEstate.Controllers
             var userId = User.Identity.IsAuthenticated ? GetUserId() : null;
             var property = await _propertyService.GetPropertyByIdAsync(id, userId);
 
-            var propertyViewModel = await _propertyService.GetPropertyViewModelByIdAsync(id);
+            property.Agent = await _agentService.GetAgentByPropertyIdAsync(id);
+
+            //var propertyViewModel = await _propertyService.GetPropertyViewModelByIdAsync(id);
 
             if (property == null)
             {
@@ -112,6 +117,7 @@ namespace RealEstate.Controllers
             return View(property);
         }
 
+        [Authorize(Roles = "Agent")]
         public IActionResult Create()
         {
             var viewModel = new PropertyViewModel
@@ -132,11 +138,13 @@ namespace RealEstate.Controllers
                 viewModel.PropertyStatuses = GetEnumSelectList<PropertyStatus>();
                 return View(viewModel);
             }
-
+            // Get the current user ID
             var userId = GetUserId();
+
             await _propertyService.AddPropertyAsync(viewModel, userId);
             return RedirectToAction(nameof(Index));
         }
+
 
         public async Task<IActionResult> Edit(int id)
         {
@@ -208,8 +216,6 @@ namespace RealEstate.Controllers
             return RedirectToAction(nameof(UpdateImages), new { id = propertyId });
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var userId = GetUserId();
@@ -240,6 +246,16 @@ namespace RealEstate.Controllers
 
             var userId = User.Identity.IsAuthenticated ? GetUserId() : null;
             var searchResults = await _propertyService.SearchPropertiesAsync(filter, userId, 1, 20);
+
+            if (userId != null)
+            {
+                var favorites = await _favoriteService.GetFavoritesByUserIdAsync(userId);
+                ViewBag.FavoriteIds = favorites.Select(f => f.PropertyId).ToList();
+            }
+            else
+            {
+                ViewBag.FavoriteIds = new List<int>();
+            }
 
             ViewBag.PropertyTypes = GetEnumSelectList<PropertyType>();
 
@@ -338,21 +354,5 @@ namespace RealEstate.Controllers
             await _messageService.DeleteAsync(id);
             return RedirectToAction(nameof(Messages));
         }
-
-        //[Authorize]
-        //[HttpPost]
-        //public async Task<IActionResult> RemoveFavorite(int id)
-        //{
-        //    var userId = GetUserId();
-        //    var favorite = await _favoriteService.GetFavoriteByIdAsync(id);
-
-        //    // Check if the favorite exists and belongs to the current user
-        //    if (favorite != null && favorite.UserId == userId)
-        //    {
-        //        await _favoriteService.RemoveFavoriteAsync(id);
-        //    }
-
-        //    return RedirectToAction("Favorites");
-        //}
     }
 }

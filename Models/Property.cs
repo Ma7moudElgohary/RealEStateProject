@@ -55,10 +55,7 @@ namespace RealEstate.Models
 
         public ICollection<Review>? Reviews { get; set; }
 
-        public static implicit operator Property(Task<Property> v)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 
     public enum PropertyType
